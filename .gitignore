@@ -6,4 +6,5 @@
 *.lock
 *.map
 *.css
-*.js
+heatmap.js
+table.js

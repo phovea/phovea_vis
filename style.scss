@@ -1,0 +1,78 @@
+.axis {
+  .makeover {
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    pointer-events: none;
+  }
+
+  .tick line, path {
+    fill: none;
+    stroke: black;
+    shape-rendering: crispEdges;
+  }
+
+  circle {
+
+  }
+}
+
+.barplot {
+  rect {
+    stroke: white;
+    fill: black;
+  }
+}
+
+.box {
+  path.axis {
+    stroke: darkgrey;
+  }
+
+  line.mean {
+    stroke: black;
+    stroke-width: 3px;
+  }
+
+  rect.box {
+    fill: steelblue;
+  }
+}
+
+div.heatmap {
+  position: relative;
+
+  canvas {
+
+    &.heatmap-selection {
+      position: absolute;
+      top: 0;
+      left: 0;
+      z-index: 2;
+    }
+  }
+}
+
+
+.scatterplot {
+  circle {
+    fill-opacity: .7;
+  }
+
+  circle.hidden {
+    fill: #ccc !important;
+  }
+
+  .extent {
+    fill: #000;
+    fill-opacity: .125;
+    stroke: #fff;
+  }
+}
+
+.table {
+  font-size: smaller;
+  border-collapse: collapse;
+}

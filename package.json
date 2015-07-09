@@ -1,0 +1,155 @@
+{
+  "name": "caleydo_vis",
+  "version": "0.0.1",
+  "peerDependencies": {
+    "caleydo_web": "*",
+    "caleydo_tooltip": "*"
+  },
+  "caleydo": {
+    "plugins": {
+      "web": [
+        {
+          "type": "vis",
+          "id": "axis",
+          "name": "Axis",
+          "file": "axis",
+          "icon": "axis_icon.svg",
+          "scaling": "height-only",
+          "filter": [
+            "vector",
+            "(real|int)"
+          ],
+          "options": {
+            "tickSize": {
+              "type": "int",
+              "range": [
+                1,
+                null
+              ],
+              "default": 2
+            },
+            "orient": {
+              "type": "categorical",
+              "categories": [
+                "left",
+                "right",
+                "top",
+                "bottom"
+              ],
+              "default": "left"
+            }
+          }
+        },
+        {
+          "type": "vis",
+          "id": "barplot",
+          "name": "Bar Plot",
+          "file": "barplot",
+          "icon": "barplot_icon.png",
+          "sizeDependsOnDataDimension": [
+            false,
+            true
+          ],
+          "filter": [
+            "vector",
+            "(real|int)"
+          ]
+        },
+        {
+          "type": "vis",
+          "id": "table",
+          "name": "Table",
+          "file": "table",
+          "sizeDependsOnDataDimension": true
+        },
+        {
+          "type": "vis",
+          "id": "scatterplot",
+          "name": "ScatterPlot",
+          "file": "scatterplot",
+          "filter": "matrix"
+        },
+        {
+          "type": "vis",
+          "id": "caleydo-vis-heatmap",
+          "name": "HeatMap",
+          "file": "heatmap",
+          "icon": "heatmap_icon.svg",
+          "sizeDependsOnDataDimension": true,
+          "filter": "matrix"
+        },
+        {
+          "type": "vis",
+          "id": "caleydo-vis-heatmap1d",
+          "name": "HeatMap 1D",
+          "file": "heatmap",
+          "icon": "heatmap_icon.svg",
+          "sizeDependsOnDataDimension": [
+            false,
+            true
+          ],
+          "scaling": "height-only",
+          "filter": "vector"
+        },
+        {
+          "type": "vis",
+          "id": "caleydo-vis-histogram",
+          "file": "distribution",
+          "name": "Histogram",
+          "icon": "distribution_histogram_icon.png",
+          "filter": [
+            "(vector|matrix)",
+            "(categorical|real|int)"
+          ]
+        },
+        {
+          "type": "vis",
+          "id": "caleydo-vis-mosaic",
+          "file": "distribution-vis-distribution",
+          "name": "Mosaic",
+          "factory": "createMosaic",
+          "icon": "distribution_mosaic_icon.png",
+          "sizeDependsOnDataDimension": [
+            false,
+            true
+          ],
+          "scaling": "height-only",
+          "filter": [
+            "vector",
+            "categorical"
+          ]
+        },
+        {
+          "type": "vis",
+          "id": "caleydo-vis-pie",
+          "file": "distribution",
+          "name": "Pie",
+          "factory": "createPie",
+          "icon": "distribution_pie_icon.png",
+          "scaling": "aspect",
+          "filter": [
+            "vector",
+            "categorical"
+          ]
+        },
+        {
+          "type": "vis",
+          "id": "caleydo-vis-box",
+          "name": "BoxPlot",
+          "file": "box",
+          "icon": "box_icon.png",
+          "scaling": "aspect",
+          "filter": [
+            "vector",
+            "(real|int)"
+          ]
+        }
+      ]
+    },
+    "dependencies": {
+      "web": {
+        "d3": "~3.5.5"
+      }
+    }
+  }
+}

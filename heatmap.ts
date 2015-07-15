@@ -175,8 +175,12 @@ class HeatMapCanvasRenderer implements IHeatMapRenderer {
   }
 
   private redraw(imageData: ImageData, $root: d3.Selection<any>, scale: number[]) {
-    var context = (<any>$root.select('canvas').node()).getContext('2d');
-    context.imageSmoothingEnabled = false;
+    var context = <CanvasRenderingContext2D>(<any>$root.select('canvas').node()).getContext('2d');
+
+    context.msImageSmoothingEnabled = false;
+    if (context.hasOwnProperty('imageSmoothingEnabled')) {
+      context['imageSmoothingEnabled'] = false;
+    }
 
     if (scale[0] === 1 && scale[1] === 1) {
       context.putImageData(imageData, 0, 0);
@@ -185,7 +189,8 @@ class HeatMapCanvasRenderer implements IHeatMapRenderer {
       tmp.width = imageData.width;
       tmp.height = imageData.height;
 
-      tmp.getContext('2d').putImageData(imageData, 0, 0);
+      var d = <CanvasRenderingContext2D>tmp.getContext('2d');
+      d.putImageData(imageData, 0, 0);
 
       context.scale(scale[0], scale[1]);
       context.drawImage(tmp, 0, 0);
@@ -195,7 +200,7 @@ class HeatMapCanvasRenderer implements IHeatMapRenderer {
   }
 
   private redrawSelection(canvas: HTMLCanvasElement, dim: number[], type: string, selected: ranges.Range) {
-    var ctx = canvas.getContext('2d');
+    var ctx = <CanvasRenderingContext2D>canvas.getContext('2d');
     ctx.save();
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     ctx.fillStyle = 'orange';
@@ -247,7 +252,7 @@ class HeatMapCanvasRenderer implements IHeatMapRenderer {
       'class': 'heatmap-selection'
     });
 
-    this.imageData = (<HTMLCanvasElement>$canvas.node()).getContext('2d').createImageData(width, height);//new (<any>ImageData)(data.ncol, data.nrow);
+    this.imageData = (<CanvasRenderingContext2D>(<HTMLCanvasElement>$canvas.node()).getContext('2d')).createImageData(width, height);//new (<any>ImageData)(data.ncol, data.nrow);
     var rgba = this.imageData.data;
     data.data().then((arr) => {
       this.genImage(rgba, arr, data.ncol, c);

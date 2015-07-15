@@ -94,7 +94,7 @@ export class Table extends vis.AVisInstance implements vis.IVisInstance {
     $table.append('tbody');
     var onClick = utils.selectionUtil(this.data, $table.select('tbody'), 'tr');
     C.all(promises).then((arr) => {
-      var cols = arr[0], rows = arr[1], d = arr[2];
+      var cols = arr[0], rows = arr[1], d : any[][] = arr[2];
       var $headers = $table.select('thead tr').selectAll('th').data(['ID'].concat(cols));
       $headers.enter().append('th');
       $headers.text(C.identity);
@@ -102,12 +102,12 @@ export class Table extends vis.AVisInstance implements vis.IVisInstance {
 
       var $rows = $table.select('tbody').selectAll('tr').data(d);
       $rows.enter().append('tr').on('click', onClick);
-      $rows.each(function (row, i) {
+      $rows.each(function (row: any[], i) {
         var $header = d3.select(this).selectAll('th').data(rows.slice(i, i + 1));
         $header.enter().append('th');
         $header.text(C.identity);
         $header.exit().remove();
-        var $row = d3.select(this).selectAll('td').data(row);
+        var $row = d3.select(this).selectAll<any>('td').data(row);
         $row.enter().append('td');
         $row.text(C.identity);
         $row.exit().remove();

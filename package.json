@@ -151,5 +151,8 @@
         "d3": "~3.5.5"
       }
     }
+  },
+  "publishConfig": {
+    "registry": "http://dev.caleydo.org/nexus/content/repositories/caleydo-web/"
   }
 }

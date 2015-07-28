@@ -109,7 +109,7 @@
         {
           "type": "vis",
           "id": "caleydo-vis-mosaic",
-          "file": "distribution-vis-distribution",
+          "file": "distribution",
           "name": "Mosaic",
           "factory": "createMosaic",
           "icon": "distribution_mosaic_icon.png",

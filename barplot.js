@@ -4,7 +4,7 @@
 /* global define */
 "use strict"
 
-define(['exports', 'd3', '../caleydo_web/main', '../caleydo_web/idtype', '../caleydo_web/geom', '../caleydo_web/d3util', 'css!./style'], function (exports, d3, C, idtypes, geom, d3utils) {
+define(['exports', 'd3', '../caleydo_core/main', '../caleydo_core/idtype', '../caleydo_core/geom', '../caleydo_core/d3util', 'css!./style'], function (exports, d3, C, idtypes, geom, d3utils) {
   exports.BarPlot = d3utils.defineVis('BarPLot', {
     cssClass: '',
     width: 100,

@@ -5,12 +5,12 @@
 /// <amd-dependency path='css!./style' />
 
 import d3 = require('d3');
-import ranges = require('../caleydo_web/range');
-import vis = require('../caleydo_web/vis');
-import geom = require('../caleydo_web/geom');
-import datatypes = require('../caleydo_web/datatype');
-import utils = require('../caleydo_web/d3util');
-import C = require('../caleydo_web/main');
+import ranges = require('../caleydo_core/range');
+import vis = require('../caleydo_core/vis');
+import geom = require('../caleydo_core/geom');
+import datatypes = require('../caleydo_core/datatype');
+import utils = require('../caleydo_core/d3util');
+import C = require('../caleydo_core/main');
 
 export class Table extends vis.AVisInstance implements vis.IVisInstance {
   private $node : d3.Selection<any>;

@@ -7,16 +7,16 @@
 'use strict';
 
 import d3 = require('d3');
-import d3utils = require('../caleydo_web/d3util');
-import vis = require('../caleydo_web/vis');
-import matrix = require('../caleydo_web/matrix');
-import vector = require('../caleydo_web/vector');
-import datatypes = require('../caleydo_web/datatype');
+import d3utils = require('../caleydo_core/d3util');
+import vis = require('../caleydo_core/vis');
+import matrix = require('../caleydo_core/matrix');
+import vector = require('../caleydo_core/vector');
+import datatypes = require('../caleydo_core/datatype');
 
-import idtypes = require('../caleydo_web/idtype');
-import geom = require('../caleydo_web/geom');
-import ranges = require('../caleydo_web/range');
-import C = require('../caleydo_web/main');
+import idtypes = require('../caleydo_core/idtype');
+import geom = require('../caleydo_core/geom');
+import ranges = require('../caleydo_core/range');
+import C = require('../caleydo_core/main');
 
 
 function defaultColor(value: any) {

@@ -4,7 +4,7 @@
 /* global define */
 "use strict";
 
-define(['exports', 'd3', '../caleydo_web/main', '../caleydo_web/idtype', '../caleydo_tooltip/main', '../caleydo_web/d3util'], function (exports, d3, C, idtypes, tooltip, d3utils) {
+define(['exports', 'd3', '../caleydo_core/main', '../caleydo_core/idtype', '../caleydo_tooltip/main', '../caleydo_core/d3util'], function (exports, d3, C, idtypes, tooltip, d3utils) {
 
   function createCategoricalHistData(hist, categories) {
     var data = [],

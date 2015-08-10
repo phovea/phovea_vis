@@ -1,6 +1,8 @@
 {
   "name": "caleydo_vis",
   "version": "0.0.1",
+  "license" : "SEE LICENSE IN LICENSE",
+  "repository": "Caleydo/caleydo_vis",
   "dependencies": {
   },
   "peerDependencies": {

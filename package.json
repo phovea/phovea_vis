@@ -2,8 +2,6 @@
   "name": "caleydo_vis",
   "version": "0.0.1",
   "dependencies": {
-    "caleydo_core": "*",
-    "caleydo_tooltip": "*"
   },
   "peerDependencies": {
     "caleydo_core": "*",

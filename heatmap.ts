@@ -32,13 +32,13 @@ function defaultDomain(value) {
   return value.range;
 }
 
-interface Scale {
+interface IScale {
   (x : any): any;
-  domain(values: any[]) : Scale;
-  range(values: any[]): Scale;
+  domain(values: any[]) : IScale;
+  range(values: any[]): IScale;
 }
 
-function toScale(value): Scale {
+function toScale(value): IScale {
   if (value.type === 'categorical') {
     return d3.scale.ordinal();
   }
@@ -47,8 +47,8 @@ function toScale(value): Scale {
 
 interface IHeatMapRenderer {
   rescale($node: d3.Selection<any>, dim: number[], scale: number[]);
-  recolor($node: d3.Selection<any>, data: matrix.IMatrix, color: Scale, scale: number[]);
-  build(data: matrix.IMatrix, $parent: d3.Selection<any>, initialScale: number, c: Scale, onReady: () => void);
+  recolor($node: d3.Selection<any>, data: matrix.IMatrix, color: IScale, scale: number[]);
+  build(data: matrix.IMatrix, $parent: d3.Selection<any>, initialScale: number, c: IScale, onReady: () => void);
 }
 
 class HeatMapDOMRenderer implements IHeatMapRenderer {
@@ -61,11 +61,11 @@ class HeatMapDOMRenderer implements IHeatMapRenderer {
     $node.select('g').attr('transform','scale('+scale[0]+','+scale[1]+')');
   }
 
-  recolor($node: d3.Selection<any>, data: matrix.IMatrix, color: Scale, scale: number[]) {
+  recolor($node: d3.Selection<any>, data: matrix.IMatrix, color: IScale, scale: number[]) {
     $node.selectAll('rect').attr('fill', (d) => color(d));
   }
 
-  build(data: matrix.IMatrix, $parent: d3.Selection<any>, initialScale: number, c: Scale, onReady: () => void) {
+  build(data: matrix.IMatrix, $parent: d3.Selection<any>, initialScale: number, c: IScale, onReady: () => void) {
     var dims = data.dim;
     var width = dims[1], height = dims[0];
 
@@ -153,7 +153,7 @@ class HeatMapCanvasRenderer implements IHeatMapRenderer {
     });
   }
 
-  recolor($node: d3.Selection<any>, data: matrix.IMatrix, color: Scale, scale: number[]) {
+  recolor($node: d3.Selection<any>, data: matrix.IMatrix, color: IScale, scale: number[]) {
     var rgba = this.imageData.data;
     data.data().then((arr) => {
       this.genImage(rgba, arr, data.ncol, color);
@@ -161,7 +161,7 @@ class HeatMapCanvasRenderer implements IHeatMapRenderer {
     });
   }
 
-  private genImage(rgba: number[], arr: number[][], ncol: number, c: Scale) {
+  private genImage(rgba: number[], arr: number[][], ncol: number, c: IScale) {
     arr.forEach((row, j) => {
       var t = j * ncol;
       row.forEach((cell, i) => {
@@ -179,7 +179,7 @@ class HeatMapCanvasRenderer implements IHeatMapRenderer {
 
     context.msImageSmoothingEnabled = false;
     if (context.hasOwnProperty('imageSmoothingEnabled')) {
-      context['imageSmoothingEnabled'] = false;
+      (<any>context).imageSmoothingEnabled = false;
     }
 
     if (scale[0] === 1 && scale[1] === 1) {
@@ -235,7 +235,7 @@ class HeatMapCanvasRenderer implements IHeatMapRenderer {
 
   }
 
-  build(data: matrix.IMatrix, $parent: d3.Selection<any>, initialScale: number, c: Scale, onReady: () => void) {
+  build(data: matrix.IMatrix, $parent: d3.Selection<any>, initialScale: number, c: IScale, onReady: () => void) {
 
     var dims = data.dim;
     var width = dims[1], height = dims[0];
@@ -303,7 +303,7 @@ function createRenderer(cells: number) {
 
 export class HeatMap extends vis.AVisInstance implements vis.IVisInstance {
   private $node:d3.Selection<any>;
-  private colorer : Scale;
+  private colorer : IScale;
   private renderer: IHeatMapRenderer;
 
   constructor(public data:matrix.IMatrix, public parent:Element, private options: any) {
@@ -405,7 +405,7 @@ export class HeatMap extends vis.AVisInstance implements vis.IVisInstance {
 
 export class HeatMap1D extends vis.AVisInstance implements vis.IVisInstance {
   private $node:d3.Selection<any>;
-  private colorer:Scale;
+  private colorer:IScale;
 
   constructor(public data:vector.IVector, public parent:Element, private options:any) {
     super();

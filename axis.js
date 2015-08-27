@@ -60,7 +60,7 @@ define(['exports', 'd3', '../caleydo_core/main', '../caleydo_core/d3util', 'css!
       var that = this;
       if (range.isAll || range.isNone) {
         var r = this.scale.range();
-        return C.resolved(that.wrap({ y: r[0], h: r[1] - r[0] }));
+        return Promise.resolve(that.wrap({ y: r[0], h: r[1] - r[0] }));
       }
       return this.data.data(range).then(function (data) {
         var ex = d3.extent(data, that.scale);

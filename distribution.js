@@ -151,7 +151,7 @@ define(['exports', 'd3', '../caleydo_core/main', '../caleydo_core/idtype', '../c
     locateImpl: function (range) {
       var that = this, size = this.rawSize;
       if (range.isAll || range.isNone) {
-        return C.resolved({x: 0, y: 0, w: size[0], h: size[1]});
+        return Promise.resolve({x: 0, y: 0, w: size[0], h: size[1]});
       }
       return this.data.data(range).then(function (data) {
         var ex = d3.extent(data, function (value) {
@@ -159,7 +159,7 @@ define(['exports', 'd3', '../caleydo_core/main', '../caleydo_core/idtype', '../c
         });
         var h0 = that.hist_data[ex[0]];
         var h1 = that.hist_data[ex[1]];
-        return C.resolved({
+        return Promise.resolve({
           x: that.xscale(ex[0]),
           width: (that.xscale(ex[1]) - that.xscale(ex[0]) + that.xscale.rangeBand()),
           height: that.yscale(Math.max(h0.v, h1.v)),
@@ -255,7 +255,7 @@ define(['exports', 'd3', '../caleydo_core/main', '../caleydo_core/idtype', '../c
     locateIt: function locateIt(range) {
       var that = this;
       if (range.isAll || range.isNone) {
-        return C.resolved({x: 0, y: 0, w: this.rawSize[0], h: this.data.length});
+        return Promise.resolve({x: 0, y: 0, w: this.rawSize[0], h: this.data.length});
       }
       return this.data.data(range).then(function (data) {
         var ex = d3.extent(data, function (value) {
@@ -265,7 +265,7 @@ define(['exports', 'd3', '../caleydo_core/main', '../caleydo_core/idtype', '../c
         var h1 = that.hist_data[ex[1]];
         var y = Math.min(h0.acc, h1.acc);
         var y2 = Math.max(h0.acc + h0.v, h1.acc + h1.v);
-        return C.resolved({
+        return Promise.resolve({
           x: 0,
           width: that.rawSize[0],
           height: y2 - y,
@@ -381,7 +381,7 @@ define(['exports', 'd3', '../caleydo_core/main', '../caleydo_core/idtype', '../c
     locateIt: function (range) {
       var that = this, o = this.options;
       if (range.isAll || range.isNone) {
-        return C.resolved({x: o.radius, y: o.radius, radius: o.radius});
+        return Promise.resolve({x: o.radius, y: o.radius, radius: o.radius});
       }
       return this.data.data(range).then(function (data) {
         var ex = d3.extent(data, function (value) {
@@ -389,7 +389,7 @@ define(['exports', 'd3', '../caleydo_core/main', '../caleydo_core/idtype', '../c
         });
         var startAngle = that.scale(that.hist_data[ex[0]].start);
         var endAngle = that.scale(that.hist_data[ex[1]].end);
-        return C.resolved(toPolygon(startAngle, endAngle, o.radius));
+        return Promise.resolve(toPolygon(startAngle, endAngle, o.radius));
       });
     },
     updatedOption: function (name, value) {

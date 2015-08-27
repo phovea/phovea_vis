@@ -16,7 +16,7 @@ define(['exports', 'd3', '../caleydo_core/main', '../caleydo_tooltip/main', '../
     var that = this;
 
     // bind data to chart
-    C.all([data.data(), data.rows()]).then(function (promise) {
+    Promise.all([data.data(), data.rows()]).then(function (promise) {
 
       var arr = promise[0];
       var rowNames = promise[1];

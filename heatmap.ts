@@ -365,7 +365,7 @@ export class HeatMap extends vis.AVisInstance implements vis.IVisInstance {
 
     var xw = l(range.dim(1), width, o.scale[0]);
     var yh = l(range.dim(0), height, o.scale[1]);
-    return C.resolved(geom.rect(xw[0], yh[0], xw[1], yh[1]));
+    return Promise.resolve(geom.rect(xw[0], yh[0], xw[1], yh[1]));
   }
 
   transform(scale?: number[], rotate: number = 0) {
@@ -461,7 +461,7 @@ export class HeatMap1D extends vis.AVisInstance implements vis.IVisInstance {
     }
 
     var yh = l(range.dim(0), height, o.scale[1]);
-    return C.resolved(geom.rect(0, yh[0], 20, yh[1]));
+    return Promise.resolve(geom.rect(0, yh[0], 20, yh[1]));
   }
 
   transform(scale?:number[], rotate:number = 0) {

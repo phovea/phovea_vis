@@ -53,12 +53,12 @@ export class Table extends vis.AVisInstance implements vis.IVisInstance {
     var a, b;
     if (range.isAll || range.isNone) {
       b = $tbody.select('tr:last').node();
-      return C.resolved(geom.rect(0, offset, w, b.offsetTop + b.clientHeight));
+      return Promise.resolve(geom.rect(0, offset, w, b.offsetTop + b.clientHeight));
     }
     var ex:any = d3.extent(range.dim(0).iter().asList());
     a = $tbody.select('tr:nth-child(' + (ex[0] + 1) + ')').node();
     b = $tbody.select('tr:nth-child(' + (ex[1] + 1) + ')').node();
-    return C.resolved(geom.rect(0, a.offsetTop, w, b.offsetTop + b.clientHeight - a.offsetTop));
+    return Promise.resolve(geom.rect(0, a.offsetTop, w, b.offsetTop + b.clientHeight - a.offsetTop));
   }
 
   persist() {
@@ -93,7 +93,7 @@ export class Table extends vis.AVisInstance implements vis.IVisInstance {
     $table.append('thead').append('tr');
     $table.append('tbody');
     var onClick = utils.selectionUtil(this.data, $table.select('tbody'), 'tr');
-    C.all(promises).then((arr) => {
+    Promise.all(promises).then((arr) => {
       var cols = arr[0], rows = arr[1], d : any[][] = arr[2];
       var $headers = $table.select('thead tr').selectAll('th').data(['ID'].concat(cols));
       $headers.enter().append('th');

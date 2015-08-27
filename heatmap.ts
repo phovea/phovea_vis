@@ -100,7 +100,7 @@ class HeatMapDOMRenderer implements IHeatMapRenderer {
       $rows.exit().remove();
       onReady();
     });
-    var l = function (event, type, selected) {
+    var l = function (event, type, selected: ranges.Range) {
       $g.selectAll('rect').classed('select-' + type, false);
       if (selected.isNone) {
         return;

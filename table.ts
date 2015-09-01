@@ -61,14 +61,6 @@ export class Table extends vis.AVisInstance implements vis.IVisInstance {
     return Promise.resolve(geom.rect(0, a.offsetTop, w, b.offsetTop + b.clientHeight - a.offsetTop));
   }
 
-  persist() {
-    return null;
-  }
-
-  restore(persisted: any) {
-    return null;
-  }
-
   transform(scale?: number[], rotate: number = 0) {
     var bak = {
       scale: this.options.scale || [1,1],

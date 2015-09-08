@@ -178,9 +178,9 @@ class HeatMapCanvasRenderer implements IHeatMapRenderer {
     var context = <CanvasRenderingContext2D>(<any>$root.select('canvas').node()).getContext('2d');
 
     context.msImageSmoothingEnabled = false;
-    if (context.hasOwnProperty('imageSmoothingEnabled')) {
-      (<any>context).imageSmoothingEnabled = false;
-    }
+    //if (context.hasOwnProperty('imageSmoothingEnabled')) {
+    (<any>context).imageSmoothingEnabled = false;
+    //}
 
     if (scale[0] === 1 && scale[1] === 1) {
       context.putImageData(imageData, 0, 0);

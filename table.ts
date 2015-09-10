@@ -9,7 +9,7 @@ import ranges = require('../caleydo_core/range');
 import vis = require('../caleydo_core/vis');
 import geom = require('../caleydo_core/geom');
 import datatypes = require('../caleydo_core/datatype');
-import utils = require('../caleydo_core/d3util');
+import utils = require('../caleydo_d3/d3util');
 import C = require('../caleydo_core/main');
 
 export class Table extends vis.AVisInstance implements vis.IVisInstance {

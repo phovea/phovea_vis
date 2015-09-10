@@ -1,7 +1,7 @@
 /**
  * Created by Marc Streit on 06.08.2014.
  */
-define(['exports', 'd3', '../caleydo_tooltip/main', '../caleydo_core/main', '../caleydo_core/d3util', 'css!./style'], function (exports, d3, tooltip, C, d3utils) {
+define(['exports', 'd3', '../caleydo_tooltip/main', '../caleydo_core/main', '../caleydo_d3/d3util', 'css!./style'], function (exports, d3, tooltip, C, d3utils) {
 
   function createText(stats) {
     var r = '<table><tbody>';

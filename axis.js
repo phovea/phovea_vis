@@ -1,7 +1,7 @@
 /**
  * Created by Samuel Gratzl on 08.10.2014.
  */
-define(['exports', 'd3', '../caleydo_core/main', '../caleydo_core/d3util', 'css!./style'], function (exports, d3, C, utils) {
+define(['exports', 'd3', '../caleydo_core/main', '../caleydo_d3/d3util', 'css!./style'], function (exports, d3, C, utils) {
   exports.Axis = utils.defineVis('Axis', {
     shift: 10,
     tickSize: 2,

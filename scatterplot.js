@@ -1,7 +1,7 @@
 /**
  * Created by Marc Streit on 06.08.2014.
  */
-define(['exports', 'd3', '../caleydo_core/main', '../caleydo_tooltip/main', '../caleydo_core/d3util', 'css!./style'], function (exports, d3, C, tooltip, d3tuils) {
+define(['exports', 'd3', '../caleydo_core/main', '../caleydo_tooltip/main', '../caleydo_d3/d3util', 'css!./style'], function (exports, d3, C, tooltip, d3tuils) {
   exports.ScatterPlot = d3tuils.defineVis('ScatterPlot', {}, [300, 300], function ($parent, data, size) {
     var width = size[0], height = size[1];
 

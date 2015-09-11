@@ -104,7 +104,7 @@
           "name": "Histogram",
           "icon": "distribution_histogram_icon.png",
           "filter": [
-            "(vector|matrix)",
+            "(vector|matrix|stratification)",
             "(categorical|real|int)"
           ]
         },
@@ -134,7 +134,7 @@
           "icon": "distribution_pie_icon.png",
           "scaling": "aspect",
           "filter": [
-            "vector",
+            "(vector|stratification)",
             "categorical"
           ]
         },

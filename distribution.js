@@ -6,10 +6,11 @@
 
 define(['exports', 'd3', '../caleydo_core/main', '../caleydo_core/idtype', '../caleydo_tooltip/main', '../caleydo_d3/d3util'], function (exports, d3, C, idtypes, tooltip, d3utils) {
 
-  function createCategoricalHistData(hist, categories) {
+  function createCategoricalHistData(hist) {
+    const categories = hist.categories,
+        cols = hist.colors || d3.scale.category10().range(),
+        total = hist.count;
     var data = [],
-      cols = d3.scale.category10(),
-      total = hist.count,
       acc = 0;
     hist.forEach(function (b, i) {
       data[i] = {
@@ -19,7 +20,7 @@ define(['exports', 'd3', '../caleydo_core/main', '../caleydo_core/idtype', '../c
         range: hist.range(i),
 
         name: (typeof categories[i] === 'string') ? categories[i] : categories[i].name,
-        color: (categories[i].color === undefined) ? cols(i) : categories[i].color
+        color: (categories[i].color === undefined) ? cols[i] : categories[i].color
       };
       acc += b;
     });
@@ -47,14 +48,14 @@ define(['exports', 'd3', '../caleydo_core/main', '../caleydo_core/idtype', '../c
     return data;
   }
 
-  function createHistData(hist, value) {
-    if (value.type === 'categorical') {
-      return createCategoricalHistData(hist, value.categories);
+  function createHistData(hist, desc, data) {
+    if (desc.type === 'stratification') {
+      return createCategoricalHistData(hist);
     }
-    if (value.type === 'stratification') {
-      return createStratifcationHistData(hist);
+    if (data.valuetype.type === 'categorical') {
+      return createCategoricalHistData(hist);
     }
-    return createNumericalHistData(hist, value.range);
+    return createNumericalHistData(hist, data.valuetype.range);
   }
 
   exports.Histogram = d3utils.defineVis('HistogramVis', function (data) {
@@ -117,7 +118,7 @@ define(['exports', 'd3', '../caleydo_core/main', '../caleydo_core/idtype', '../c
       that.hist = hist;
       xscale.domain(d3.range(hist.bins));
       yscale.domain([0, o.totalHeight ? hist.count : hist.largestFrequency]);
-      var hist_data = that.hist_data = createHistData(hist, that.data.desc.value);
+      var hist_data = that.hist_data = createHistData(hist, that.data.desc, that.data);
 
       var $m = $data.selectAll('rect').data(hist_data);
       $m.enter().append('rect')
@@ -221,7 +222,7 @@ define(['exports', 'd3', '../caleydo_core/main', '../caleydo_core/idtype', '../c
 
     this.data.hist(o.nbins).then(function (hist) {
       that.hist = hist;
-      var hist_data = that.hist_data = createHistData(hist, data.desc.value);
+      var hist_data = that.hist_data = createHistData(hist, data.desc, data);
 
       var $m = $data.selectAll('rect').data(hist_data);
       $m.enter().append('rect')
@@ -316,7 +317,6 @@ define(['exports', 'd3', '../caleydo_core/main', '../caleydo_core/idtype', '../c
       .endAngle(function (d) {
         return scale(d.end);
       });
-    var cols = d3.scale.category10();
 
     var l = function (event, type, selected) {
       var highlights = that.hist_data.map(function (entry) {
@@ -342,7 +342,9 @@ define(['exports', 'd3', '../caleydo_core/main', '../caleydo_core/idtype', '../c
       that.hist = hist;
       var total = o.total || hist.count;
       scale.domain([0, total]);
-      var hist_data = that.hist_data = [], prev = 0, cats = that.data.desc.value.categories;
+      var hist_data = that.hist_data = [], prev = 0, cats = hist.categories;
+
+      var cols = hist.colors || d3.scale.category10().range();
       hist.forEach(function (b, i) {
         hist_data[i] = {
           name: (typeof cats[i] === 'string') ? cats[i] : cats[i].name,
@@ -350,7 +352,7 @@ define(['exports', 'd3', '../caleydo_core/main', '../caleydo_core/idtype', '../c
           size: b,
           ratio: b / total,
           end: prev + b,
-          color: (cats[i].color === undefined) ? cols(i) : cats[i].color,
+          color: (cats[i].color === undefined) ? cols[i] : cats[i].color,
           range: hist.range(i)
         };
         prev += b;

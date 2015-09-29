@@ -60,7 +60,7 @@ define(['exports', 'd3', '../caleydo_core/main', '../caleydo_core/idtype', '../c
 
   exports.Histogram = d3utils.defineVis('HistogramVis', function (data) {
     return {
-      nbins: Math.round(Math.sqrt(data.desc.type === 'matrix' ? data.ncol * data.nrow : data.length)),
+      nbins: Math.floor(Math.sqrt(data.desc.type === 'matrix' ? data.ncol * data.nrow : data.length)),
       totalHeight: true,
       duration: 200
     };
@@ -114,7 +114,7 @@ define(['exports', 'd3', '../caleydo_core/main', '../caleydo_core/idtype', '../c
       data.select(0, d.range, idtypes.toSelectOperation(d3.event));
     };
 
-    this.data.hist(o.nbins).then(function (hist) {
+    this.data.hist(Math.floor(o.nbins)).then(function (hist) {
       that.hist = hist;
       xscale.domain(d3.range(hist.bins));
       yscale.domain([0, o.totalHeight ? hist.count : hist.largestFrequency]);
@@ -220,7 +220,7 @@ define(['exports', 'd3', '../caleydo_core/main', '../caleydo_core/idtype', '../c
       data.select(0, d.range, idtypes.toSelectOperation(d3.event));
     };
 
-    this.data.hist(o.nbins).then(function (hist) {
+    this.data.hist(Math.floor(o.nbins)).then(function (hist) {
       that.hist = hist;
       var hist_data = that.hist_data = createHistData(hist, data.desc, data);
 

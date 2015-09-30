@@ -121,7 +121,7 @@
           ],
           "scaling": "height-only",
           "filter": [
-            "vector",
+            "(vector|stratification)",
             "categorical"
           ]
         },

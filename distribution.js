@@ -173,7 +173,8 @@ define(['exports', 'd3', '../caleydo_core/main', '../caleydo_core/idtype', '../c
   exports.Mosaic = d3utils.defineVis('MosaicVis', {
     width: 20,
     initialScale: 10,
-    duration: 200
+    duration: 200,
+    selectAble: true
   }, function (data) {
     return [this.options.width, data.dim[0]];
   }, function ($parent, data, size) {
@@ -211,14 +212,16 @@ define(['exports', 'd3', '../caleydo_core/main', '../caleydo_core/idtype', '../c
       $m.transition().duration(o.duration).style('opacity',1);
       $m.exit().remove();
     };
-    data.on('select', l);
-    C.onDOMNodeRemoved($data.node(), function () {
-      data.off('select', l);
-    });
+    if (o.selectAble) {
+      data.on('select', l);
+      C.onDOMNodeRemoved($data.node(), function () {
+        data.off('select', l);
+      });
+    }
 
-    var onClick = function (d) {
+    var onClick = o.selectAble ? function (d) {
       data.select(0, d.range, idtypes.toSelectOperation(d3.event));
-    };
+    } : null;
 
     this.data.hist(Math.floor(o.nbins)).then(function (hist) {
       that.hist = hist;
@@ -243,9 +246,12 @@ define(['exports', 'd3', '../caleydo_core/main', '../caleydo_core/idtype', '../c
         }
       });
       that.fire('built');
-      data.selections().then(function (selected) {
-        l(null, 'selected', selected);
-      });
+      that.markReady();
+      if (o.selectAble) {
+        data.selections().then(function (selected) {
+          l(null, 'selected', selected);
+        });
+      }
     });
 
     return $svg;

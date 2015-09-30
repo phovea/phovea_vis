@@ -35,7 +35,10 @@ function defaultDomain(value) {
 
 interface IScale {
   (x : any): any;
+  domain(): any[];
   domain(values: any[]) : IScale;
+
+  range(): any[];
   range(values: any[]): IScale;
 }
 
@@ -78,7 +81,7 @@ class HeatMapDOMRenderer implements IHeatMapRenderer {
   }
 
   build(data: matrix.IMatrix, $parent: d3.Selection<any>, initialScale: number, c: IScale, onReady: () => void) {
-    var dims = data.dim;
+    var dims = data.dim, that = this;
     var width = dims[1], height = dims[0];
 
     var $svg = $parent.append('svg').attr({
@@ -100,7 +103,7 @@ class HeatMapDOMRenderer implements IHeatMapRenderer {
           y: i,
           fill: (d) => c(d)
         });
-        if (this.selectAble) {
+        if (that.selectAble) {
           $cols_enter.on('click', (d, j) => {
             data.select([
               [i],
@@ -291,7 +294,7 @@ class HeatMapCanvasRenderer extends AHeatMapCanvasRenderer implements IHeatMapRe
       var t = j * ncol;
       row.forEach((cell, i) => {
         var color = d3.rgb(c(cell));
-        rgba[(t+i)*4 + 0] = color.r;
+        rgba[(t+i)*4] = color.r;
         rgba[(t+i)*4 + 1] = color.g;
         rgba[(t+i)*4 + 2] = color.b;
         rgba[(t+i)*4 + 3] = 255;
@@ -356,6 +359,7 @@ class HeatMapCanvasRenderer extends AHeatMapCanvasRenderer implements IHeatMapRe
 class HeatMapImageRenderer extends AHeatMapCanvasRenderer implements IHeatMapRenderer {
   private image: HTMLImageElement;
   private ready = false;
+  private color: IScale;
 
   constructor(selectAble = true) {
     super(selectAble);
@@ -380,36 +384,57 @@ class HeatMapImageRenderer extends AHeatMapCanvasRenderer implements IHeatMapRen
   }
 
   private redrawImpl($root: d3.Selection<any>, scale: number[]) {
-    var context = <CanvasRenderingContext2D>(<any>$root.select('canvas').node()).getContext('2d');
+    const canvas = <HTMLCanvasElement>$root.select('canvas').node();
+    const ctx = <CanvasRenderingContext2D>canvas.getContext('2d');
 
-    context.msImageSmoothingEnabled = false;
+    ctx.msImageSmoothingEnabled = false;
     //if (context.hasOwnProperty('imageSmoothingEnabled')) {
-    (<any>context).imageSmoothingEnabled = false;
+    (<any>ctx).imageSmoothingEnabled = false;
     //}
 
     if (scale[0] === 1 && scale[1] === 1) {
-      context.drawImage(this.image, 0, 0);
+      ctx.drawImage(this.image, 0, 0);
     } else {
-      context.save();
-      context.scale(scale[0], scale[1]);
+      ctx.save();
+      ctx.scale(scale[0], scale[1]);
       console.log('draw with scale', scale, this.image.width, this.image.height);
-      context.drawImage(this.image, 0, 0);
-      context.restore();
+      ctx.drawImage(this.image, 0, 0);
+      ctx.restore();
+    }
+
+    //apply color scale
+    if (false) { //FIXME
+      let imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+      let data = imageData.data;
+      var help  = d3.scale.linear().domain([0,255]).range(this.color.domain());
+      for (let i = 0; i < data.length; i += 4) {
+        //gray scale
+        let v = data[i];
+        //to convert to domain value or use a different scale
+        var color = d3.rgb(this.color(help(v)));
+        data[i] = color.r;
+        data[i + 1] = color.g;
+        data[i + 2] = color.b;
+        data[i + 3] = 255;
+      }
+      ctx.putImageData(imageData, 0, 0);
     }
   }
 
   recolor($node: d3.Selection<any>, data: matrix.IMatrix, color: IScale, scale: number[]) {
     //can't do that
+    this.color = color;
+    this.redrawImpl($node, scale);
   }
 
 
   build(data: matrix.IMatrix, $parent: d3.Selection<any>, initialScale: number, c: IScale, onReady: () => void) {
-
+    this.color = c;
     var dims = data.dim;
     var width = dims[1], height = dims[0];
 
     var $root = $parent.append('div').attr('class','heatmap');
-    var $canvas = $root.append('canvas').attr({
+    $root.append('canvas').attr({
       width: width * initialScale,
       height: height * initialScale,
       'class': 'heatmap-data'
@@ -420,7 +445,9 @@ class HeatMapImageRenderer extends AHeatMapCanvasRenderer implements IHeatMapRen
       this.ready = true;
       onReady();
     };
-    this.image.src = data.heatmapUrl();
+    this.image.src = data.heatmapUrl(ranges.all(), {
+      range: <[number,number]>c.domain()
+    });
 
     super.buildSelection(data, $root, initialScale);
 

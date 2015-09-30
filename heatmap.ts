@@ -56,6 +56,10 @@ interface IHeatMapRenderer {
 class HeatMapDOMRenderer implements IHeatMapRenderer {
   private color: IScale;
 
+  constructor(private selectAble = true) {
+
+  }
+
   rescale($node: d3.Selection<any>, dim: number[], scale: number[]) {
     $node.attr({
       width: dim[1] * scale[0],
@@ -89,18 +93,23 @@ class HeatMapDOMRenderer implements IHeatMapRenderer {
       var $rows = $g.selectAll('g').data(arr);
       $rows.enter().append('g').each(function (row, i) {
         var $cols = d3.select(this).selectAll('rect').data(row);
-        $cols.enter().append('rect').on('click', (d, j) => {
-          data.select([
-            [i],
-            [j]
-          ], idtypes.toSelectOperation(d3.event));
-        }).attr({
+        const $cols_enter = $cols.enter().append('rect').attr({
           width: 1,
           height: 1,
           x: (d, j) => j,
           y: i,
           fill: (d) => c(d)
-        }).append('title').text(String);
+        });
+        if (this.selectAble) {
+          $cols_enter.on('click', (d, j) => {
+            data.select([
+              [i],
+              [j]
+            ], idtypes.toSelectOperation(d3.event));
+          });
+        }
+        $cols_enter.append('title').text(String);
+
       });
       onReady();
     });
@@ -129,13 +138,15 @@ class HeatMapDOMRenderer implements IHeatMapRenderer {
         });
       }
     };
-    data.on('select', l);
-    C.onDOMNodeRemoved(<Element>$g.node(), function () {
-      data.off('select', l);
-    });
-    data.selections().then(function (selected) {
-      l(null, 'selected', selected);
-    });
+    if (this.selectAble) {
+      data.on('select', l);
+      C.onDOMNodeRemoved(<Element>$g.node(), function () {
+        data.off('select', l);
+      });
+      data.selections().then(function (selected) {
+        l(null, 'selected', selected);
+      });
+    }
 
     return $svg;
   }
@@ -144,15 +155,21 @@ class HeatMapDOMRenderer implements IHeatMapRenderer {
 
 class AHeatMapCanvasRenderer {
 
+  constructor(protected selectAble = true) {
+
+  }
+
   rescale($node: d3.Selection<any>, dim: number[], scale: number[]) {
     $node.selectAll('canvas.heatmap-selection').attr({
       width: dim[1] * scale[0],
       height: dim[0] * scale[1]
     });
-    $node.datum().selections().then((selected) => {
-      this.redrawSelection(<HTMLCanvasElement>$node.select('canvas.heatmap-selection').node(), dim,
-'selected', selected);
-    });
+    if (this.selectAble) {
+      $node.datum().selections().then((selected) => {
+        this.redrawSelection(<HTMLCanvasElement>$node.select('canvas.heatmap-selection').node(), dim,
+          'selected', selected);
+      });
+    }
   }
 
   protected redrawSelection(canvas: HTMLCanvasElement, dim: number[], type: string, selected: ranges.Range) {
@@ -192,6 +209,9 @@ class AHeatMapCanvasRenderer {
   }
 
   protected buildSelection(data: matrix.IMatrix, $root: d3.Selection<any>, initialScale: number) {
+    if (!this.selectAble) {
+      return;
+    }
     const dims = data.dim;
     const width = dims[1], height = dims[0];
 
@@ -233,6 +253,10 @@ class AHeatMapCanvasRenderer {
 class HeatMapCanvasRenderer extends AHeatMapCanvasRenderer implements IHeatMapRenderer {
   private imageData : ImageData;
   private ready = false;
+
+  constructor(selectAble = true) {
+    super(selectAble);
+  }
 
   rescale($node: d3.Selection<any>, dim: number[], scale: number[]) {
     $node.selectAll('canvas').attr({
@@ -333,6 +357,10 @@ class HeatMapImageRenderer extends AHeatMapCanvasRenderer implements IHeatMapRen
   private image: HTMLImageElement;
   private ready = false;
 
+  constructor(selectAble = true) {
+    super(selectAble);
+  }
+
   rescale($node: d3.Selection<any>, dim: number[], scale: number[]) {
     $node.selectAll('canvas').attr({
       width: dim[1] * scale[0],
@@ -401,13 +429,13 @@ class HeatMapImageRenderer extends AHeatMapCanvasRenderer implements IHeatMapRen
   }
 }
 
-function createRenderer(cells: number): IHeatMapRenderer {
+function createRenderer(cells: number, selectAble = true): IHeatMapRenderer {
   if (cells <= 1000) {
-    return new HeatMapDOMRenderer();
+    return new HeatMapDOMRenderer(selectAble);
   } else if (cells < 5000) {
-    return new HeatMapCanvasRenderer();
+    return new HeatMapCanvasRenderer(selectAble);
   } else {
-    return new HeatMapImageRenderer();
+    return new HeatMapImageRenderer(selectAble);
   }
 }
 
@@ -423,13 +451,14 @@ export class HeatMap extends vis.AVisInstance implements vis.IVisInstance {
       initialScale: 10,
       color: defaultColor(value),
       domain: defaultDomain(value),
-      duration : 200
+      duration : 200,
+      selectAble: true
     }, options);
     this.options.scale = [this.options.initialScale,this.options.initialScale];
     this.options.rotate = 0;
     this.colorer = toScale(value).domain(this.options.domain).range(this.options.color);
 
-    this.renderer = createRenderer(data.length);
+    this.renderer = createRenderer(data.length, this.options.selectAble);
 
     this.$node = this.build(d3.select(parent));
     this.$node.datum(data);

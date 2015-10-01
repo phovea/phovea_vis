@@ -9,7 +9,7 @@ define(['exports', 'd3', '../caleydo_core/main', '../caleydo_core/idtype', '../c
   function createCategoricalHistData(hist) {
     const categories = hist.categories,
         cols = hist.colors || d3.scale.category10().range(),
-        total = hist.count;
+        total = hist.validCount;
     var data = [],
       acc = 0;
     hist.forEach(function (b, i) {
@@ -30,7 +30,7 @@ define(['exports', 'd3', '../caleydo_core/main', '../caleydo_core/idtype', '../c
   function createNumericalHistData(hist, range) {
     var data = [],
       cols = d3.scale.linear().domain(range).range(['#111111', '#999999']),
-      total = hist.count,
+      total = hist.validCount,
       binWidth = (range[1] - range[0]) / hist.bins,
       acc = 0;
     hist.forEach(function (b, i) {
@@ -58,10 +58,23 @@ define(['exports', 'd3', '../caleydo_core/main', '../caleydo_core/idtype', '../c
     return createNumericalHistData(hist, data.valuetype.range);
   }
 
+  function resolveHistMax(hist, totalHeight) {
+    var op = d3.functor(totalHeight);
+    return Promise.resolve(op(hist)).then(function(r) {
+      if (r === true) {
+        return hist.validCount;
+      }
+      if (r === false) {
+        return hist.largestBin;
+      }
+      return r;
+    });
+  }
+
   exports.Histogram = d3utils.defineVis('HistogramVis', function (data) {
     return {
       nbins: Math.floor(Math.sqrt(data.desc.type === 'matrix' ? data.ncol * data.nrow : data.length)),
-      totalHeight: true,
+      total: true,
       duration: 200
     };
   }, [200, 100], function ($parent, data, size) {
@@ -117,16 +130,19 @@ define(['exports', 'd3', '../caleydo_core/main', '../caleydo_core/idtype', '../c
     this.data.hist(Math.floor(o.nbins)).then(function (hist) {
       that.hist = hist;
       xscale.domain(d3.range(hist.bins));
-      yscale.domain([0, o.totalHeight ? hist.count : hist.largestFrequency]);
+      return resolveHistMax(hist, that.options.total);
+    }).then(function(hist_max) {
+      var hist = that.hist;
+      yscale.domain([0, hist_max]);
       var hist_data = that.hist_data = createHistData(hist, that.data.desc, that.data);
 
       var $m = $data.selectAll('rect').data(hist_data);
       $m.enter().append('rect')
-        .attr('width', xscale.rangeBand())
-        .call(tooltip.bind(function (d) {
-          return d.name + ' ' + (d.v) + ' entries (' + Math.round(d.ratio * 100) + '%)';
-        }))
-        .on('click', onClick);
+          .attr('width', xscale.rangeBand())
+          .call(tooltip.bind(function (d) {
+            return d.name + ' ' + (d.v) + ' entries (' + Math.round(d.ratio * 100) + '%)';
+          }))
+          .on('click', onClick);
       $m.attr({
         x: function (d, i) {
           return xscale(i);
@@ -300,7 +316,8 @@ define(['exports', 'd3', '../caleydo_core/main', '../caleydo_core/idtype', '../c
   exports.Pie = d3utils.defineVis('Pie', {
     radius: 50,
     innerRadius: 0,
-    duration: 200
+    duration: 200,
+    total: true
   }, function () {
     var r = this.options.radius;
     return [r * 2, r * 2];
@@ -346,7 +363,9 @@ define(['exports', 'd3', '../caleydo_core/main', '../caleydo_core/idtype', '../c
 
     data.hist().then(function (hist) {
       that.hist = hist;
-      var total = o.total || hist.count;
+      return resolveHistMax(hist, that.options.total)
+    }).then(function(total) {
+      var hist = that.hist;
       scale.domain([0, total]);
       var hist_data = that.hist_data = [], prev = 0, cats = hist.categories;
 
@@ -383,7 +402,6 @@ define(['exports', 'd3', '../caleydo_core/main', '../caleydo_core/idtype', '../c
         l(null, 'selected', selected);
       });
     });
-
     return $svg;
   }, {
     locateIt: function (range) {

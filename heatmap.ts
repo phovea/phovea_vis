@@ -580,7 +580,8 @@ export class HeatMap1D extends vis.AVisInstance implements vis.IVisInstance {
     this.options = C.mixin({
       initialScale: 10,
       color: defaultColor(value),
-      domain: defaultDomain(value)
+      domain: defaultDomain(value),
+      width: 20
     }, options);
     this.options.scale = [1, this.options.initialScale];
     this.options.rotate = 0;
@@ -592,7 +593,7 @@ export class HeatMap1D extends vis.AVisInstance implements vis.IVisInstance {
 
   get rawSize(): [number, number] {
     var d = this.data.dim;
-    return [20, d[0]];
+    return [this.options.width, d[0]];
   }
 
   get node() {
@@ -640,7 +641,7 @@ export class HeatMap1D extends vis.AVisInstance implements vis.IVisInstance {
       return bak;
     }
     var dims = this.data.dim;
-    var width = 20, height = dims[0];
+    var width = this.options.width, height = dims[0];
     this.$node.attr({
       width: width * scale[0],
       height: height * scale[1]
@@ -664,10 +665,11 @@ export class HeatMap1D extends vis.AVisInstance implements vis.IVisInstance {
 
   private build($parent:d3.Selection<any>) {
     var dims = this.data.dim;
-    var width = 20, height = dims[0];
+    var width = this.options.width, height = dims[0];
     var $svg = $parent.append('svg').attr({
       width: width,
-      height: height * this.options.initialScale
+      height: height * this.options.initialScale,
+      'class': 'heatmap'
     });
     var $g = $svg.append('g').attr('transform', 'scale(1,' + this.options.initialScale + ')');
 
@@ -679,7 +681,7 @@ export class HeatMap1D extends vis.AVisInstance implements vis.IVisInstance {
       var $rows = $g.selectAll('rect').data(arr);
       var onClick = d3utils.selectionUtil(data, $g, 'rect');
       $rows.enter().append('rect').on('click', onClick).attr({
-        width: 20,
+        width: this.options.width,
         height: 1
       }).append('title').text(C.identity);
       $rows.attr({

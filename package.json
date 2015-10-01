@@ -99,6 +99,19 @@
         },
         {
           "type": "vis",
+          "id": "caleydo-vis-kaplanmeier",
+          "name": "Kaplanmeier Plot",
+          "file": "kaplanmeier",
+          "icon": "kaplanmeier_icon.svg",
+          "sizeDependsOnDataDimension": [
+            false,
+            true
+          ],
+          "scaling": "aspect",
+          "filter": ["vector", "int"]
+        },
+        {
+          "type": "vis",
           "id": "caleydo-vis-histogram",
           "file": "distribution",
           "name": "Histogram",

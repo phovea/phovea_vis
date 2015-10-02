@@ -24,7 +24,7 @@ export class KaplanMeierPlot extends vis.AVisInstance implements vis.IVisInstanc
     maxTime: (died: number[]) => died[died.length-1]
   };
 
-  private line = d3.svg.line().interpolate('linear');
+  private line = d3.svg.line().interpolate('step');
 
   constructor(public data:vector.IVector, public parent:Element, options:any = {}) {
     super();

@@ -76,3 +76,10 @@ div.heatmap {
   font-size: smaller;
   border-collapse: collapse;
 }
+
+.kaplanmeier {
+  path {
+    fill: none;
+    stroke: black;
+  }
+}

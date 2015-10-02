@@ -1,6 +1,7 @@
 /**
  * Created by Samuel Gratzl on 01.10.2015.
  */
+/// <amd-dependency path='css!./style' />
 /* global define */
 
 import d3 = require('d3');
@@ -19,8 +20,11 @@ export class KaplanMeierPlot extends vis.AVisInstance implements vis.IVisInstanc
     scale: [1, 1],
     rotate: 0,
     width: 300,
-    height: 300
+    height: 300,
+    maxTime: (died: number[]) => died[died.length-1]
   };
+
+  private line = d3.svg.line().interpolate('linear');
 
   constructor(public data:vector.IVector, public parent:Element, options:any = {}) {
     super();
@@ -70,19 +74,53 @@ export class KaplanMeierPlot extends vis.AVisInstance implements vis.IVisInstanc
   }
 
   private build($parent:d3.Selection<any>) {
-    var dims = this.data.dim;
-    var width = this.options.width, height = this.options.height;
-    var $svg = $parent.append('svg').attr({
-      width: width,
-      height: height,
+    const width = this.options.width,
+      height = this.options.height,
+      scale = this.options.scale || [1,1];
+
+    const $svg = $parent.append('svg').attr({
+      width: width * scale[0],
+      height: height * scale[1],
       'class': 'kaplanmeier'
     });
-    var $g = $svg.append('g');
+
+    const $g = $svg.append('g');
+
+    const xscale = d3.scale.linear().range([0, width]);
+    const yscale = d3.scale.linear().range([0, height]);
+
+    this.line
+      .x((d) => xscale(d[0]))
+      .y((d) => yscale(d[1]));
 
     this.data.data().then((arr) => {
       //TODO
+      const died = arr.filter((a) => !isNaN(a)).map((a) => Math.abs(a));
+      died.sort(d3.ascending);
+      const alive = arr.length - died.length;
 
-      this.markReady();
+      yscale.domain([0, arr.length]);
+
+      Promise.resolve(d3.functor(this.options.maxTime)(died)).then((maxAxisTime) => {
+        xscale.domain([0, maxAxisTime]);
+
+        //0 ... 100%
+        var points = [[0, 0]],
+          prev_i = 0;
+        for (let i = 1; i < died.length; ++i) {
+          while(died[i] === died[i-1] && i < died.length) {
+            ++i;
+          }
+          points.push([died[prev_i], prev_i + 1]);
+          prev_i = i;
+        }
+        if (died.length > 0) {
+          points.push([died[prev_i], prev_i + 1]);
+        }
+        points.push([maxAxisTime, died.length]);
+        $g.append('path').datum(points).attr('d', this.line);
+        this.markReady();
+      });
     });
     return $svg;
   }

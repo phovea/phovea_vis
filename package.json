@@ -105,7 +105,7 @@
           "icon": "kaplanmeier_icon.svg",
           "sizeDependsOnDataDimension": [
             false,
-            true
+            false
           ],
           "scaling": "aspect",
           "filter": ["vector", "int"]

@@ -6,5 +6,6 @@
 *.lock
 *.map
 *.css
+kaplanmeier.js
 heatmap.js
 table.js

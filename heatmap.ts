@@ -397,7 +397,7 @@ class HeatMapImageRenderer extends AHeatMapCanvasRenderer implements IHeatMapRen
     } else {
       ctx.save();
       ctx.scale(scale[0], scale[1]);
-      console.log('draw with scale', scale, this.image.width, this.image.height);
+      //console.log('draw with scale', scale, this.image.width, this.image.height);
       ctx.drawImage(this.image, 0, 0);
       ctx.restore();
     }

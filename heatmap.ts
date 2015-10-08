@@ -8,7 +8,6 @@
 
 import d3 = require('d3');
 import d3utils = require('../caleydo_d3/d3util');
-import ajax = require('../caleydo_core/ajax');
 import vis = require('../caleydo_core/vis');
 import matrix = require('../caleydo_core/matrix');
 import vector = require('../caleydo_core/vector');

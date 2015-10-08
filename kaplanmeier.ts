@@ -5,11 +5,9 @@
 /* global define */
 
 import d3 = require('d3');
-import d3utils = require('../caleydo_d3/d3util');
 import vector = require('../caleydo_core/vector');
 import vis = require('../caleydo_core/vis');
 import ranges = require('../caleydo_core/range');
-import geom = require('../caleydo_core/geom');
 import C = require('../caleydo_core/main');
 
 
@@ -28,7 +26,7 @@ export class KaplanMeierPlot extends vis.AVisInstance implements vis.IVisInstanc
 
   constructor(public data:vector.IVector, public parent:Element, options:any = {}) {
     super();
-    var value = (<any>this.data.desc).value;
+    //var value = (<any>this.data.desc).value;
     C.mixin(this.options, options);
     this.$node = this.build(d3.select(parent));
     this.$node.datum(data);
@@ -56,7 +54,6 @@ export class KaplanMeierPlot extends vis.AVisInstance implements vis.IVisInstanc
     if (arguments.length === 0) {
       return bak;
     }
-    var dims = this.data.dim;
     var width = this.options.width, height = this.options.height;
     this.$node.attr({
       width: width * scale[0],
@@ -97,7 +94,7 @@ export class KaplanMeierPlot extends vis.AVisInstance implements vis.IVisInstanc
       //TODO
       const died = arr.filter((a) => !isNaN(a)).map((a) => Math.abs(a));
       died.sort(d3.ascending);
-      const alive = arr.length - died.length;
+      //const alive = arr.length - died.length;
 
       yscale.domain([0, arr.length]);
 

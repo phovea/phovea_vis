@@ -23,13 +23,23 @@ function defaultColor(value: any) {
   if (value.type === 'categorical') {
     return value.categories.map((c) => c.color);
   }
-  return ['black', 'white'];
+  const r = value.range;
+  if (r[0] < 0 && r[1] > 0) {
+    //use a symmetric range
+    return ['blue', 'white', 'red'];
+  }
+  return ['white', 'red'];
 }
 function defaultDomain(value) {
   if (value.type === 'categorical') {
     return value.categories.map((c) => c.name);
   }
-  return value.range;
+  const r = value.range;
+  if (r[0] < 0 && r[1] > 0) {
+    //use a symmetric range
+    return [Math.min(r[0], -r[1]), Math.max(-r[0], r[1])];
+  }
+  return r;
 }
 
 interface IScale {
@@ -310,7 +320,6 @@ class HeatMapCanvasRenderer extends AHeatMapCanvasRenderer implements IHeatMapRe
     //}
 
     if (scale[0] === 1 && scale[1] === 1) {
-      context.putImageData(imageData, 0, 0);
     } else {
       var tmp = document.createElement('canvas');
       tmp.width = imageData.width;
@@ -402,7 +411,7 @@ class HeatMapImageRenderer extends AHeatMapCanvasRenderer implements IHeatMapRen
     }
 
     //apply color scale
-    if (false) { //FIXME
+    /*if (false) { //FIXME
       let imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
       let data = imageData.data;
       var help  = d3.scale.linear().domain([0,255]).range(this.color.domain());
@@ -417,7 +426,7 @@ class HeatMapImageRenderer extends AHeatMapCanvasRenderer implements IHeatMapRen
         data[i + 3] = 255;
       }
       ctx.putImageData(imageData, 0, 0);
-    }
+    }*/
   }
 
   recolor($node: d3.Selection<any>, data: matrix.IMatrix, color: IScale, scale: number[]) {
@@ -444,9 +453,24 @@ class HeatMapImageRenderer extends AHeatMapCanvasRenderer implements IHeatMapRen
       this.ready = true;
       onReady();
     };
-    this.image.src = data.heatmapUrl(ranges.all(), {
+    var args: any = {
       range: <[number,number]>c.domain()
-    });
+    };
+    function arrEqual(a: any[], b: any[]) {
+      if (a.length !== b.length) {
+        return false;
+      }
+      return a.every((ai,i) => ai == b[i]);
+    }
+    const colors = c.range();
+    if (arrEqual(colors, ['black', 'white'])) {
+      //default scale
+    } else if (arrEqual(colors, ['white', 'red'])) {
+      args.palette = 'white_red';
+    } else if (arrEqual(colors, ['blue', 'white', 'red'])) {
+      args.palette = 'blue_white_red';
+    }
+    this.image.src = data.heatmapUrl(ranges.all(), args);
 
     super.buildSelection(data, $root, initialScale);
 

@@ -320,6 +320,8 @@ class HeatMapCanvasRenderer extends AHeatMapCanvasRenderer implements IHeatMapRe
     //}
 
     if (scale[0] === 1 && scale[1] === 1) {
+      //don't nee
+      context.putImageData(imageData, 0, 0);
     } else {
       var tmp = document.createElement('canvas');
       tmp.width = imageData.width;
@@ -460,7 +462,7 @@ class HeatMapImageRenderer extends AHeatMapCanvasRenderer implements IHeatMapRen
       if (a.length !== b.length) {
         return false;
       }
-      return a.every((ai,i) => ai == b[i]);
+      return a.every((ai,i) => ai === b[i]);
     }
     const colors = c.range();
     if (arrEqual(colors, ['black', 'white'])) {

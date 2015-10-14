@@ -7,7 +7,7 @@
 define(['exports', 'd3', '../caleydo_core/main', '../caleydo_core/idtype', '../caleydo_tooltip/main', '../caleydo_d3/d3util'], function (exports, d3, C, idtypes, tooltip, d3utils) {
 
   function createCategoricalHistData(hist) {
-    const categories = hist.categories,
+    var categories = hist.categories,
         cols = hist.colors || d3.scale.category10().range(),
         total = hist.validCount;
     var data = [],

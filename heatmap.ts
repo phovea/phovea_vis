@@ -569,7 +569,9 @@ export class HeatMap extends vis.AVisInstance implements vis.IVisInstance {
     }
     var dims = this.data.dim;
     this.$node.style('transform','rotate('+rotate+'deg)');
-    this.renderer.rescale(this.$node, dims, scale);
+    if (bak.scale[0] !== scale[0] || bak.scale[1] !== scale[1]) {
+      this.renderer.rescale(this.$node, dims, scale);
+    }
     var new_ = {
       scale: scale,
       rotate: rotate

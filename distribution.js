@@ -205,6 +205,9 @@ define(['exports', 'd3', '../caleydo_core/main', '../caleydo_core/idtype', '../c
     var $highlight = $scale.append('g').style('pointer-events', 'none').classed('select-selected', true);
 
     var l = function (event, type, selected) {
+      if (!that.hist_data) {
+        return;
+      }
       var highlights = that.hist_data.map(function (entry, i) {
         var s = entry.range.intersect(selected);
         return {

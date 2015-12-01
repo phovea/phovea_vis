@@ -190,6 +190,7 @@ define(['exports', 'd3', '../caleydo_core/main', '../caleydo_core/idtype', '../c
     width: 20,
     initialScale: 10,
     duration: 200,
+    heightTo: null,
     selectAble: true
   }, function (data) {
     return [this.options.width, data.dim[0]];
@@ -277,6 +278,9 @@ define(['exports', 'd3', '../caleydo_core/main', '../caleydo_core/idtype', '../c
   }, {
     init: function () {
       this.options.scale = [1, this.options.initialScale];
+      if(this.options.heightTo) {
+        this.options.scale[1] = this.options.heightTo / this.data.dim[0];
+      }
     },
     locateIt: function locateIt(range) {
       var that = this;

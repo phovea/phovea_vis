@@ -93,6 +93,9 @@ define(['exports', 'd3', '../caleydo_core/main', '../caleydo_core/idtype', '../c
     var yscale = that.yscale = d3.scale.linear().range([0, size[1]]);
 
     var l = function (event, type, selected) {
+      if (!that.hist_data) {
+        return;
+      }
       var highlights = that.hist_data.map(function (entry, i) {
         var s = entry.range.intersect(selected);
         return {

@@ -481,10 +481,11 @@ class HeatMapImageRenderer extends AHeatMapCanvasRenderer implements IHeatMapRen
   }
 }
 
-function createRenderer(cells: number, selectAble = true): IHeatMapRenderer {
+function createRenderer(d: matrix.IMatrix, selectAble = true): IHeatMapRenderer {
+  const cells = d.length;
   if (cells <= 1000) {
     return new HeatMapDOMRenderer(selectAble);
-  } else if (cells < 5000) {
+  } else if (cells < 5000 || d.heatmapUrl() === null) {
     return new HeatMapCanvasRenderer(selectAble);
   } else {
     return new HeatMapImageRenderer(selectAble);
@@ -515,7 +516,7 @@ export class HeatMap extends vis.AVisInstance implements vis.IVisInstance {
     this.options.rotate = 0;
     this.colorer = toScale(value).domain(this.options.domain).range(this.options.color);
 
-    this.renderer = createRenderer(data.length, this.options.selectAble);
+    this.renderer = createRenderer(data, this.options.selectAble);
 
     this.$node = this.build(d3.select(parent));
     this.$node.datum(data);

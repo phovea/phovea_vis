@@ -481,11 +481,15 @@ class HeatMapImageRenderer extends AHeatMapCanvasRenderer implements IHeatMapRen
   }
 }
 
-function createRenderer(d: matrix.IMatrix, selectAble = true): IHeatMapRenderer {
+function createRenderer(d: matrix.IMatrix, selectAble = true, forceThumbnails = false): IHeatMapRenderer {
   const cells = d.length;
   if (cells <= 1000) {
     return new HeatMapDOMRenderer(selectAble);
-  } else if (cells < 5000 || d.heatmapUrl() === null) {
+  }
+  const url = d.heatmapUrl();
+  if (url && forceThumbnails) {
+    return new HeatMapImageRenderer(selectAble);
+  } else if (cells < 5000 ||  url === null) {
     return new HeatMapCanvasRenderer(selectAble);
   } else {
     return new HeatMapImageRenderer(selectAble);
@@ -506,7 +510,8 @@ export class HeatMap extends vis.AVisInstance implements vis.IVisInstance {
       color: defaultColor(value),
       domain: defaultDomain(value),
       duration : 200,
-      selectAble: true
+      selectAble: true,
+      forceThumbnails: false
     }, options);
     this.options.scale = [this.options.initialScale,this.options.initialScale];
     if (this.options.scaleTo) {
@@ -516,7 +521,7 @@ export class HeatMap extends vis.AVisInstance implements vis.IVisInstance {
     this.options.rotate = 0;
     this.colorer = toScale(value).domain(this.options.domain).range(this.options.color);
 
-    this.renderer = createRenderer(data, this.options.selectAble);
+    this.renderer = createRenderer(data, this.options.selectAble, this.options.forceThumbnails);
 
     this.$node = this.build(d3.select(parent));
     this.$node.datum(data);

@@ -600,7 +600,7 @@ export class HeatMap extends vis.AVisInstance implements vis.IVisInstance {
   }
 
   private build($parent:d3.Selection<any>) {
-    return this.renderer.build(this.data, $parent, this.options.initialScale, this.colorer, () => {
+    return this.renderer.build(this.data, $parent, this.options.scale, this.colorer, () => {
       this.renderer.redraw(this.$node, this.options.scale);
       this.markReady();
     });

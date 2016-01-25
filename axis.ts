@@ -12,9 +12,6 @@ import d3 = require('d3');
 import d3utils = require('../caleydo_d3/d3util');
 import vis = require('../caleydo_core/vis');
 import vector = require('../caleydo_core/vector');
-import idtypes = require('../caleydo_core/idtype');
-import geom = require('../caleydo_core/geom');
-import ranges = require('../caleydo_core/range');
 
 export class Axis extends vis.AVisInstance {
   private options = {

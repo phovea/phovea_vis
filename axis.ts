@@ -13,27 +13,31 @@ import d3utils = require('../caleydo_d3/d3util');
 import vis = require('../caleydo_core/vis');
 import vector = require('../caleydo_core/vector');
 
-export class Axis extends vis.AVisInstance {
+export class Axis extends vis.AVisInstance implements vis.IVisInstance {
   private options = {
     shift: 10,
     tickSize: 2,
     orient: 'left',
-    r: 2
+    r: 2,
+    scale: [1, 1],
+    rotate: 0
   };
 
-  private $node: d3.Selection<Axis>;
-  private $axis: d3.Selection<any>;
-  private $points: d3.Selection<any>;
-  private scale: d3.scale.Linear;
+  private $node:d3.Selection<Axis>;
+  private $axis:d3.Selection<any>;
+  private $points:d3.Selection<any>;
+  private scale:d3.scale.Linear<number, number>;
+  private axis:d3.svg.Axis;
 
-  constructor(public data: vector.IVector, parent: Element, options: any = {}) {
+  constructor(public data:vector.IVector, parent:Element, options:any = {}) {
+    super();
     C.mixin(this.options, options);
 
     this.$node = this.build(d3.select(parent));
     this.$node.datum(this);
   }
 
-  get rawSize() {
+  get rawSize():[number, number] {
     return [50, 300];
   }
 
@@ -41,7 +45,7 @@ export class Axis extends vis.AVisInstance {
     return <Element>this.$node.node();
   }
 
-  private build($parent: d3.Selection<any>) {
+  private build($parent:d3.Selection<any>) {
     const o = this.options,
       size = this.size,
       data = this.data;
@@ -54,29 +58,29 @@ export class Axis extends vis.AVisInstance {
     const $root = $svg.append('g');
     const $axis = this.$axis = $root.append('g').attr('class', 'makeover');
     const $points = this.$points = $root.append('g');
-    const s = this.scale = d3.scale.linear().domain(data.desc.value.range).range([o.shift, ((o.orient === 'left' || o.orient === 'right') ? size[1] : size[0]) - o.shift]).clamp(true);
+    const s = this.scale = d3.scale.linear().domain((<any>data.desc).value.range).range([o.shift, ((o.orient === 'left' || o.orient === 'right') ? size[1] : size[0]) - o.shift]).clamp(true);
     const axis = this.axis = d3.svg.axis()
       .tickSize(o.tickSize)
       .orient(o.orient)
       .scale(s);
 
     switch (o.orient) {
-    case 'left':
-      $points.attr('transform', 'translate(' + (size[0] - o.shift) + ',0)');
-      $axis.attr('transform', 'translate(' + (size[0] - o.shift) + ',0)');
-      break;
-    case 'right':
-      $points.attr('transform', 'translate(' + o.shift + ',0)');
-      $axis.attr('transform', 'translate(' + o.shift + ',0)');
-      break;
-    case 'top':
-      $points.attr('transform', 'translate(0, ' + o.shift + ')');
-      $axis.attr('transform', 'translate(0,' + o.shift + ')');
-      break;
-    case 'bottom':
-      $points.attr('transform', 'translate(0, ' + (size[1] - o.shift) + ')');
-      $axis.attr('transform', 'translate(0,' + (size[1] - o.shift) + ')');
-      break;
+      case 'left':
+        $points.attr('transform', 'translate(' + (size[0] - o.shift) + ',0)');
+        $axis.attr('transform', 'translate(' + (size[0] - o.shift) + ',0)');
+        break;
+      case 'right':
+        $points.attr('transform', 'translate(' + o.shift + ',0)');
+        $axis.attr('transform', 'translate(' + o.shift + ',0)');
+        break;
+      case 'top':
+        $points.attr('transform', 'translate(0, ' + o.shift + ')');
+        $axis.attr('transform', 'translate(0,' + o.shift + ')');
+        break;
+      case 'bottom':
+        $points.attr('transform', 'translate(0, ' + (size[1] - o.shift) + ')');
+        $axis.attr('transform', 'translate(0,' + (size[1] - o.shift) + ')');
+        break;
     }
     $axis.call(axis);
 
@@ -105,7 +109,7 @@ export class Axis extends vis.AVisInstance {
     });
   }
 
-  transform(scale, rotate) {
+  transform(scale?:number[], rotate?:number):vis.ITransform {
     var bak = {
       scale: this.options.scale || [1, 1],
       rotate: this.options.rotate || 0

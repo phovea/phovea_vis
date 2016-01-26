@@ -14,37 +14,42 @@ import vector = require('../caleydo_core/vector');
 import idtypes = require('../caleydo_core/idtype');
 import geom = require('../caleydo_core/geom');
 
-export class BarPlot extends vis.AVisInstance {
+export class BarPlot extends vis.AVisInstance implements vis.IVisInstance {
   private options = {
     cssClass: '',
     width: 100,
     heighti: 10,
     min: 0,
-    max: NaN
+    max: NaN,
+    scale: [1, 1],
+    rotate: 0
   };
 
-  private $node: d3.Selection<Axis>;
+  private $node:d3.Selection<BarPlot>;
 
-  private xscale : d3.scale.Linear;
-  private yscale : d3.scale.Linear;
+  private xscale:d3.scale.Linear<number, number>;
+  private yscale:d3.scale.Linear<number, number>;
 
-  constructor(public data: vector.IVector, parent: Element, options: any = {}) {
+  constructor(public data:vector.IVector, parent:Element, options:any = {}) {
+    super();
     C.mixin(this.options, options);
 
     this.$node = this.build(d3.select(parent));
     this.$node.datum(this);
   }
 
-  get rawSize() {
-    return [this.options.width, data.dim[0] * this.options.heighti];
+  get rawSize():[number, number] {
+    return [this.options.width, this.data.dim[0] * this.options.heighti];
   }
 
   get node() {
     return <Element>this.$node.node();
   }
 
-  private build($parent: d3.Selection<any>) {
-    const o = this.options;
+  private build($parent:d3.Selection<any>) {
+    const o = this.options,
+      size = this.size,
+      data = this.data;
     const $svg = $parent.append('svg').attr({
       width: size[0],
       height: size[1],
@@ -72,7 +77,7 @@ export class BarPlot extends vis.AVisInstance {
       }
     };
     data.on('select', l);
-    C.onDOMNodeRemoved($svg.node(), () => data.off('select', l) );
+    C.onDOMNodeRemoved(<Element>$svg.node(), () => data.off('select', l));
 
     data.data().then((_data) => {
       yscale.domain([0, data.length]);
@@ -91,7 +96,7 @@ export class BarPlot extends vis.AVisInstance {
       $m.enter().append('rect')
         .on('click', onClick);
       $m.attr({
-        y:  (d, i) => yscale(i),
+        y: (d, i) => yscale(i),
         height: (d) => yscale(1),
         width: xscale
       });
@@ -103,17 +108,18 @@ export class BarPlot extends vis.AVisInstance {
   }
 
   locateImpl(range) {
+    const o = this.options;
     var ex_i = d3.extent(range.dim(0).iter().asList());
 
-      return this.data.data(range).then((data) => {
-        var ex_v = d3.extent(data);
-        return geom.rect(
-          that.xscale(ex_v[0]) / 100.0 * o.width,
-          ex_i[0] * o.heighti,
-          that.xscale(ex_v[1]) / 100.0 * o.width,
-          (ex_i[1] + 1) * o.heighti
-        );
-      });
+    return this.data.data(range).then((data) => {
+      var ex_v = d3.extent(data);
+      return geom.rect(
+        this.xscale(ex_v[0]) / 100.0 * o.width,
+        ex_i[0] * o.heighti,
+        this.xscale(ex_v[1]) / 100.0 * o.width,
+        (ex_i[1] + 1) * o.heighti
+      );
+    });
   }
 }
 

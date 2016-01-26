@@ -9,3 +9,6 @@
 kaplanmeier.js
 heatmap.js
 table.js
+axis.js
+barplot.js
+box.js

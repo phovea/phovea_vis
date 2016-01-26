@@ -9,7 +9,8 @@
 import C = require('../caleydo_core/main');
 import d3 = require('d3');
 import vis = require('../caleydo_core/vis');
-import table = require('../caleydo_core/table');
+import tooltip = require('../caleydo_tooltip/main');
+import matrix = require('../caleydo_core/matrix');
 
 export class ScatterPlot extends vis.AVisInstance implements vis.IVisInstance {
   private options = {
@@ -17,9 +18,9 @@ export class ScatterPlot extends vis.AVisInstance implements vis.IVisInstance {
     rotate: 0
   };
 
-  private $node:d3.Selection<Axis>;
+  private $node:d3.Selection<ScatterPlot>;
 
-  constructor(public data:table.ITable, parent:Element, options:any = {}) {
+  constructor(public data:matrix.IMatrix, parent:Element, options:any = {}) {
     super();
     C.mixin(this.options, options);
 
@@ -52,13 +53,13 @@ export class ScatterPlot extends vis.AVisInstance implements vis.IVisInstance {
     var that = this;
 
     // bind data to chart
-    Promise.all([data.data(), data.rows()]).then((promise) => {
+    Promise.all<any[]>([data.data(), data.rows()]).then((promise) => {
       var arr : any[] = promise[0];
       var rowNames : string[] = promise[1];
 
       // create scales
       var x = d3.scale.linear().domain([0, d3.max(arr, (d) => d[xcol])]).range([0, width]),
-        y = d3.scale.linear().domain([0, d3.max((d) => d[ycol])]).range([height, 0]);
+        y = d3.scale.linear().domain([0, d3.max(arr, (d) => d[ycol])]).range([height, 0]);
 
       svg.selectAll('circle')
         .data(arr)
@@ -74,7 +75,7 @@ export class ScatterPlot extends vis.AVisInstance implements vis.IVisInstance {
 
         // create scales
         var x = d3.scale.linear().domain([0, d3.max(arr, (d) => d[xcol])]).range([0, width]),
-          y = d3.scale.linear().domain([0, d3.max((d) => d[ycol])]).range([height, 0]);
+          y = d3.scale.linear().domain([0, d3.max(arr, (d) => d[ycol])]).range([height, 0]);
 
         svg.selectAll('circle')
           .transition()
@@ -124,6 +125,6 @@ export class ScatterPlot extends vis.AVisInstance implements vis.IVisInstance {
   }
 }
 
-export function create(data:vector.IVector, parent:Element, options) {
-  return new Axis(data, parent, options);
+export function create(data:matrix.IMatrix, parent:Element, options) {
+  return new ScatterPlot(data, parent, options);
 }

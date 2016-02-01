@@ -27,16 +27,16 @@ interface IHistData {
   color: string;
 }
 
-function createCategoricalHistData(hist: math.ICatHistogram): IHistData[] {
-  var categories : any[] = hist.categories,
-      cols = hist.colors || d3.scale.category10().range(),
-      total = hist.validCount;
+function createCategoricalHistData(hist:math.ICatHistogram):IHistData[] {
+  var categories:any[] = hist.categories,
+    cols = hist.colors || d3.scale.category10().range(),
+    total = hist.validCount;
   var data = [],
     acc = 0;
   hist.forEach((b, i) => {
     data[i] = {
       v: b,
-      acc : acc,
+      acc: acc,
       ratio: b / total,
       range: hist.range(i),
 
@@ -48,7 +48,7 @@ function createCategoricalHistData(hist: math.ICatHistogram): IHistData[] {
   return data;
 }
 
-function createNumericalHistData(hist: math.IHistogram, range: number[]): IHistData[] {
+function createNumericalHistData(hist:math.IHistogram, range:number[]):IHistData[] {
   var data = [],
     cols = d3.scale.linear<string, string>().domain(range).range(['#111111', '#999999']),
     total = hist.validCount,
@@ -57,7 +57,7 @@ function createNumericalHistData(hist: math.IHistogram, range: number[]): IHistD
   hist.forEach((b, i) => {
     data[i] = {
       v: b,
-      acc : acc,
+      acc: acc,
       ratio: b / total,
       range: hist.range(i),
 
@@ -69,7 +69,7 @@ function createNumericalHistData(hist: math.IHistogram, range: number[]): IHistD
   return data;
 }
 
-function createHistData(hist: math.IHistogram, desc: datatypes.IDataDescription, data: datatypes.IDataType) {
+function createHistData(hist:math.IHistogram, desc:datatypes.IDataDescription, data:datatypes.IDataType) {
   if (desc.type === 'stratification') {
     return createCategoricalHistData(<math.ICatHistogram>hist);
   }
@@ -81,7 +81,7 @@ function createHistData(hist: math.IHistogram, desc: datatypes.IDataDescription,
 
 function resolveHistMax(hist, totalHeight) {
   var op = d3.functor(totalHeight);
-  return Promise.resolve(op(hist)).then(function(r) {
+  return Promise.resolve(op(hist)).then(function (r) {
     if (r === true) {
       return hist.validCount;
     }
@@ -93,7 +93,7 @@ function resolveHistMax(hist, totalHeight) {
 }
 
 export interface IHistable extends datatypes.IDataType {
-  hist(nbins? : number): Promise<math.IHistogram>;
+  hist(nbins?:number): Promise<math.IHistogram>;
   length: number;
 }
 
@@ -111,14 +111,14 @@ export class Histogram extends vis.AVisInstance implements vis.IVisInstance {
   private xscale:d3.scale.Ordinal<number, number>;
   private yscale:d3.scale.Linear<number, number>;
 
-  private hist: math.IHistogram;
-  private hist_data: IHistData[];
+  private hist:math.IHistogram;
+  private hist_data:IHistData[];
 
-  constructor(public data: IHistable, parent:Element, options:any = {}) {
+  constructor(public data:IHistable, parent:Element, options:any = {}) {
     super();
     C.mixin(this.options, {
       nbins: Math.floor(Math.sqrt(data.length)),
-    },options);
+    }, options);
 
     this.$node = this.build(d3.select(parent));
     this.$node.datum(this);
@@ -150,7 +150,7 @@ export class Histogram extends vis.AVisInstance implements vis.IVisInstance {
     const xscale = this.xscale = d3.scale.ordinal<number,number>().rangeBands([0, size[0]], 0.1);
     const yscale = this.yscale = d3.scale.linear().range([0, size[1]]);
 
-    const l = (event: any, type: string, selected: ranges.Range) => {
+    const l = (event:any, type:string, selected:ranges.Range) => {
       if (!this.hist_data) {
         return;
       }
@@ -173,8 +173,8 @@ export class Histogram extends vis.AVisInstance implements vis.IVisInstance {
         height: 0
       });
       $m.transition().duration(o.duration).attr('height', function (d) {
-          return yscale(d.v);
-        });
+        return yscale(d.v);
+      });
       $m.exit().remove();
     };
     data.on('select', l);
@@ -195,11 +195,11 @@ export class Histogram extends vis.AVisInstance implements vis.IVisInstance {
 
       var $m = $data.selectAll('rect').data(hist_data);
       $m.enter().append('rect')
-          .attr('width', xscale.rangeBand())
-          .call(tooltip.bind<IHistData>((d) => {
-            return d.name + ' ' + (d.v) + ' entries (' + Math.round(d.ratio * 100) + '%)';
-          }))
-          .on('click', onClick);
+        .attr('width', xscale.rangeBand())
+        .call(tooltip.bind<IHistData>((d) => {
+          return d.name + ' ' + (d.v) + ' entries (' + Math.round(d.ratio * 100) + '%)';
+        }))
+        .on('click', onClick);
       $m.attr({
         x: (d, i) => xscale(i),
         fill: (d) => d.color,
@@ -234,6 +234,31 @@ export class Histogram extends vis.AVisInstance implements vis.IVisInstance {
       });
     });
   }
+
+  transform(scale?:number[], rotate?:number):vis.ITransform {
+    const bak = {
+      scale: this.options.scale || [1, 1],
+      rotate: this.options.rotate || 0
+    };
+    if (arguments.length === 0) {
+      return bak;
+    }
+    var size = this.rawSize;
+    this.$node.attr({
+      width: size[0] * scale[0],
+      height: size[1] * scale[1]
+    }).style('transform', 'rotate(' + rotate + 'deg)');
+    this.$node.select('g').attr('transform', 'scale(' + scale[0] + ',' + scale[1] + ')');
+
+    var new_ = {
+      scale: scale,
+      rotate: rotate
+    };
+    this.fire('transform', new_, bak);
+    this.options.scale = scale;
+    this.options.rotate = rotate;
+    return new_;
+  }
 }
 
 export class Mosaic extends vis.AVisInstance implements vis.IVisInstance {
@@ -249,16 +274,16 @@ export class Mosaic extends vis.AVisInstance implements vis.IVisInstance {
 
   private $node:d3.Selection<Mosaic>;
 
-  private hist: math.IHistogram;
-  private hist_data: IHistData[];
+  private hist:math.IHistogram;
+  private hist_data:IHistData[];
 
-  constructor(public data: IHistable, parent:Element, options:any = {}) {
+  constructor(public data:IHistable, parent:Element, options:any = {}) {
     super();
     C.mixin(this.options, {
       scale: [1, this.options.initialScale]
-    },options);
+    }, options);
 
-    if(this.options.heightTo) {
+    if (this.options.heightTo) {
       this.options.scale[1] = this.options.heightTo / this.data.dim[0];
     }
 
@@ -292,7 +317,7 @@ export class Mosaic extends vis.AVisInstance implements vis.IVisInstance {
       if (!this.hist_data) {
         return;
       }
-      var highlights = this.hist_data.map(function (entry, i) {
+      var highlights = this.hist_data.map((entry, i) => {
         var s = entry.range.intersect(selected);
         return {
           i: i,
@@ -320,7 +345,7 @@ export class Mosaic extends vis.AVisInstance implements vis.IVisInstance {
       data.select(0, d.range, idtypes.toSelectOperation(d3.event));
     } : null;
 
-    this.data.hist().then(function (hist) {
+    this.data.hist().then((hist) => {
       this.hist = hist;
       var hist_data = this.hist_data = createHistData(hist, data.desc, data);
 
@@ -369,9 +394,34 @@ export class Mosaic extends vis.AVisInstance implements vis.IVisInstance {
       });
     });
   }
+
+  transform(scale?:number[], rotate?:number):vis.ITransform {
+    const bak = {
+      scale: this.options.scale || [1, 1],
+      rotate: this.options.rotate || 0
+    };
+    if (arguments.length === 0) {
+      return bak;
+    }
+    var size = this.rawSize;
+    this.$node.attr({
+      width: size[0] * scale[0],
+      height: size[1] * scale[1]
+    }).style('transform', 'rotate(' + rotate + 'deg)');
+    this.$node.select('g').attr('transform', 'scale(' + scale[0] + ',' + scale[1] + ')');
+
+    var new_ = {
+      scale: scale,
+      rotate: rotate
+    };
+    this.fire('transform', new_, bak);
+    this.options.scale = scale;
+    this.options.rotate = rotate;
+    return new_;
+  }
 }
 
-function toPolygon(start: number, end: number, radius: number) {
+function toPolygon(start:number, end:number, radius:number) {
   var r = [
     geom.vec2(radius, radius),
     geom.vec2(radius + Math.cos(start) * radius, radius + Math.sin(start) * radius),
@@ -412,12 +462,12 @@ export class Pie extends vis.AVisInstance implements vis.IVisInstance {
   private $node:d3.Selection<Mosaic>;
 
   private scale:d3.scale.Linear<number, number>;
-  private arc: d3.svg.Arc<IRadialHistHelper>;
+  private arc:d3.svg.Arc<IRadialHistHelper>;
 
-  private hist: math.ICatHistogram;
-  private hist_data: IRadialHistData[];
+  private hist:math.ICatHistogram;
+  private hist_data:IRadialHistData[];
 
-  constructor(public data: IHistable, parent:Element, options:any = {}) {
+  constructor(public data:IHistable, parent:Element, options:any = {}) {
     super();
     C.mixin(this.options, options);
 
@@ -480,7 +530,7 @@ export class Pie extends vis.AVisInstance implements vis.IVisInstance {
     }).then((total) => {
       var hist = this.hist;
       scale.domain([0, total]);
-      var hist_data = this.hist_data = [], prev = 0, cats : any[] = hist.categories;
+      var hist_data = this.hist_data = [], prev = 0, cats:any[] = hist.categories;
 
       var cols = hist.colors || d3.scale.category10().range();
       hist.forEach(function (b, i) {
@@ -502,12 +552,12 @@ export class Pie extends vis.AVisInstance implements vis.IVisInstance {
         .on('click', (d) => data.select(0, d.range, idtypes.toSelectOperation(d3.event)));
       $m.attr('d', arc)
         .attr('fill', (d) => d.color)
-        .style('opacity',0);
+        .style('opacity', 0);
       //fade in animation
       $m.transition()
         .duration(o.duration)
-        .delay((d,i) => i * o.duration)
-        .style('opacity',1);
+        .delay((d, i) => i * o.duration)
+        .style('opacity', 1);
 
       this.markReady();
       data.selections().then((selected) => l(null, 'selected', selected));
@@ -530,7 +580,7 @@ export class Pie extends vis.AVisInstance implements vis.IVisInstance {
     });
   }
 
-  transform (scale?: number[], rotate?: number): vis.ITransform {
+  transform(scale?:number[], rotate?:number):vis.ITransform {
     var bak = {
       scale: this.options.scale || [1, 1],
       rotate: this.options.rotate || 0
@@ -569,12 +619,12 @@ export class Pie extends vis.AVisInstance implements vis.IVisInstance {
   //}
 }
 
-export function createHistogram(data: IHistable, parent: Element, options?) {
+export function create(data:IHistable, parent:Element, options?) {
   return new Histogram(data, parent, options);
 }
-export function createMosaic(data: IHistable, parent: Element, options?) {
+export function createMosaic(data:IHistable, parent:Element, options?) {
   return new Mosaic(data, parent, options);
 }
-export function createPie(data: IHistable, parent: Element, options?) {
+export function createPie(data:IHistable, parent:Element, options?) {
   return new Pie(data, parent, options);
 }

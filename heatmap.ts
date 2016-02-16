@@ -114,7 +114,7 @@ class HeatMapDOMRenderer implements IHeatMapRenderer {
         });
         if (that.selectAble) {
           $cols_enter.on('click', (d, j) => {
-            data.selectProduct([[i,j]], idtypes.toSelectOperation(d3.event));
+            data.selectProduct([ranges.cell(i,j)], idtypes.toSelectOperation(d3.event));
           });
         }
         $cols_enter.append('title').text(String);
@@ -129,7 +129,7 @@ class HeatMapDOMRenderer implements IHeatMapRenderer {
       }
       selected.forEach((cell) => {
         cell.product((indices) => {
-          $g.selectAll(`g:nth-child(${indices[0] + 1}) rect:nth-child(${indices[1] + 1})`).classed('select-' + type, true);
+          $g.select(`g:nth-child(${indices[0] + 1})`).select(`rect:nth-child(${indices[1] + 1})`).classed('select-' + type, true);
         });
       });
     };
@@ -218,7 +218,7 @@ class AHeatMapCanvasRenderer {
 
     $selection.on('click', () => {
       var ij = toCoord(d3.event);
-      data.selectProduct([ij], idtypes.toSelectOperation(d3.event));
+      data.selectProduct([ranges.cell(...ij)], idtypes.toSelectOperation(d3.event));
     });
 
     var l = (event, type, selected) => {

@@ -114,10 +114,7 @@ class HeatMapDOMRenderer implements IHeatMapRenderer {
         });
         if (that.selectAble) {
           $cols_enter.on('click', (d, j) => {
-            data.select([
-              [i],
-              [j]
-            ], idtypes.toSelectOperation(d3.event));
+            data.selectProduct([[i,j]], idtypes.toSelectOperation(d3.event));
           });
         }
         $cols_enter.append('title').text(String);
@@ -125,38 +122,24 @@ class HeatMapDOMRenderer implements IHeatMapRenderer {
       });
       onReady();
     });
-    var l = function (event, type, selected: ranges.Range) {
+    var l = function (event, type, selected: ranges.Range[]) {
       $g.selectAll('rect').classed('select-' + type, false);
-      if (selected.isNone) {
+      if (selected.length === 0) {
         return;
       }
-      var dim0 = selected.dim(0), dim1 = selected.dim(1);
-      if (selected.isAll) {
-        $g.selectAll('rect').classed('select-' + type, true);
-      } else if (dim0.isAll || dim0.isNone) {
-        dim1.forEach((j) => {
-          $g.selectAll('g > rect:nth-child(' + (j + 1) + ')').classed('select-' + type, true);
+      selected.forEach((cell) => {
+        cell.product((indices) => {
+          $g.selectAll(`g:nth-child(${indices[0] + 1}) rect:nth-child(${indices[1] + 1})`).classed('select-' + type, true);
         });
-      } else if (dim1.isAll || dim1.isNone) {
-        dim0.forEach((i) => {
-          $g.selectAll('g:nth-child(' + (i + 1) + ') > rect').classed('select-' + type, true);
-        });
-      } else {
-        dim0.forEach((i) => {
-          var row = $g.select('g:nth-child(' + (i + 1) + ')');
-          dim1.forEach((j) => {
-            row.select('rect:nth-child(' + (j + 1) + ')').classed('select-' + type, true);
-          });
-        });
-      }
+      });
     };
     if (this.selectAble) {
-      data.on('select', l);
+      data.on('selectProduct', l);
       C.onDOMNodeRemoved(<Element>$g.node(), function () {
-        data.off('select', l);
+        data.off('selectProduct', l);
       });
-      data.selections().then(function (selected) {
-        l(null, 'selected', selected);
+      data.productSelections().then(function (selected) {
+        l(null, idtypes.defaultSelectionType, selected);
       });
     }
 
@@ -177,45 +160,35 @@ class AHeatMapCanvasRenderer {
       height: dim[0] * scale[1]
     });
     if (this.selectAble) {
-      $node.datum().selections().then((selected) => {
+      $node.datum().productSelections().then((selected) => {
         this.redrawSelection(<HTMLCanvasElement>$node.select('canvas.heatmap-selection').node(), dim,
-          'selected', selected);
+          idtypes.defaultSelectionType, selected);
       });
     }
   }
 
-  protected redrawSelection(canvas: HTMLCanvasElement, dim: number[], type: string, selected: ranges.Range) {
+  protected redrawSelection(canvas: HTMLCanvasElement, dim: number[], type: string, selected: ranges.Range[]) {
     var ctx = <CanvasRenderingContext2D>canvas.getContext('2d');
     ctx.save();
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     ctx.fillStyle = 'orange';
-    if (selected.isNone) {
+    if (selected.length === 0) {
       ctx.restore();
       return;
     }
-    if (selected.isAll) {
+    if (selected.some((a) => a.isAll)) {
       ctx.fillRect(0,0, canvas.width, canvas.height);
       ctx.restore();
       return;
     }
-    var dim0 = selected.dim(0), dim1 = selected.dim(1);
-    ctx.scale(canvas.width / dim[1], canvas.height / dim[0]);
 
-    if (dim0.isAll || dim0.isNone) {
-      dim1.forEach((j) => { //column
-        ctx.fillRect(j, 0, 1, dim[0]);
+    ctx.scale(canvas.width / dim[1], canvas.height / dim[0]);
+    selected.forEach((cell) => {
+      cell.product((indices) => {
+        const [i,j] = indices;
+        ctx.fillRect(j,i, 1, 1);
       });
-    } else if (dim1.isAll || dim1.isNone) {
-      dim0.forEach((i) => { //rows
-        ctx.fillRect(0, i, dim[1], 1);
-      });
-    } else {
-      dim0.forEach((i) => {
-        dim1.forEach((j) => {
-          ctx.fillRect(j,i, 1, 1);
-        });
-      });
-    }
+    });
     ctx.restore();
 
   }
@@ -233,7 +206,7 @@ class AHeatMapCanvasRenderer {
       'class': 'heatmap-selection'
     });
 
-    var toCoord = (evt) => {
+    var toCoord = (evt) : [number,number] => {
       var c = <HTMLCanvasElement>$selection.node(),
         rect = c.getBoundingClientRect();
       var x = evt.clientX - rect.left,
@@ -245,18 +218,18 @@ class AHeatMapCanvasRenderer {
 
     $selection.on('click', () => {
       var ij = toCoord(d3.event);
-      data.select([[ij[0]], [ij[1]]], idtypes.toSelectOperation(d3.event));
+      data.selectProduct([ij], idtypes.toSelectOperation(d3.event));
     });
 
     var l = (event, type, selected) => {
       this.redrawSelection(<HTMLCanvasElement>$selection.node(), dims, type, selected);
     };
 
-    data.on('select', l);
+    data.on('selectProduct', l);
     C.onDOMNodeRemoved(<Element>$selection.node(), () => {
-      data.off('select', l);
+      data.off('selectProduct', l);
     });
-    data.selections().then((selected) => {
+    data.productSelections().then((selected) => {
       this.redrawSelection(<HTMLCanvasElement>$selection.node(), dims, 'selected', selected);
     });
   }

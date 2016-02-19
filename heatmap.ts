@@ -130,7 +130,7 @@ class HeatMapDOMRenderer implements IHeatMapRenderer {
       selected.forEach((cell) => {
         cell.product((indices) => {
           $g.select(`g:nth-child(${indices[0] + 1})`).select(`rect:nth-child(${indices[1] + 1})`).classed('select-' + type, true);
-        });
+        }, data.dim);
       });
     };
     if (this.selectAble) {
@@ -187,7 +187,7 @@ class AHeatMapCanvasRenderer {
       cell.product((indices) => {
         const [i,j] = indices;
         ctx.fillRect(j,i, 1, 1);
-      });
+      }, dim);
     });
     ctx.restore();
 
@@ -578,6 +578,10 @@ export class HeatMap extends vis.AVisInstance implements vis.IVisInstance {
       this.markReady();
     });
   }
+
+  update() {
+    this.renderer.redraw(this.$node, this.options.scale);
+  }
 }
 
 
@@ -707,6 +711,7 @@ export class HeatMap1D extends vis.AVisInstance implements vis.IVisInstance {
     });
     return $svg;
   }
+
 }
 
 export function create(data:vector.IVector, parent:Element, options);

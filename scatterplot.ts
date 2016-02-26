@@ -9,7 +9,7 @@
 import C = require('../caleydo_core/main');
 import d3 = require('d3');
 import vis = require('../caleydo_core/vis');
-import tooltip = require('../caleydo_tooltip/main');
+import tooltip = require('../caleydo_d3/tooltip');
 import matrix = require('../caleydo_core/matrix');
 
 export class ScatterPlot extends vis.AVisInstance implements vis.IVisInstance {

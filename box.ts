@@ -13,7 +13,7 @@ import vis = require('../caleydo_core/vis');
 import vector = require('../caleydo_core/vector');
 import ranges = require('../caleydo_core/range');
 import geom = require('../caleydo_core/geom');
-import tooltip = require('../caleydo_tooltip/main');
+import tooltip = require('../caleydo_d3/tooltip');
 
 function createText(stats) {
   var r = '<table><tbody>';

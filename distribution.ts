@@ -15,7 +15,7 @@ import idtypes = require('../caleydo_core/idtype');
 import datatypes = require('../caleydo_core/datatype');
 import ranges = require('../caleydo_core/range');
 import geom = require('../caleydo_core/geom');
-import tooltip = require('../caleydo_tooltip/main');
+import tooltip = require('../caleydo_d3/tooltip');
 
 
 interface IHistData {

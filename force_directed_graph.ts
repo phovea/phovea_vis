@@ -99,7 +99,7 @@ export class ForceDirectedGraphVis extends vis.AVisInstance implements vis.IVisI
     var $svg = $parent.append('svg').attr({
       width: size[0],
       height: size[1],
-      'class': 'graph-force'
+      'class': 'caleydo-graph-force'
     });
     var $root = $svg.append('g').attr('transform','scale('+scaleFactor[0]+','+scaleFactor[1]+')');
 

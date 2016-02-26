@@ -140,7 +140,7 @@ export class Histogram extends vis.AVisInstance implements vis.IVisInstance {
     const $svg = $parent.append('svg').attr({
       width: size[0],
       height: size[1],
-      'class': 'histogram'
+      'class': 'caleydo-histogram'
     });
     const $t = $svg.append('g');
     const $data = $t.append('g');
@@ -307,7 +307,7 @@ export class Mosaic extends vis.AVisInstance implements vis.IVisInstance {
     const $svg = $parent.append('svg').attr({
       width: size[0],
       height: size[1],
-      'class': 'mosaic'
+      'class': 'caleydo-mosaic'
     });
     const $scale = $svg.append('g').attr('transform', 'scale(' + o.scale[0] + ',' + o.scale[1] + ')');
     const $data = $scale.append('g');
@@ -492,7 +492,7 @@ export class Pie extends vis.AVisInstance implements vis.IVisInstance {
     const $svg = $parent.append('svg').attr({
       width: size[0],
       height: size[1],
-      'class': 'pie'
+      'class': 'caleydo-pie'
     });
     var $base = $svg.append('g').attr('transform', 'translate(' + o.radius + ',' + o.radius + ')');
     var $data = $base.append('g');

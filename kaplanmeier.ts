@@ -78,7 +78,7 @@ export class KaplanMeierPlot extends vis.AVisInstance implements vis.IVisInstanc
     const $svg = $parent.append('svg').attr({
       width: width * scale[0],
       height: height * scale[1],
-      'class': 'kaplanmeier'
+      'class': 'caleydo-kaplanmeier'
     });
 
     const $g = $svg.append('g');

@@ -53,7 +53,7 @@ export class Axis extends vis.AVisInstance implements vis.IVisInstance {
     const $svg = $parent.append('svg').attr({
       width: size[0],
       height: size[1],
-      'class': 'axis'
+      'class': 'caleydo-axis'
     });
     const $root = $svg.append('g');
     const $axis = this.$axis = $root.append('g').attr('class', 'makeover');

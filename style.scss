@@ -1,4 +1,4 @@
-.axis {
+.caleydo-axis {
   .makeover {
     -webkit-user-select: none;
     -khtml-user-select: none;
@@ -19,14 +19,14 @@
   }
 }
 
-.barplot {
+.caleydo-barplot {
   rect {
     stroke: white;
     fill: black;
   }
 }
 
-.box {
+.caleydo-box {
   path.axis {
     stroke: darkgrey;
   }
@@ -41,13 +41,13 @@
   }
 }
 
-div.heatmap {
+div.caleydo-heatmap {
   position: relative;
   line-height: 0;
 
   canvas {
 
-    &.heatmap-selection {
+    &.caleydo-heatmap-selection {
       position: absolute;
       top: 0;
       left: 0;
@@ -57,7 +57,7 @@ div.heatmap {
 }
 
 
-.scatterplot {
+.caleydo-scatterplot {
   circle {
     fill-opacity: .7;
   }
@@ -73,19 +73,19 @@ div.heatmap {
   }
 }
 
-.table {
+.caleydo-table {
   font-size: smaller;
   border-collapse: collapse;
 }
 
-.kaplanmeier {
+.caleydo-kaplanmeier {
   path {
     fill: none;
     stroke: black;
   }
 }
 
-.graph-force {
+.caleydo-graph-force {
   .node {
     opacity: 0.5;
   }

@@ -53,7 +53,7 @@ export class BarPlot extends vis.AVisInstance implements vis.IVisInstance {
     const $svg = $parent.append('svg').attr({
       width: size[0],
       height: size[1],
-      'class': 'barplot ' + o.cssClass
+      'class': 'caleydo-barplot ' + o.cssClass
     });
 
     //using range bands with an ordinal scale for uniform distribution

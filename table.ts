@@ -81,7 +81,7 @@ export class Table extends vis.AVisInstance implements vis.IVisInstance {
   }
 
   private build($parent:d3.Selection<any>, promises:any[]) {
-    var $table = $parent.append('table').attr('class', 'table');
+    var $table = $parent.append('table').attr('class', 'caleydo-table');
     $table.append('thead').append('tr');
     $table.append('tbody');
     var onClick = utils.selectionUtil(this.data, $table.select('tbody'), 'tr');

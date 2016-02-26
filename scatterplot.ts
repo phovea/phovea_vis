@@ -47,7 +47,8 @@ export class ScatterPlot extends vis.AVisInstance implements vis.IVisInstance {
 
     const svg = $parent.append('svg').attr({
       width: width,
-      height: height
+      height: height,
+      class: 'caleydo-scatterplot'
     });
 
     var that = this;

@@ -96,7 +96,7 @@ class HeatMapDOMRenderer implements IHeatMapRenderer {
     var $svg = $parent.append('svg').attr({
       width: width * scale[0],
       height: height * scale[1],
-      'class': 'heatmap'
+      'class': 'caleydo-heatmap'
     });
     var $g = $svg.append('g').attr('transform','scale('+scale[0]+','+scale[1]+')');
     this.color = c;
@@ -155,13 +155,13 @@ class AHeatMapCanvasRenderer {
   }
 
   rescale($node: d3.Selection<any>, dim: number[], scale: number[]) {
-    $node.selectAll('canvas.heatmap-selection').attr({
+    $node.selectAll('canvas.caleydo-heatmap-selection').attr({
       width: dim[1] * scale[0],
       height: dim[0] * scale[1]
     });
     if (this.selectAble) {
       $node.datum().productSelections().then((selected) => {
-        this.redrawSelection(<HTMLCanvasElement>$node.select('canvas.heatmap-selection').node(), dim,
+        this.redrawSelection(<HTMLCanvasElement>$node.select('canvas.caleydo-heatmap-selection').node(), dim,
           idtypes.defaultSelectionType, selected);
       });
     }
@@ -203,7 +203,7 @@ class AHeatMapCanvasRenderer {
     const $selection = $root.append('canvas').attr({
       width: width * scale[0],
       height: height * scale[1],
-      'class': 'heatmap-selection'
+      'class': 'caleydo-heatmap-selection'
     });
 
     var toCoord = (evt) : [number,number] => {
@@ -316,11 +316,11 @@ class HeatMapCanvasRenderer extends AHeatMapCanvasRenderer implements IHeatMapRe
     var dims = data.dim;
     var width = dims[1], height = dims[0];
 
-    var $root = $parent.append('div').attr('class','heatmap');
+    var $root = $parent.append('div').attr('class','caleydo-heatmap');
     var $canvas = $root.append('canvas').attr({
       width: width * scale[0],
       height: height * scale[1],
-      'class': 'heatmap-data'
+      'class': 'caleydo-heatmap-data'
     });
 
     this.imageData = (<CanvasRenderingContext2D>(<HTMLCanvasElement>$canvas.node()).getContext('2d')).createImageData(width, height);//new (<any>ImageData)(data.ncol, data.nrow);
@@ -416,11 +416,11 @@ class HeatMapImageRenderer extends AHeatMapCanvasRenderer implements IHeatMapRen
     var dims = data.dim;
     var width = dims[1], height = dims[0];
 
-    var $root = $parent.append('div').attr('class','heatmap');
+    var $root = $parent.append('div').attr('class','caleydo-heatmap');
     $root.append('canvas').attr({
       width: width * scale[0],
       height: height * scale[1],
-      'class': 'heatmap-data'
+      'class': 'caleydo-heatmap-data'
     });
 
     this.image = new Image();
@@ -688,7 +688,7 @@ export class HeatMap1D extends vis.AVisInstance implements vis.IVisInstance {
     var $svg = $parent.append('svg').attr({
       width: width,
       height: height * this.options.initialScale,
-      'class': 'heatmap'
+      'class': 'caleydo-heatmap'
     });
     var $g = $svg.append('g').attr('transform', 'scale(1,' + this.options.initialScale + ')');
 

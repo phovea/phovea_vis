@@ -58,7 +58,7 @@ export class BoxPlot extends vis.AVisInstance implements vis.IVisInstance {
     const $svg = $parent.append('svg').attr({
       width: size[0],
       height: size[1],
-      'class': 'box'
+      'class': 'caleydo-box'
     });
 
     const $t = $svg.append('g');

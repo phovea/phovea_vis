@@ -123,13 +123,13 @@ class HeatMapDOMRenderer implements IHeatMapRenderer {
       onReady();
     });
     var l = function (event, type, selected: ranges.Range[]) {
-      $g.selectAll('rect').classed('select-' + type, false);
+      $g.selectAll('rect').classed('caleydo-select-' + type, false);
       if (selected.length === 0) {
         return;
       }
       selected.forEach((cell) => {
         cell.product((indices) => {
-          $g.select(`g:nth-child(${indices[0] + 1})`).select(`rect:nth-child(${indices[1] + 1})`).classed('select-' + type, true);
+          $g.select(`g:nth-child(${indices[0] + 1})`).select(`rect:nth-child(${indices[1] + 1})`).classed('caleydo-select-' + type, true);
         }, data.dim);
       });
     };

@@ -65,15 +65,15 @@ export class BarPlot extends vis.AVisInstance implements vis.IVisInstance {
     };
 
     const l = function (event, type, selected) {
-      $svg.selectAll('rect').classed('select-' + type, false);
+      $svg.selectAll('rect').classed('caleydo-select-' + type, false);
       if (selected.isNone) {
         return;
       }
       var dim0 = selected.dim(0);
       if (selected.isAll) {
-        $svg.selectAll('rect').classed('select-' + type, true);
+        $svg.selectAll('rect').classed('caleydo-select-' + type, true);
       } else {
-        dim0.forEach((j) => $svg.selectAll('rect:nth-child(' + (j + 1) + ')').classed('select-' + type, true));
+        dim0.forEach((j) => $svg.selectAll('rect:nth-child(' + (j + 1) + ')').classed('caleydo-select-' + type, true));
       }
     };
     data.on('select', l);

@@ -144,7 +144,7 @@ export class Histogram extends vis.AVisInstance implements vis.IVisInstance {
     });
     const $t = $svg.append('g');
     const $data = $t.append('g');
-    const $highlight = $t.append('g').style('pointer-events', 'none').classed('select-selected', true);
+    const $highlight = $t.append('g').style('pointer-events', 'none').classed('caleydo-select-selected', true);
 
     //using range bands with an ordinal scale for uniform distribution
     const xscale = this.xscale = d3.scale.ordinal<number,number>().rangeBands([0, size[0]], 0.1);
@@ -311,7 +311,7 @@ export class Mosaic extends vis.AVisInstance implements vis.IVisInstance {
     });
     const $scale = $svg.append('g').attr('transform', 'scale(' + o.scale[0] + ',' + o.scale[1] + ')');
     const $data = $scale.append('g');
-    const $highlight = $scale.append('g').style('pointer-events', 'none').classed('select-selected', true);
+    const $highlight = $scale.append('g').style('pointer-events', 'none').classed('caleydo-select-selected', true);
 
     const l = (event:any, type:string, selected:ranges.Range) => {
       if (!this.hist_data) {
@@ -326,7 +326,7 @@ export class Mosaic extends vis.AVisInstance implements vis.IVisInstance {
         };
       }).filter((entry) => entry.v > 0);
       var $m = $highlight.selectAll('rect').data(highlights);
-      $m.enter().append('rect').attr('width', '100%').classed('select-selected', true);
+      $m.enter().append('rect').attr('width', '100%').classed('caleydo-select-selected', true);
       $m.attr({
         y: (d) => d.acc,
         height: (d) => d.v
@@ -496,7 +496,7 @@ export class Pie extends vis.AVisInstance implements vis.IVisInstance {
     });
     var $base = $svg.append('g').attr('transform', 'translate(' + o.radius + ',' + o.radius + ')');
     var $data = $base.append('g');
-    var $highlight = $base.append('g').style('pointer-events', 'none').classed('select-selected', true);
+    var $highlight = $base.append('g').style('pointer-events', 'none').classed('caleydo-select-selected', true);
 
     var scale = this.scale = d3.scale.linear().range([0, 2 * Math.PI]);
     var arc = this.arc = d3.svg.arc<IRadialHistData>().innerRadius(o.innerRadius).outerRadius(o.radius)

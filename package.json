@@ -162,6 +162,17 @@
             "vector",
             "(real|int)"
           ]
+        },
+        {
+          "type": "vis",
+          "name": "Force Directed Graph",
+          "filter": "graph",
+          "icon": "force_directed_graph.svg",
+          "file": "force_directed_graph",
+          "sizeDependsOnDataDimension": [
+            false,
+            false
+          ]
         }
       ]
     },

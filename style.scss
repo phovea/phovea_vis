@@ -84,3 +84,12 @@ div.heatmap {
     stroke: black;
   }
 }
+
+.graph-force {
+  .node {
+    opacity: 0.5;
+  }
+  .edge {
+    stroke: black;
+  }
+}

@@ -271,7 +271,7 @@ class HeatMapCanvasRenderer extends AHeatMapCanvasRenderer implements IHeatMapRe
     }
   }
 
-  private genImage(rgba: number[], arr: number[][], ncol: number, c: IScale) {
+  private genImage(rgba: Uint8ClampedArray|number[], arr: number[][], ncol: number, c: IScale) {
     arr.forEach((row, j) => {
       var t = j * ncol;
       row.forEach((cell, i) => {

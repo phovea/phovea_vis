@@ -1,5 +1,6 @@
 {
   "name": "caleydo_vis",
+  "description": "Utilitiy reposititory containing common visualizations (table, heatmap, scatterplot, axis, pie, distribution, ..)",
   "version": "0.0.1",
   "license" : "SEE LICENSE IN LICENSE",
   "repository": "Caleydo/caleydo_vis",
@@ -10,6 +11,8 @@
     "caleydo_d3": "*"
   },
   "caleydo": {
+    "type": "plugin",
+    "category": "vis",
     "plugins": {
       "web": [
         {

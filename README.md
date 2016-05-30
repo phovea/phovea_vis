@@ -1,11 +1,8 @@
-Caleydo Vis
-===========
+## Caleydo Standard Visualizations ![Caleydo Web Client Plugin](https://img.shields.io/badge/Caleydo%20Web-Client%20Plugin-ff7f00.svg)
 
-Purpose
--------
-This plugins provides a set of standard visualizations for different datatypes. 
+Caleydo Web client plugin providing standard visualization techniques (table, heatmap, scatterplot, axis, pie, distribution, ..).
 
-Including
+### Supported Visualization Techniques
 
 Axis
  * extension id: `axis`
@@ -47,12 +44,13 @@ Histogram
 TODO
  * Mosaic (caleydo-vis-mosaic)
 
+### Installation
 
-Installation
-------------
 ```bash
 ./manage.sh clone Caleydo/bundle_web
 ```
 
+*****
 
-
+<a href="https://caleydo.org"><img src="http://caleydo.org/assets/images/logos/caleydo.svg" align="left" width="200px" hspace="10" vspace="6"></a>
+This plugin is part of **[Caleydo Web](http://caleydo.org/)**, a platform for developing web-based visualization applications. For tutorials, API docs, and more information about the build and deployment process, see the [documentation page](http://caleydo.org/documentation).

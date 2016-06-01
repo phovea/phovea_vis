@@ -92,7 +92,7 @@ export class KaplanMeierPlot extends vis.AVisInstance implements vis.IVisInstanc
 
     this.data.data().then((arr) => {
       //TODO
-      const died = arr.filter((a) => !isNaN(a)).map((a) => Math.abs(a));
+      const died = arr.filter((a) => !isNaN(a) && a !== null).map((a) => Math.abs(a));
       died.sort(d3.ascending);
       //const alive = arr.length - died.length;
 

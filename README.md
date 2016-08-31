@@ -23,57 +23,56 @@ If you want this plugin to be dynamically resolved as part of another applicatio
 }
 ```
 
-Usage
+
+Supported Visualization Techniques
 -------------------
 
-### Supported Visualization Techniques
-
-#### Axis
+### Axis
  * extension id: `axis`
  * module: `axis.ts`
  * accepts: (real|int) vectors
 
-#### Bar Plot
+### Bar Plot
  * extension id: `barplot`
  * module: `barplot.ts`
  * accepts: (real|int) vectors
 
-#### Box Plot
+### Box Plot
  * extension id: `caleydo-vis-box`
  * module: `box.ts`
  * accepts: (real|int) vectors
 
-#### Kaplan Meier Plot 
+### Kaplan Meier Plot 
  * extension id: `caleydo-vis-kaplanmeier`
  * module: `kaplanmeier.ts`
  * accepts: int vectors
 
-#### Table
+### Table
  * extension id: `table`
  * module: `table.ts`
  * accepts: matrices, tables, and vectors
  
-#### Scatterplot
+### Scatterplot
  * extension id: `scatterplot`
  * module: `scatterplot.ts`
  * accepts: matrices
 
-#### Histogram 
+### Histogram 
  * extension id: `caleydo-vis-histogram`
  * module: `distribution.ts`
  * accepts: (categorical|real|int) (vectors|matrix|stratification)
 
-#### Mosaic
+### Mosaic
  * extension id: `caleydo-vis-mosaic`
  * module: `distribution.ts`
  * accepts: (categorical) (vectors|stratification)
 
-#### 2D Heat Map
+### 2D Heat Map
  * extension id: `caleydo-vis-heatmap`
  * module: `heatmap.ts`
  * accepts: (real|int) matrices
  
-#### 1D Heat Map 
+### 1D Heat Map 
  * extension id: `caleydo-vis-heatmap1d`
  * module: `heatmap.ts`
  * accepts: (real|int) vectors

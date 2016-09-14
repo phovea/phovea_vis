@@ -1,3 +1,6 @@
+$select-color: orange;
+$hover-color: #ffc46b;
+
 .caleydo-axis {
   .makeover {
     -webkit-user-select: none;
@@ -76,6 +79,15 @@ div.caleydo-heatmap {
 .caleydo-table {
   font-size: smaller;
   border-collapse: collapse;
+
+  tr {
+    &.caleydo-select-selected {
+      border: 1px solid $select-color;
+    }
+    &.caleydo-select-hovered {
+      border: 1px solid $hover-color;
+    }
+  }
 }
 
 .caleydo-kaplanmeier {
@@ -91,5 +103,27 @@ div.caleydo-heatmap {
   }
   .edge {
     stroke: black;
+  }
+}
+
+
+.caleydo-heatmap {
+  // highlight selection for svg heatmap
+  rect {
+    &.caleydo-select-selected {
+      fill: $select-color;
+    }
+    &.caleydo-select-hovered {
+      fill: $hover-color;
+    }
+  }
+}
+
+.caleydo-histogram {
+  .caleydo-select-selected rect {
+    fill: $select-color;
+  }
+  .caleydo-select-hovered rect {
+    fill: $hover-color;
   }
 }

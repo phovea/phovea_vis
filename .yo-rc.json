@@ -1,0 +1,218 @@
+{
+  "generator-phovea": {
+    "type": "lib",
+    "name": "phovea_vis",
+    "author": "The Caleydo Team",
+    "githubAccount": "phovea",
+    "modules": [
+      "phovea_core",
+      "phovea_d3"
+    ],
+    "extensions": [
+      {
+        "type": "vis",
+        "id": "axis",
+        "module": "axis",
+        "extras": {
+          "name": "Axis",
+          "icon": "axis_icon.svg",
+          "scaling": "height-only",
+          "filter": [
+            "vector",
+            "(real|int)"
+          ],
+          "options": {
+            "tickSize": {
+              "type": "int",
+              "range": [
+                1,
+                null
+              ],
+              "default": 2
+            },
+            "orient": {
+              "type": "categorical",
+              "categories": [
+                "left",
+                "right",
+                "top",
+                "bottom"
+              ],
+              "default": "left"
+            }
+          }
+        }
+      },
+      {
+        "type": "vis",
+        "id": "barplot",
+        "module": "barplot",
+        "extras": {
+          "name": "Bar Plot",
+          "icon": "barplot_icon.png",
+          "sizeDependsOnDataDimension": [
+            false,
+            true
+          ],
+          "filter": [
+            "vector",
+            "(real|int)"
+          ]
+        }
+      },
+      {
+        "type": "vis",
+        "id": "table",
+        "module": "table",
+        "extras": {
+          "name": "Table",
+          "filter": "(matrix|table|vector)",
+          "sizeDependsOnDataDimension": true
+        }
+      },
+      {
+        "type": "vis",
+        "id": "scatterplot",
+        "module": "scatterplot",
+        "extras": {
+          "name": "ScatterPlot",
+          "filter": "matrix"
+        }
+      },
+      {
+        "type": "vis",
+        "id": "caleydo-vis-heatmap",
+        "module": "heatmap",
+        "extras": {
+          "name": "HeatMap",
+          "icon": "heatmap_icon.svg",
+          "sizeDependsOnDataDimension": true,
+          "filter": "matrix"
+        }
+      },
+      {
+        "type": "vis",
+        "id": "caleydo-vis-heatmap1d",
+        "module": "heatmap",
+        "extras": {
+          "name": "HeatMap 1D",
+          "icon": "heatmap_icon.svg",
+          "sizeDependsOnDataDimension": [
+            false,
+            true
+          ],
+          "scaling": "height-only",
+          "filter": "vector"
+        }
+      },
+      {
+        "type": "vis",
+        "id": "caleydo-vis-kaplanmeier",
+        "module": "kaplanmeier",
+        "extras": {
+          "name": "Kaplanmeier Plot",
+          "icon": "kaplanmeier_icon.svg",
+          "sizeDependsOnDataDimension": [
+            false,
+            false
+          ],
+          "scaling": "aspect",
+          "filter": [
+            "vector",
+            "int"
+          ]
+        }
+      },
+      {
+        "type": "vis",
+        "id": "caleydo-vis-histogram",
+        "module": "distribution",
+        "extras": {
+          "name": "Histogram",
+          "icon": "distribution_histogram_icon.png",
+          "filter": [
+            "(vector|matrix|stratification)",
+            "(categorical|real|int)"
+          ]
+        }
+      },
+      {
+        "type": "vis",
+        "id": "caleydo-vis-mosaic",
+        "module": "distribution",
+        "extras": {
+          "name": "Mosaic",
+          "factory": "createMosaic",
+          "icon": "distribution_mosaic_icon.png",
+          "sizeDependsOnDataDimension": [
+            false,
+            true
+          ],
+          "scaling": "height-only",
+          "filter": [
+            "(vector|stratification)",
+            "categorical"
+          ]
+        }
+      },
+      {
+        "type": "vis",
+        "id": "caleydo-vis-pie",
+        "module": "distribution",
+        "extras": {
+          "name": "Pie",
+          "factory": "createPie",
+          "icon": "distribution_pie_icon.png",
+          "scaling": "aspect",
+          "filter": [
+            "(vector|stratification)",
+            "categorical"
+          ]
+        }
+      },
+      {
+        "type": "vis",
+        "id": "caleydo-vis-box",
+        "module": "box",
+        "extras": {
+          "name": "BoxPlot",
+          "icon": "box_icon.png",
+          "scaling": "aspect",
+          "filter": [
+            "vector",
+            "(real|int)"
+          ]
+        }
+      },
+      {
+        "type": "vis",
+        "id": "phovea_vis",
+        "module": "force_directed_graph",
+        "extras": {
+          "name": "Force Directed Graph",
+          "filter": "graph",
+          "icon": "force_directed_graph.svg",
+          "sizeDependsOnDataDimension": [
+            false,
+            false
+          ]
+        }
+      }
+    ],
+    "sextensions": [],
+    "libraries": [
+      "d3"
+    ],
+    "unknown": {
+      "requirements": [],
+      "debianPackages": [],
+      "redhatPackages": []
+    },
+    "libraryAliases": {
+      "d3": "d3/d3"
+    },
+    "entries": "./index.js",
+    "ignores": [],
+    "today": "Thu, 03 Nov 2016 13:55:14 GMT"
+  }
+}

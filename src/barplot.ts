@@ -1,18 +1,18 @@
 /**
  * Created by Samuel Gratzl on 25.01.2016.
  */
-/// <amd-dependency path='css!./style' />
+import './style.scss';
 
 /* global define */
 'use strict';
 
 
-import C = require('../caleydo_core/main');
-import d3 = require('d3');
-import vis = require('../caleydo_core/vis');
-import vector = require('../caleydo_core/vector');
-import idtypes = require('../caleydo_core/idtype');
-import geom = require('../caleydo_core/geom');
+import * as C from 'phovea_core/src/index';
+import * as d3 from 'd3';
+import * as vis from 'phovea_core/src/vis';
+import * as vector from 'phovea_core/src/vector';
+import * as idtypes from 'phovea_core/src/idtype';
+import * as geom from 'phovea_core/src/geom';
 
 export class BarPlot extends vis.AVisInstance implements vis.IVisInstance {
   private options = {

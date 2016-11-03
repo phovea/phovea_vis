@@ -1,17 +1,17 @@
 /**
  * Created by Samuel Gratzl on 05.08.2014.
  */
-/// <reference path="../../tsd.d.ts" />
+
 //depend on a css dependency
-/// <amd-dependency path='css!./style' />
+import './style.scss';
 
 /* global define */
 'use strict';
 
-import d3 = require('d3');
-import vis = require('../caleydo_core/vis');
-import graph = require('../caleydo_core/graph');
-import C = require('../caleydo_core/main');
+import * as d3 from 'd3';
+import * as vis from 'phovea_core/src/vis';
+import * as graph from 'phovea_core/src/graph';
+import * as C from 'phovea_core/src/index';
 
 export class ForceDirectedGraphVis extends vis.AVisInstance implements vis.IVisInstance {
   private $node:d3.Selection<any>;

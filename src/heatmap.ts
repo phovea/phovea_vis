@@ -1,22 +1,22 @@
 /**
  * Created by Samuel Gratzl on 05.08.2014.
  */
-/// <amd-dependency path='css!./style' />
+import './style.scss';
 
 /* global define */
 'use strict';
 
-import d3 = require('d3');
-import d3utils = require('../caleydo_d3/d3util');
-import vis = require('../caleydo_core/vis');
-import matrix = require('../caleydo_core/matrix');
-import vector = require('../caleydo_core/vector');
-import datatypes = require('../caleydo_core/datatype');
+import * as d3 from 'd3';
+import * as d3utils from 'phovea_d3/src/d3util';
+import * as vis from 'phovea_core/src/vis';
+import * as matrix from 'phovea_core/src/matrix';
+import * as vector from 'phovea_core/src/vector';
+import * as datatypes from 'phovea_core/src/datatype';
 
-import idtypes = require('../caleydo_core/idtype');
-import geom = require('../caleydo_core/geom');
-import ranges = require('../caleydo_core/range');
-import C = require('../caleydo_core/main');
+import * as idtypes from 'phovea_core/src/idtype';
+import * as geom from 'phovea_core/src/geom';
+import * as ranges from 'phovea_core/src/range';
+import * as C from 'phovea_core/src/index';
 
 
 function defaultColor(value: any) {

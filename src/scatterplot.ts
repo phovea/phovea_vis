@@ -1,16 +1,16 @@
 /**
  * Created by Marc Streit on 06.08.2014.
  */
-/// <amd-dependency path='css!./style' />
+import './style.scss';
 
 /* global define */
 'use strict';
 
-import C = require('../caleydo_core/main');
-import d3 = require('d3');
-import vis = require('../caleydo_core/vis');
-import tooltip = require('../caleydo_d3/tooltip');
-import matrix = require('../caleydo_core/matrix');
+import * as C from 'phovea_core/src/index';
+import * as d3 from 'd3';
+import * as vis from 'phovea_core/src/vis';
+import * as tooltip from 'phovea_d3/src/tooltip';
+import * as matrix from 'phovea_core/src/matrix';
 
 export class ScatterPlot extends vis.AVisInstance implements vis.IVisInstance {
   private options = {

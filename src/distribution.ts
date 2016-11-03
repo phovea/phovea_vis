@@ -1,21 +1,21 @@
 /**
  * Created by Samuel Gratzl on 26.01.2016.
  */
-/// <amd-dependency path='css!./style' />
+import './style.scss';
 
 /* global define */
 'use strict';
 
 
-import C = require('../caleydo_core/main');
-import d3 = require('d3');
-import vis = require('../caleydo_core/vis');
-import math = require('../caleydo_core/math');
-import idtypes = require('../caleydo_core/idtype');
-import datatypes = require('../caleydo_core/datatype');
-import ranges = require('../caleydo_core/range');
-import geom = require('../caleydo_core/geom');
-import tooltip = require('../caleydo_d3/tooltip');
+import * as C from 'phovea_core/src/index';
+import * as d3 from 'd3';
+import * as vis from 'phovea_core/src/vis';
+import * as math from 'phovea_core/src/math';
+import * as idtypes from 'phovea_core/src/idtype';
+import * as datatypes from 'phovea_core/src/datatype';
+import * as ranges from 'phovea_core/src/range';
+import * as geom from 'phovea_core/src/geom';
+import * as tooltip from 'phovea_d3/src/tooltip';
 
 
 interface IHistData {

@@ -1,19 +1,19 @@
 /**
  * Created by Samuel Gratzl on 25.01.2016.
  */
-/// <amd-dependency path='css!./style' />
+import './style.scss';
 
 /* global define */
 'use strict';
 
 
-import C = require('../caleydo_core/main');
-import d3 = require('d3');
-import vis = require('../caleydo_core/vis');
-import vector = require('../caleydo_core/vector');
-import ranges = require('../caleydo_core/range');
-import geom = require('../caleydo_core/geom');
-import tooltip = require('../caleydo_d3/tooltip');
+import * as C from 'phovea_core/src/index';
+import * as d3 from 'd3';
+import * as vis from 'phovea_core/src/vis';
+import * as vector from 'phovea_core/src/vector';
+import * as ranges from 'phovea_core/src/range';
+import * as geom from 'phovea_core/src/geom';
+import * as tooltip from 'phovea_d3/src/tooltip';
 
 function createText(stats) {
   var r = '<table><tbody>';

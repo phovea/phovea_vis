@@ -2,15 +2,15 @@
  * Created by Samuel Gratzl on 05.08.2014.
  */
 
-/// <amd-dependency path='css!./style' />
+import './style.scss';
 
-import d3 = require('d3');
-import ranges = require('../caleydo_core/range');
-import vis = require('../caleydo_core/vis');
-import geom = require('../caleydo_core/geom');
-import datatypes = require('../caleydo_core/datatype');
-import utils = require('../caleydo_d3/d3util');
-import C = require('../caleydo_core/main');
+import * as d3 from 'd3';
+import * as ranges from 'phovea_core/src/range';
+import * as vis from 'phovea_core/src/vis';
+import * as geom from 'phovea_core/src/geom';
+import * as datatypes from 'phovea_core/src/datatype';
+import * as utils from 'phovea_d3/src/d3util';
+import * as C from 'phovea_core/src/index';
 
 export class Table extends vis.AVisInstance implements vis.IVisInstance {
   private $node : d3.Selection<any>;

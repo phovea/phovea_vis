@@ -1,14 +1,14 @@
 /**
  * Created by Samuel Gratzl on 01.10.2015.
  */
-/// <amd-dependency path='css!./style' />
+import './style.scss';
 /* global define */
 
-import d3 = require('d3');
-import vector = require('../caleydo_core/vector');
-import vis = require('../caleydo_core/vis');
-import ranges = require('../caleydo_core/range');
-import C = require('../caleydo_core/main');
+import * as d3 from 'd3';
+import * as vector from 'phovea_core/src/vector';
+import * as vis from 'phovea_core/src/vis';
+import * as ranges from 'phovea_core/src/range';
+import * as C from 'phovea_core/src/index';
 
 
 export class KaplanMeierPlot extends vis.AVisInstance implements vis.IVisInstance {

@@ -63,8 +63,8 @@
     "webpack-dev-server": "^2.1.0-beta.9"
   },
   "dependencies": {
-    "phovea_core": "github:sgratzl/phovea_core",
-    "phovea_d3": "github:sgratzl/phovea_d3",
+    "phovea_core": "github:phovea/phovea_core",
+    "phovea_d3": "github:phovea/phovea_d3",
     "@types/d3": "^3.5.36",
     "d3": "^3.5.17"
   },

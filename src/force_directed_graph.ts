@@ -2,18 +2,14 @@
  * Created by Samuel Gratzl on 05.08.2014.
  */
 
-//depend on a css dependency
+
 import './style.scss';
-
-/* global define */
-'use strict';
-
 import * as d3 from 'd3';
-import * as vis from 'phovea_core/src/vis';
-import * as graph from 'phovea_core/src/graph';
-import * as C from 'phovea_core/src/index';
+import {AVisInstance, IVisInstance, assignVis} from 'phovea_core/src/vis';
+import {mixin} from 'phovea_core/src';
+import {GraphProxy} from 'phovea_core/src/graph';
 
-export class ForceDirectedGraphVis extends vis.AVisInstance implements vis.IVisInstance {
+export class ForceDirectedGraphVis extends AVisInstance implements IVisInstance {
   private $node:d3.Selection<any>;
 
   private options = {
@@ -22,12 +18,12 @@ export class ForceDirectedGraphVis extends vis.AVisInstance implements vis.IVisI
     colors: true
   };
 
-  constructor(public data:graph.GraphProxy, public parent:Element, options: any) {
+  constructor(public data:GraphProxy, public parent:Element, options: any) {
     super();
-    C.mixin(this.options, options);
+    mixin(this.options, options);
     this.$node = this.build(d3.select(parent));
     this.$node.datum(data);
-    vis.assignVis(<Element>this.$node.node(), this);
+    assignVis(<Element>this.$node.node(), this);
   }
 
   /**
@@ -169,6 +165,6 @@ export class ForceDirectedGraphVis extends vis.AVisInstance implements vis.IVisI
   }
 }
 
-export function create(data:graph.GraphProxy, parent:Element, options) {
+export function create(data:GraphProxy, parent:Element, options) {
   return new ForceDirectedGraphVis(data, parent, options);
 }

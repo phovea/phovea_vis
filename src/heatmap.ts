@@ -1,22 +1,19 @@
 /**
  * Created by Samuel Gratzl on 05.08.2014.
  */
+
+
 import './style.scss';
-
-/* global define */
-'use strict';
-
 import * as d3 from 'd3';
-import * as d3utils from 'phovea_d3/src/d3util';
-import * as vis from 'phovea_core/src/vis';
-import * as matrix from 'phovea_core/src/matrix';
-import * as vector from 'phovea_core/src/vector';
-import * as datatypes from 'phovea_core/src/datatype';
-
-import * as idtypes from 'phovea_core/src/idtype';
-import * as geom from 'phovea_core/src/geom';
-import * as ranges from 'phovea_core/src/range';
-import * as C from 'phovea_core/src/index';
+import {Range, all, cell} from 'phovea_core/src/range';
+import {AVisInstance, IVisInstance, assignVis} from 'phovea_core/src/vis';
+import {rect} from 'phovea_core/src/geom';
+import {IDataType} from 'phovea_core/src/datatype';
+import {identity, mixin, onDOMNodeRemoved} from 'phovea_core/src';
+import {selectionUtil} from 'phovea_d3/src/d3util';
+import {IMatrix} from 'phovea_core/src/matrix';
+import {IVector} from 'phovea_core/src/vector';
+import {toSelectOperation, defaultSelectionType} from 'phovea_core/src/idtype';
 
 
 function defaultColor(value: any) {
@@ -61,8 +58,8 @@ function toScale(value): IScale {
 interface IHeatMapRenderer {
   rescale($node: d3.Selection<any>, dim: number[], scale: number[]);
   redraw($node: d3.Selection<any>, scale: number[]);
-  recolor($node: d3.Selection<any>, data: matrix.IMatrix, color: IScale, scale: number[]);
-  build(data: matrix.IMatrix, $parent: d3.Selection<any>, scale: [number,number], c: IScale, onReady: () => void);
+  recolor($node: d3.Selection<any>, data: IMatrix, color: IScale, scale: number[]);
+  build(data: IMatrix, $parent: d3.Selection<any>, scale: [number,number], c: IScale, onReady: () => void);
 }
 
 class HeatMapDOMRenderer implements IHeatMapRenderer {
@@ -80,7 +77,7 @@ class HeatMapDOMRenderer implements IHeatMapRenderer {
     $node.select('g').attr('transform','scale('+scale[0]+','+scale[1]+')');
   }
 
-  recolor($node: d3.Selection<any>, data: matrix.IMatrix, color: IScale, scale: number[]) {
+  recolor($node: d3.Selection<any>, data: IMatrix, color: IScale, scale: number[]) {
     this.color = color;
     $node.selectAll('rect').attr('fill', (d) => color(d));
   }
@@ -89,7 +86,7 @@ class HeatMapDOMRenderer implements IHeatMapRenderer {
     $node.selectAll('rect').attr('fill', (d) => this.color(d));
   }
 
-  build(data: matrix.IMatrix, $parent: d3.Selection<any>, scale: [number,number], c: IScale, onReady: () => void) {
+  build(data: IMatrix, $parent: d3.Selection<any>, scale: [number,number], c: IScale, onReady: () => void) {
     var dims = data.dim, that = this;
     var width = dims[1], height = dims[0];
 
@@ -114,7 +111,7 @@ class HeatMapDOMRenderer implements IHeatMapRenderer {
         });
         if (that.selectAble) {
           $cols_enter.on('click', (d, j) => {
-            data.selectProduct([ranges.cell(i,j)], idtypes.toSelectOperation(d3.event));
+            data.selectProduct([cell(i,j)], toSelectOperation(d3.event));
           });
         }
         $cols_enter.append('title').text(String);
@@ -122,7 +119,7 @@ class HeatMapDOMRenderer implements IHeatMapRenderer {
       });
       onReady();
     });
-    var l = function (event, type, selected: ranges.Range[]) {
+    var l = function (event, type, selected: Range[]) {
       $g.selectAll('rect').classed('caleydo-select-' + type, false);
       if (selected.length === 0) {
         return;
@@ -135,11 +132,11 @@ class HeatMapDOMRenderer implements IHeatMapRenderer {
     };
     if (this.selectAble) {
       data.on('selectProduct', l);
-      C.onDOMNodeRemoved(<Element>$g.node(), function () {
+      onDOMNodeRemoved(<Element>$g.node(), function () {
         data.off('selectProduct', l);
       });
       data.productSelections().then(function (selected) {
-        l(null, idtypes.defaultSelectionType, selected);
+        l(null, defaultSelectionType, selected);
       });
     }
 
@@ -162,12 +159,12 @@ class AHeatMapCanvasRenderer {
     if (this.selectAble) {
       $node.datum().productSelections().then((selected) => {
         this.redrawSelection(<HTMLCanvasElement>$node.select('canvas.caleydo-heatmap-selection').node(), dim,
-          idtypes.defaultSelectionType, selected);
+          defaultSelectionType, selected);
       });
     }
   }
 
-  protected redrawSelection(canvas: HTMLCanvasElement, dim: number[], type: string, selected: ranges.Range[]) {
+  protected redrawSelection(canvas: HTMLCanvasElement, dim: number[], type: string, selected: Range[]) {
     var ctx = <CanvasRenderingContext2D>canvas.getContext('2d');
     ctx.save();
     ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -193,7 +190,7 @@ class AHeatMapCanvasRenderer {
 
   }
 
-  protected buildSelection(data: matrix.IMatrix, $root: d3.Selection<any>, scale: [number,number]) {
+  protected buildSelection(data: IMatrix, $root: d3.Selection<any>, scale: [number,number]) {
     if (!this.selectAble) {
       return;
     }
@@ -218,7 +215,7 @@ class AHeatMapCanvasRenderer {
 
     $selection.on('click', () => {
       var ij = toCoord(d3.event);
-      data.selectProduct([ranges.cell(...ij)], idtypes.toSelectOperation(d3.event));
+      data.selectProduct([cell(...ij)], toSelectOperation(d3.event));
     });
 
     var l = (event, type, selected) => {
@@ -226,7 +223,7 @@ class AHeatMapCanvasRenderer {
     };
 
     data.on('selectProduct', l);
-    C.onDOMNodeRemoved(<Element>$selection.node(), () => {
+    onDOMNodeRemoved(<Element>$selection.node(), () => {
       data.off('selectProduct', l);
     });
     data.productSelections().then((selected) => {
@@ -261,7 +258,7 @@ class HeatMapCanvasRenderer extends AHeatMapCanvasRenderer implements IHeatMapRe
     }
   }
 
-  recolor($node: d3.Selection<any>, data: matrix.IMatrix, color: IScale, scale: number[]) {
+  recolor($node: d3.Selection<any>, data: IMatrix, color: IScale, scale: number[]) {
     var rgba = this.imageData.data;
     if (this.ready) {
       data.data().then((arr) => {
@@ -311,7 +308,7 @@ class HeatMapCanvasRenderer extends AHeatMapCanvasRenderer implements IHeatMapRe
   }
 
 
-  build(data: matrix.IMatrix, $parent: d3.Selection<any>, scale: [number,number], c: IScale, onReady: () => void) {
+  build(data: IMatrix, $parent: d3.Selection<any>, scale: [number,number], c: IScale, onReady: () => void) {
 
     var dims = data.dim;
     var width = dims[1], height = dims[0];
@@ -404,14 +401,14 @@ class HeatMapImageRenderer extends AHeatMapCanvasRenderer implements IHeatMapRen
     }*/
   }
 
-  recolor($node: d3.Selection<any>, data: matrix.IMatrix, color: IScale, scale: number[]) {
+  recolor($node: d3.Selection<any>, data: IMatrix, color: IScale, scale: number[]) {
     //can't do that
     this.color = color;
     this.redrawImpl($node, scale);
   }
 
 
-  build(data: matrix.IMatrix, $parent: d3.Selection<any>, scale: [number,number], c: IScale, onReady: () => void) {
+  build(data: IMatrix, $parent: d3.Selection<any>, scale: [number,number], c: IScale, onReady: () => void) {
     this.color = c;
     var dims = data.dim;
     var width = dims[1], height = dims[0];
@@ -445,7 +442,7 @@ class HeatMapImageRenderer extends AHeatMapCanvasRenderer implements IHeatMapRen
     } else if (arrEqual(colors, ['blue', 'white', 'red'])) {
       args.palette = 'blue_white_red';
     }
-    this.image.src = data.heatmapUrl(ranges.all(), args);
+    this.image.src = data.heatmapUrl(all(), args);
 
     super.buildSelection(data, $root, scale);
 
@@ -454,7 +451,7 @@ class HeatMapImageRenderer extends AHeatMapCanvasRenderer implements IHeatMapRen
   }
 }
 
-function createRenderer(d: matrix.IMatrix, selectAble = true, forceThumbnails = false): IHeatMapRenderer {
+function createRenderer(d: IMatrix, selectAble = true, forceThumbnails = false): IHeatMapRenderer {
   const cells = d.length;
   if (cells <= 1000) {
     return new HeatMapDOMRenderer(selectAble);
@@ -469,15 +466,15 @@ function createRenderer(d: matrix.IMatrix, selectAble = true, forceThumbnails = 
   }
 }
 
-export class HeatMap extends vis.AVisInstance implements vis.IVisInstance {
+export class HeatMap extends AVisInstance implements IVisInstance {
   private $node:d3.Selection<any>;
   private colorer : IScale;
   private renderer: IHeatMapRenderer;
 
-  constructor(public data:matrix.IMatrix, public parent:Element, private options: any) {
+  constructor(public data:IMatrix, public parent:Element, private options: any) {
     super();
     var value = (<any>this.data.desc).value;
-    this.options = C.mixin({
+    this.options = mixin({
       initialScale: 10,
       scaleTo: null,
       color: defaultColor(value),
@@ -498,7 +495,7 @@ export class HeatMap extends vis.AVisInstance implements vis.IVisInstance {
 
     this.$node = this.build(d3.select(parent));
     this.$node.datum(data);
-    vis.assignVis(<Element>this.$node.node(), this);
+    assignVis(<Element>this.$node.node(), this);
   }
 
   get rawSize(): [number, number] {
@@ -526,7 +523,7 @@ export class HeatMap extends vis.AVisInstance implements vis.IVisInstance {
     }
   }
 
-  locateImpl(range:ranges.Range) {
+  locateImpl(range:Range) {
     var dims = this.data.dim;
     var width = dims[1], height = dims[0], o = this.options;
 
@@ -540,7 +537,7 @@ export class HeatMap extends vis.AVisInstance implements vis.IVisInstance {
 
     var xw = l(range.dim(1), width, o.scale[0]);
     var yh = l(range.dim(0), height, o.scale[1]);
-    return Promise.resolve(geom.rect(xw[0], yh[0], xw[1], yh[1]));
+    return Promise.resolve(rect(xw[0], yh[0], xw[1], yh[1]));
   }
 
   transform(scale?: number[], rotate: number = 0) {
@@ -585,14 +582,14 @@ export class HeatMap extends vis.AVisInstance implements vis.IVisInstance {
 }
 
 
-export class HeatMap1D extends vis.AVisInstance implements vis.IVisInstance {
+export class HeatMap1D extends AVisInstance implements IVisInstance {
   private $node:d3.Selection<any>;
   private colorer:IScale;
 
-  constructor(public data:vector.IVector, public parent:Element, private options:any) {
+  constructor(public data:IVector, public parent:Element, private options:any) {
     super();
     var value = (<any>this.data.desc).value;
-    this.options = C.mixin({
+    this.options = mixin({
       initialScale: 10,
       color: defaultColor(value),
       domain: defaultDomain(value),
@@ -607,7 +604,7 @@ export class HeatMap1D extends vis.AVisInstance implements vis.IVisInstance {
     this.colorer = toScale(value).domain(this.options.domain).range(this.options.color);
     this.$node = this.build(d3.select(parent));
     this.$node.datum(data);
-    vis.assignVis(<Element>this.$node.node(), this);
+    assignVis(<Element>this.$node.node(), this);
   }
 
   get rawSize(): [number, number] {
@@ -635,7 +632,7 @@ export class HeatMap1D extends vis.AVisInstance implements vis.IVisInstance {
     }
   }
 
-  locateImpl(range:ranges.Range) {
+  locateImpl(range:Range) {
     var dims = this.data.dim;
     var height = dims[0];
 
@@ -648,7 +645,7 @@ export class HeatMap1D extends vis.AVisInstance implements vis.IVisInstance {
     }
 
     var yh = l(range.dim(0), height, this.options.scale[1]);
-    return Promise.resolve(geom.rect(0, yh[0], 20, yh[1]));
+    return Promise.resolve(rect(0, yh[0], 20, yh[1]));
   }
 
   transform(scale?:number[], rotate:number = 0) {
@@ -698,11 +695,11 @@ export class HeatMap1D extends vis.AVisInstance implements vis.IVisInstance {
 
     data.data().then((arr) => {
       var $rows = $g.selectAll('rect').data(arr);
-      var onClick = d3utils.selectionUtil(data, $g, 'rect');
+      var onClick = selectionUtil(data, $g, 'rect');
       $rows.enter().append('rect').on('click', onClick).attr({
         width: this.options.width,
         height: 1
-      }).append('title').text(C.identity);
+      }).append('title').text(identity);
       $rows.attr({
         fill: (d) => c(d),
         y: (d,i) => i
@@ -714,13 +711,13 @@ export class HeatMap1D extends vis.AVisInstance implements vis.IVisInstance {
 
 }
 
-export function create(data:vector.IVector, parent:Element, options);
-export function create(data:matrix.IMatrix, parent:Element, options);
-export function create(data:datatypes.IDataType, parent:Element, options): vis.AVisInstance {
+export function create(data:IVector, parent:Element, options);
+export function create(data:IMatrix, parent:Element, options);
+export function create(data:IDataType, parent:Element, options): AVisInstance {
   if (data.desc.type === 'matrix') {
-    return new HeatMap(<matrix.IMatrix>data, parent, options);
+    return new HeatMap(<IMatrix>data, parent, options);
   } else if (data.desc.type === 'vector') {
-    return new HeatMap1D(<vector.IVector>data, parent, options);
+    return new HeatMap1D(<IVector>data, parent, options);
   }
   return null;
 }

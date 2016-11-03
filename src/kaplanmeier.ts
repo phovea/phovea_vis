@@ -1,17 +1,20 @@
 /**
  * Created by Samuel Gratzl on 01.10.2015.
  */
+
+
 import './style.scss';
-/* global define */
-
 import * as d3 from 'd3';
-import * as vector from 'phovea_core/src/vector';
-import * as vis from 'phovea_core/src/vis';
-import * as ranges from 'phovea_core/src/range';
-import * as C from 'phovea_core/src/index';
+import {Range} from 'phovea_core/src/range';
+import {AVisInstance, IVisInstance, assignVis} from 'phovea_core/src/vis';
+import {mixin} from 'phovea_core/src';
+import {IVector} from 'phovea_core/src/vector';
+import {} from 'phovea_core/src/vis';
+import {} from 'phovea_core/src/range';
+import {} from 'phovea_core/src';
 
 
-export class KaplanMeierPlot extends vis.AVisInstance implements vis.IVisInstance {
+export class KaplanMeierPlot extends AVisInstance implements IVisInstance {
   private $node:d3.Selection<any>;
 
   private options = {
@@ -24,13 +27,13 @@ export class KaplanMeierPlot extends vis.AVisInstance implements vis.IVisInstanc
 
   private line = d3.svg.line().interpolate('step');
 
-  constructor(public data:vector.IVector, public parent:Element, options:any = {}) {
+  constructor(public data:IVector, public parent:Element, options:any = {}) {
     super();
     //var value = (<any>this.data.desc).value;
-    C.mixin(this.options, options);
+    mixin(this.options, options);
     this.$node = this.build(d3.select(parent));
     this.$node.datum(data);
-    vis.assignVis(<Element>this.$node.node(), this);
+    assignVis(<Element>this.$node.node(), this);
   }
 
   get rawSize():[number, number] {
@@ -41,7 +44,7 @@ export class KaplanMeierPlot extends vis.AVisInstance implements vis.IVisInstanc
     return <Element>this.$node.node();
   }
 
-  locateImpl(range:ranges.Range) {
+  locateImpl(range:Range) {
     //TODO
     return Promise.resolve(null);
   }
@@ -123,6 +126,6 @@ export class KaplanMeierPlot extends vis.AVisInstance implements vis.IVisInstanc
   }
 }
 
-export function create(data:vector.IVector, parent:Element, options) {
+export function create(data:IVector, parent:Element, options) {
   return new KaplanMeierPlot(data, parent, options);
 }

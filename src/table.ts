@@ -3,16 +3,15 @@
  */
 
 import './style.scss';
-
 import * as d3 from 'd3';
-import * as ranges from 'phovea_core/src/range';
-import * as vis from 'phovea_core/src/vis';
-import * as geom from 'phovea_core/src/geom';
-import * as datatypes from 'phovea_core/src/datatype';
-import * as utils from 'phovea_d3/src/d3util';
-import * as C from 'phovea_core/src/index';
+import {Range} from 'phovea_core/src/range';
+import {AVisInstance, IVisInstance, assignVis} from 'phovea_core/src/vis';
+import {rect} from 'phovea_core/src/geom';
+import {IDataType} from 'phovea_core/src/datatype';
+import {selectionUtil} from 'phovea_d3/src/d3util';
+import {identity} from 'phovea_core/src';
 
-export class Table extends vis.AVisInstance implements vis.IVisInstance {
+export class Table extends AVisInstance implements IVisInstance {
   private $node : d3.Selection<any>;
   private options : any = {};
 
@@ -35,7 +34,7 @@ export class Table extends vis.AVisInstance implements vis.IVisInstance {
         break;
     }
     this.$node.datum(data);
-    vis.assignVis(<Element>this.$node.node(), this);
+    assignVis(<Element>this.$node.node(), this);
   }
 
   get rawSize() : [number, number] {
@@ -47,18 +46,18 @@ export class Table extends vis.AVisInstance implements vis.IVisInstance {
     return <Element>this.$node.node();
   }
 
-  locateImpl(range:ranges.Range) {
+  locateImpl(range:Range) {
     var $tbody = d3.select(this.node).select('tbody');
     var offset = (<HTMLElement>$tbody.node()).offsetTop, w = (<Element>$tbody.node()).clientWidth;
     var a, b;
     if (range.isAll || range.isNone) {
       b = $tbody.select('tr:last').node();
-      return Promise.resolve(geom.rect(0, offset, w, b.offsetTop + b.clientHeight));
+      return Promise.resolve(rect(0, offset, w, b.offsetTop + b.clientHeight));
     }
     var ex:any = d3.extent(range.dim(0).iter().asList());
     a = $tbody.select('tr:nth-child(' + (ex[0] + 1) + ')').node();
     b = $tbody.select('tr:nth-child(' + (ex[1] + 1) + ')').node();
-    return Promise.resolve(geom.rect(0, a.offsetTop, w, b.offsetTop + b.clientHeight - a.offsetTop));
+    return Promise.resolve(rect(0, a.offsetTop, w, b.offsetTop + b.clientHeight - a.offsetTop));
   }
 
   transform(scale?: number[], rotate: number = 0) {
@@ -84,12 +83,12 @@ export class Table extends vis.AVisInstance implements vis.IVisInstance {
     var $table = $parent.append('table').attr('class', 'caleydo-table');
     $table.append('thead').append('tr');
     $table.append('tbody');
-    var onClick = utils.selectionUtil(this.data, $table.select('tbody'), 'tr');
+    var onClick = selectionUtil(this.data, $table.select('tbody'), 'tr');
     Promise.all(promises).then((arr) => {
       var cols = arr[0], rows = arr[1], d : any[][] = arr[2];
       var $headers = $table.select('thead tr').selectAll('th').data(['ID'].concat(cols));
       $headers.enter().append('th');
-      $headers.text(C.identity);
+      $headers.text(identity);
       $headers.exit().remove();
 
       var $rows = $table.select('tbody').selectAll('tr').data(d);
@@ -97,11 +96,11 @@ export class Table extends vis.AVisInstance implements vis.IVisInstance {
       $rows.each(function (row: any[], i) {
         var $header = d3.select(this).selectAll('th').data(rows.slice(i, i + 1));
         $header.enter().append('th');
-        $header.text(C.identity);
+        $header.text(identity);
         $header.exit().remove();
         var $row = d3.select(this).selectAll<any>('td').data(row);
         $row.enter().append('td');
-        $row.text(C.identity);
+        $row.text(identity);
         $row.exit().remove();
       });
       $rows.exit().remove();
@@ -112,6 +111,6 @@ export class Table extends vis.AVisInstance implements vis.IVisInstance {
   }
 }
 
-export function create(data:datatypes.IDataType, parent:Element) {
+export function create(data:IDataType, parent:Element) {
   return new Table(data, parent);
 }

@@ -1,190 +1,88 @@
 {
-  "name": "caleydo_vis",
-  "description": "Utilitiy reposititory containing common visualizations (table, heatmap, scatterplot, axis, pie, distribution, ..)",
-  "version": "0.0.1",
-  "license" : "SEE LICENSE IN LICENSE",
-  "repository": "Caleydo/caleydo_vis",
+  "main": "build/phovea_vis.js",
+  "files": [
+    "src",
+    "index.js",
+    "phovea.js",
+    "phovea_registry.js",
+    "build"
+  ],
+  "engines": {
+    "npm": ">= 3",
+    "node": ">= 6",
+    "iojs": ">= 3"
+  },
+  "scripts": {
+    "compile": "tsc",
+    "lint": "tslint -c tslint.json src/**.ts tests/**.ts",
+    "docs": "typedoc --options typedoc.json src/**.ts",
+    "prebuild": "npm run test",
+    "pretest": "npm run compile",
+    "test": "karma start",
+    "posttest": "npm run lint",
+    "test:watch": "karma start --autoWatch=true --singleRun=false",
+    "build:dev": "webpack",
+    "build": "webpack --env prod",
+    "start": "webpack-dev-server --inline",
+    "start:hot": "webpack-dev-server --inline --hot",
+    "watch": "webpack --watch",
+    "release:major": "npm version major && npm publish && git push --follow-tags",
+    "release:minor": "npm version minor && npm publish && git push --follow-tags",
+    "release:patch": "npm version patch && npm publish && git push --follow-tags",
+    "predist": "npm run build",
+    "dist": "mkdirp dist && cd build && tar cvzf ../dist/phovea_vis.tar.gz *"
+  },
+  "devDependencies": {
+    "@types/jasmine": "^2.5.35",
+    "awesome-typescript-loader": "^2.2.4",
+    "css-loader": "^0.25.0",
+    "extract-text-webpack-plugin": "^2.0.0-beta.4",
+    "file-loader": "^0.9.0",
+    "html-loader": "^0.4.4",
+    "imports-loader": "^0.6.5",
+    "jasmine": "^2.5.2",
+    "json-loader": "^0.5.4",
+    "karma": "^1.3.0",
+    "karma-chrome-launcher": "^2.0.0",
+    "karma-firefox-launcher": "^1.0.0",
+    "karma-jasmine": "^1.0.2",
+    "karma-junit-reporter": "^1.1.0",
+    "karma-sourcemap-loader": "^0.3.7",
+    "karma-webpack": "^1.8.0",
+    "mkdirp": "^0.5.1",
+    "node-sass": "^3.10.0",
+    "null-loader": "^0.1.1",
+    "raw-loader": "^0.5.1",
+    "sass-loader": "^4.0.2",
+    "style-loader": "^0.13.1",
+    "tslint": "^3.15.1",
+    "typedoc": "^0.5.0",
+    "typescript": "^2.0.3",
+    "url-loader": "^0.5.7",
+    "webpack": "^2.1.0-beta.25",
+    "webpack-dev-server": "^2.1.0-beta.9"
+  },
   "dependencies": {
+    "phovea_core": "github:phovea/phovea_core",
+    "phovea_d3": "github:phovea/phovea_d3",
+    "@types/d3": "^3.5.36",
+    "d3": "^3.5.17"
   },
-  "peerDependencies": {
-    "caleydo_core": "*",
-    "caleydo_d3": "*"
+  "name": "phovea_vis",
+  "description": "Utilitiy reposititory containing common visualizations (table, heatmap, scatterplot, axis, pie, distribution, ..)",
+  "homepage": "https://phovea.caleydo.org",
+  "version": "0.0.1",
+  "author": {
+    "name": "The Caleydo Team",
+    "email": "contact@caleydo.org",
+    "url": "https://caleydo.org"
   },
-  "caleydo": {
-    "type": "plugin",
-    "category": "vis",
-    "plugins": {
-      "web": [
-        {
-          "type": "vis",
-          "id": "axis",
-          "name": "Axis",
-          "file": "axis",
-          "icon": "axis_icon.svg",
-          "scaling": "height-only",
-          "filter": [
-            "vector",
-            "(real|int)"
-          ],
-          "options": {
-            "tickSize": {
-              "type": "int",
-              "range": [
-                1,
-                null
-              ],
-              "default": 2
-            },
-            "orient": {
-              "type": "categorical",
-              "categories": [
-                "left",
-                "right",
-                "top",
-                "bottom"
-              ],
-              "default": "left"
-            }
-          }
-        },
-        {
-          "type": "vis",
-          "id": "barplot",
-          "name": "Bar Plot",
-          "file": "barplot",
-          "icon": "barplot_icon.png",
-          "sizeDependsOnDataDimension": [
-            false,
-            true
-          ],
-          "filter": [
-            "vector",
-            "(real|int)"
-          ]
-        },
-        {
-          "type": "vis",
-          "id": "table",
-          "name": "Table",
-          "file": "table",
-          "filter": "(matrix|table|vector)",
-          "sizeDependsOnDataDimension": true
-        },
-        {
-          "type": "vis",
-          "id": "scatterplot",
-          "name": "ScatterPlot",
-          "file": "scatterplot",
-          "filter": "matrix"
-        },
-        {
-          "type": "vis",
-          "id": "caleydo-vis-heatmap",
-          "name": "HeatMap",
-          "file": "heatmap",
-          "icon": "heatmap_icon.svg",
-          "sizeDependsOnDataDimension": true,
-          "filter": "matrix"
-        },
-        {
-          "type": "vis",
-          "id": "caleydo-vis-heatmap1d",
-          "name": "HeatMap 1D",
-          "file": "heatmap",
-          "icon": "heatmap_icon.svg",
-          "sizeDependsOnDataDimension": [
-            false,
-            true
-          ],
-          "scaling": "height-only",
-          "filter": "vector"
-        },
-        {
-          "type": "vis",
-          "id": "caleydo-vis-kaplanmeier",
-          "name": "Kaplanmeier Plot",
-          "file": "kaplanmeier",
-          "icon": "kaplanmeier_icon.svg",
-          "sizeDependsOnDataDimension": [
-            false,
-            false
-          ],
-          "scaling": "aspect",
-          "filter": ["vector", "int"]
-        },
-        {
-          "type": "vis",
-          "id": "caleydo-vis-histogram",
-          "file": "distribution",
-          "name": "Histogram",
-          "icon": "distribution_histogram_icon.png",
-          "filter": [
-            "(vector|matrix|stratification)",
-            "(categorical|real|int)"
-          ]
-        },
-        {
-          "type": "vis",
-          "id": "caleydo-vis-mosaic",
-          "file": "distribution",
-          "name": "Mosaic",
-          "factory": "createMosaic",
-          "icon": "distribution_mosaic_icon.png",
-          "sizeDependsOnDataDimension": [
-            false,
-            true
-          ],
-          "scaling": "height-only",
-          "filter": [
-            "(vector|stratification)",
-            "categorical"
-          ]
-        },
-        {
-          "type": "vis",
-          "id": "caleydo-vis-pie",
-          "file": "distribution",
-          "name": "Pie",
-          "factory": "createPie",
-          "icon": "distribution_pie_icon.png",
-          "scaling": "aspect",
-          "filter": [
-            "(vector|stratification)",
-            "categorical"
-          ]
-        },
-        {
-          "type": "vis",
-          "id": "caleydo-vis-box",
-          "name": "BoxPlot",
-          "file": "box",
-          "icon": "box_icon.png",
-          "scaling": "aspect",
-          "filter": [
-            "vector",
-            "(real|int)"
-          ]
-        },
-        {
-          "type": "vis",
-          "name": "Force Directed Graph",
-          "filter": "graph",
-          "icon": "force_directed_graph.svg",
-          "file": "force_directed_graph",
-          "sizeDependsOnDataDimension": [
-            false,
-            false
-          ]
-        }
-      ]
-    },
-    "dependencies": {
-      "web": {
-        "d3": "~3.5.5"
-      }
-    }
+  "license": "BSD-3-Clause",
+  "bugs": {
+    "url": "https://github.com/phovea/phovea_vis/issues"
   },
-  "publishConfig": {
-    "registry": "http://registry.caleydo.org/"
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/phovea/phovea_vis.git"
   }
 }

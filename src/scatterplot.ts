@@ -1,18 +1,16 @@
 /**
  * Created by Marc Streit on 06.08.2014.
  */
-/// <amd-dependency path='css!./style' />
 
-/* global define */
-'use strict';
 
-import C = require('../caleydo_core/main');
-import d3 = require('d3');
-import vis = require('../caleydo_core/vis');
-import tooltip = require('../caleydo_d3/tooltip');
-import matrix = require('../caleydo_core/matrix');
+import './style.scss';
+import * as d3 from 'd3';
+import {AVisInstance, IVisInstance, assignVis} from 'phovea_core/src/vis';
+import {identity, mixin} from 'phovea_core/src';
+import bindTooltip from 'phovea_d3/src/tooltip';
+import {IMatrix} from 'phovea_core/src/matrix';
 
-export class ScatterPlot extends vis.AVisInstance implements vis.IVisInstance {
+export class ScatterPlot extends AVisInstance implements IVisInstance {
   private options = {
     scale: [1, 1],
     rotate: 0
@@ -20,12 +18,13 @@ export class ScatterPlot extends vis.AVisInstance implements vis.IVisInstance {
 
   private $node:d3.Selection<ScatterPlot>;
 
-  constructor(public data:matrix.IMatrix, parent:Element, options:any = {}) {
+  constructor(public data:IMatrix, parent:Element, options:any = {}) {
     super();
-    C.mixin(this.options, options);
+    mixin(this.options, options);
 
     this.$node = this.build(d3.select(parent));
     this.$node.datum(this);
+    assignVis(<Element>this.$node.node(), this);
   }
 
   get rawSize():[number, number] {
@@ -68,7 +67,7 @@ export class ScatterPlot extends vis.AVisInstance implements vis.IVisInstance {
         .attr('cx', (d) => x(d[xcol]))
         .attr('cy', (d) => y(d[ycol]))
         .attr('r', 2)
-        .call(tooltip.bind((d, i) => rowNames[i]));
+        .call(bindTooltip((d, i) => rowNames[i]));
     });
 
     function update() {
@@ -102,7 +101,7 @@ export class ScatterPlot extends vis.AVisInstance implements vis.IVisInstance {
       var $x = $xaxis.selectAll('option').data(cols);
       $x.enter().append('option');
       $x.attr('value', (d, i) => i)
-        .text(C.identity)
+        .text(identity)
         .each(function (d, i) {
           if (i === xcol) {
             d3.select(this).attr('selected', 'selected');
@@ -113,7 +112,7 @@ export class ScatterPlot extends vis.AVisInstance implements vis.IVisInstance {
       var $y = $yaxis.selectAll('option').data(cols);
       $y.enter().append('option');
       $y.attr('value', (d, i) => i)
-        .text(C.identity)
+        .text(identity)
         .each(function (d, i) {
           if (i === ycol) {
             d3.select(this).attr('selected', 'selected');
@@ -126,6 +125,6 @@ export class ScatterPlot extends vis.AVisInstance implements vis.IVisInstance {
   }
 }
 
-export function create(data:matrix.IMatrix, parent:Element, options) {
+export function create(data:IMatrix, parent:Element, options) {
   return new ScatterPlot(data, parent, options);
 }

@@ -1,19 +1,15 @@
 /**
  * Created by Samuel Gratzl on 25.01.2016.
  */
-/// <amd-dependency path='css!./style' />
 
-/* global define */
-'use strict';
-
-
-import C = require('../caleydo_core/main');
-import d3 = require('d3');
-import vis = require('../caleydo_core/vis');
-import vector = require('../caleydo_core/vector');
-import ranges = require('../caleydo_core/range');
-import geom = require('../caleydo_core/geom');
-import tooltip = require('../caleydo_d3/tooltip');
+import './style.scss';
+import * as d3 from 'd3';
+import {Range} from 'phovea_core/src/range';
+import {AVisInstance, IVisInstance, assignVis} from 'phovea_core/src/vis';
+import {rect} from 'phovea_core/src/geom';
+import {mixin} from 'phovea_core/src';
+import {IVector} from 'phovea_core/src/vector';
+import bindTooltip from 'phovea_d3/src/tooltip';
 
 function createText(stats) {
   var r = '<table><tbody>';
@@ -26,7 +22,7 @@ function createText(stats) {
   return r;
 }
 
-export class BoxPlot extends vis.AVisInstance implements vis.IVisInstance {
+export class BoxPlot extends AVisInstance implements IVisInstance {
   private options = {
     scale: [1, 1],
     rotate: 0
@@ -36,12 +32,13 @@ export class BoxPlot extends vis.AVisInstance implements vis.IVisInstance {
 
   private scale:d3.scale.Linear<number, number>;
 
-  constructor(public data:vector.IVector, parent:Element, options:any = {}) {
+  constructor(public data:IVector, parent:Element, options:any = {}) {
     super();
-    C.mixin(this.options, options);
+    mixin(this.options, options);
 
     this.$node = this.build(d3.select(parent));
     this.$node.datum(this);
+    assignVis(<Element>this.$node.node(), this);
   }
 
   get rawSize():[number, number] {
@@ -78,7 +75,7 @@ export class BoxPlot extends vis.AVisInstance implements vis.IVisInstance {
         width: s(stats.sd * 2),
         height: '80%',
         'class': 'box'
-      }).call(tooltip.bind(text));
+      }).call(bindTooltip(text));
 
       $t.append('line').attr({
         x1: s(stats.mean),
@@ -93,19 +90,19 @@ export class BoxPlot extends vis.AVisInstance implements vis.IVisInstance {
     return $svg;
   }
 
-  locateImpl(range:ranges.Range) {
+  locateImpl(range:Range) {
     const that = this;
     if (range.isAll || range.isNone) {
       var r = this.scale.range();
-      return Promise.resolve(geom.rect(r[0], 0, r[1] - r[0], 50));
+      return Promise.resolve(rect(r[0], 0, r[1] - r[0], 50));
     }
     return this.data.data(range).then(function (data) {
       var ex = d3.extent(data, that.scale);
-      return geom.rect(ex[0], 0, ex[1] - ex[0], 50);
+      return rect(ex[0], 0, ex[1] - ex[0], 50);
     });
   }
 }
 
-export function create(data:vector.IVector, parent:Element, options) {
+export function create(data:IVector, parent:Element, options) {
   return new BoxPlot(data, parent, options);
 }

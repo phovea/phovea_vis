@@ -1,20 +1,16 @@
 /**
  * Created by Samuel Gratzl on 25.01.2016.
  */
-/// <amd-dependency path='css!./style' />
 
-/* global define */
-'use strict';
+import './style.scss';
+import * as d3 from 'd3';
+import {onDOMNodeRemoved, mixin} from 'phovea_core/src';
+import {AVisInstance, IVisInstance, assignVis} from 'phovea_core/src/vis';
+import {rect} from 'phovea_core/src/geom';
+import {IVector} from 'phovea_core/src/vector';
+import {toSelectOperation} from 'phovea_core/src/idtype';
 
-
-import C = require('../caleydo_core/main');
-import d3 = require('d3');
-import vis = require('../caleydo_core/vis');
-import vector = require('../caleydo_core/vector');
-import idtypes = require('../caleydo_core/idtype');
-import geom = require('../caleydo_core/geom');
-
-export class BarPlot extends vis.AVisInstance implements vis.IVisInstance {
+export class BarPlot extends AVisInstance implements IVisInstance {
   private options = {
     cssClass: '',
     width: 100,
@@ -30,12 +26,13 @@ export class BarPlot extends vis.AVisInstance implements vis.IVisInstance {
   private xscale:d3.scale.Linear<number, number>;
   private yscale:d3.scale.Linear<number, number>;
 
-  constructor(public data:vector.IVector, parent:Element, options:any = {}) {
+  constructor(public data:IVector, parent:Element, options:any = {}) {
     super();
-    C.mixin(this.options, options);
+    mixin(this.options, options);
 
     this.$node = this.build(d3.select(parent));
     this.$node.datum(this);
+    assignVis(<Element>this.$node.node(), this);
   }
 
   get rawSize():[number, number] {
@@ -61,7 +58,7 @@ export class BarPlot extends vis.AVisInstance implements vis.IVisInstance {
     const yscale = this.yscale = d3.scale.linear().range([0, 100]);
 
     const onClick = function (d, i) {
-      data.select(0, [i], idtypes.toSelectOperation(d3.event));
+      data.select(0, [i], toSelectOperation(d3.event));
     };
 
     const l = function (event, type, selected) {
@@ -77,7 +74,7 @@ export class BarPlot extends vis.AVisInstance implements vis.IVisInstance {
       }
     };
     data.on('select', l);
-    C.onDOMNodeRemoved(<Element>$svg.node(), () => data.off('select', l));
+    onDOMNodeRemoved(<Element>$svg.node(), () => data.off('select', l));
 
     data.data().then((_data) => {
       yscale.domain([0, data.length]);
@@ -113,7 +110,7 @@ export class BarPlot extends vis.AVisInstance implements vis.IVisInstance {
 
     return this.data.data(range).then((data) => {
       var ex_v = d3.extent(data);
-      return geom.rect(
+      return rect(
         this.xscale(ex_v[0]) / 100.0 * o.width,
         ex_i[0] * o.heighti,
         this.xscale(ex_v[1]) / 100.0 * o.width,
@@ -123,6 +120,6 @@ export class BarPlot extends vis.AVisInstance implements vis.IVisInstance {
   }
 }
 
-export function create(data:vector.IVector, parent:Element, options) {
+export function create(data:IVector, parent:Element, options) {
   return new BarPlot(data, parent, options);
 }

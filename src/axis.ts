@@ -1,19 +1,15 @@
 /**
  * Created by Samuel Gratzl on 25.01.2016.
  */
-/// <amd-dependency path='css!./style' />
 
-/* global define */
-'use strict';
+import './style.scss';
+import * as d3 from 'd3';
+import {mixin} from 'phovea_core/src';
+import {AVisInstance, IVisInstance, assignVis, ITransform} from 'phovea_core/src/vis';
+import {selectionUtil} from 'phovea_d3/src/d3util';
+import {IVector} from 'phovea_core/src/vector';
 
-
-import C = require('../caleydo_core/main');
-import d3 = require('d3');
-import d3utils = require('../caleydo_d3/d3util');
-import vis = require('../caleydo_core/vis');
-import vector = require('../caleydo_core/vector');
-
-export class Axis extends vis.AVisInstance implements vis.IVisInstance {
+export class Axis extends AVisInstance implements IVisInstance {
   private options = {
     shift: 10,
     tickSize: 2,
@@ -29,12 +25,13 @@ export class Axis extends vis.AVisInstance implements vis.IVisInstance {
   private scale:d3.scale.Linear<number, number>;
   private axis:d3.svg.Axis;
 
-  constructor(public data:vector.IVector, parent:Element, options:any = {}) {
+  constructor(public data:IVector, parent:Element, options:any = {}) {
     super();
-    C.mixin(this.options, options);
+    mixin(this.options, options);
 
     this.$node = this.build(d3.select(parent));
     this.$node.datum(this);
+    assignVis(<Element>this.$node.node(), this);
   }
 
   get rawSize():[number, number] {
@@ -84,7 +81,7 @@ export class Axis extends vis.AVisInstance implements vis.IVisInstance {
     }
     $axis.call(axis);
 
-    const onClick = d3utils.selectionUtil(this.data, $points, 'circle');
+    const onClick = selectionUtil(this.data, $points, 'circle');
 
     const cxy = (o.orient === 'left' || o.orient === 'right') ? 'cy' : 'cx';
     data.data().then((arr) => {
@@ -109,7 +106,7 @@ export class Axis extends vis.AVisInstance implements vis.IVisInstance {
     });
   }
 
-  transform(scale?:number[], rotate?:number):vis.ITransform {
+  transform(scale?:number[], rotate?:number):ITransform {
     var bak = {
       scale: this.options.scale || [1, 1],
       rotate: this.options.rotate || 0
@@ -171,6 +168,6 @@ export class Axis extends vis.AVisInstance implements vis.IVisInstance {
   }
 }
 
-export function create(data:vector.IVector, parent:Element, options) {
+export function create(data:IVector, parent:Element, options) {
   return new Axis(data, parent, options);
 }

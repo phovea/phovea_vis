@@ -47,7 +47,7 @@ export class ScatterPlot extends AVisInstance implements IVisInstance {
     const svg = $parent.append('svg').attr({
       width: width,
       height: height,
-      class: 'caleydo-scatterplot'
+      class: 'phovea-scatterplot'
     });
 
     var that = this;

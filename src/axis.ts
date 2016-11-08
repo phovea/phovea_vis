@@ -50,7 +50,7 @@ export class Axis extends AVisInstance implements IVisInstance {
     const $svg = $parent.append('svg').attr({
       width: size[0],
       height: size[1],
-      'class': 'caleydo-axis'
+      'class': 'phovea-axis'
     });
     const $root = $svg.append('g');
     const $axis = this.$axis = $root.append('g').attr('class', 'makeover');

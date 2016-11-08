@@ -81,7 +81,7 @@
       },
       {
         "type": "vis",
-        "id": "caleydo-vis-heatmap",
+        "id": "phovea-vis-heatmap",
         "module": "heatmap",
         "extras": {
           "name": "HeatMap",
@@ -92,7 +92,7 @@
       },
       {
         "type": "vis",
-        "id": "caleydo-vis-heatmap1d",
+        "id": "phovea-vis-heatmap1d",
         "module": "heatmap",
         "extras": {
           "name": "HeatMap 1D",
@@ -107,7 +107,7 @@
       },
       {
         "type": "vis",
-        "id": "caleydo-vis-kaplanmeier",
+        "id": "phovea-vis-kaplanmeier",
         "module": "kaplanmeier",
         "extras": {
           "name": "Kaplanmeier Plot",
@@ -125,7 +125,7 @@
       },
       {
         "type": "vis",
-        "id": "caleydo-vis-histogram",
+        "id": "phovea-vis-histogram",
         "module": "distribution",
         "extras": {
           "name": "Histogram",
@@ -138,7 +138,7 @@
       },
       {
         "type": "vis",
-        "id": "caleydo-vis-mosaic",
+        "id": "phovea-vis-mosaic",
         "module": "distribution",
         "extras": {
           "name": "Mosaic",
@@ -157,7 +157,7 @@
       },
       {
         "type": "vis",
-        "id": "caleydo-vis-pie",
+        "id": "phovea-vis-pie",
         "module": "distribution",
         "extras": {
           "name": "Pie",
@@ -172,7 +172,7 @@
       },
       {
         "type": "vis",
-        "id": "caleydo-vis-box",
+        "id": "phovea-vis-box",
         "module": "box",
         "extras": {
           "name": "BoxPlot",

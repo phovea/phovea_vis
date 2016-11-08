@@ -81,7 +81,7 @@ export class KaplanMeierPlot extends AVisInstance implements IVisInstance {
     const $svg = $parent.append('svg').attr({
       width: width * scale[0],
       height: height * scale[1],
-      'class': 'caleydo-kaplanmeier'
+      'class': 'phovea-kaplanmeier'
     });
 
     const $g = $svg.append('g');

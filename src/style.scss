@@ -1,7 +1,7 @@
 $select-color: orange;
 $hover-color: #ffc46b;
 
-.caleydo-axis {
+.phovea-axis {
   .makeover {
     -webkit-user-select: none;
     -khtml-user-select: none;
@@ -22,14 +22,14 @@ $hover-color: #ffc46b;
   }
 }
 
-.caleydo-barplot {
+.phovea-barplot {
   rect {
     stroke: white;
     fill: black;
   }
 }
 
-.caleydo-box {
+.phovea-box {
   path.axis {
     stroke: darkgrey;
   }
@@ -44,13 +44,13 @@ $hover-color: #ffc46b;
   }
 }
 
-div.caleydo-heatmap {
+div.phovea-heatmap {
   position: relative;
   line-height: 0;
 
   canvas {
 
-    &.caleydo-heatmap-selection {
+    &.phovea-heatmap-selection {
       position: absolute;
       top: 0;
       left: 0;
@@ -60,7 +60,7 @@ div.caleydo-heatmap {
 }
 
 
-.caleydo-scatterplot {
+.phovea-scatterplot {
   circle {
     fill-opacity: .7;
   }
@@ -76,28 +76,28 @@ div.caleydo-heatmap {
   }
 }
 
-.caleydo-table {
+.phovea-table {
   font-size: smaller;
   border-collapse: collapse;
 
   tr {
-    &.caleydo-select-selected {
+    &.phovea-select-selected {
       border: 1px solid $select-color;
     }
-    &.caleydo-select-hovered {
+    &.phovea-select-hovered {
       border: 1px solid $hover-color;
     }
   }
 }
 
-.caleydo-kaplanmeier {
+.phovea-kaplanmeier {
   path {
     fill: none;
     stroke: black;
   }
 }
 
-.caleydo-graph-force {
+.phovea-graph-force {
   .node {
     opacity: 0.5;
   }
@@ -107,23 +107,23 @@ div.caleydo-heatmap {
 }
 
 
-.caleydo-heatmap {
+.phovea-heatmap {
   // highlight selection for svg heatmap
   rect {
-    &.caleydo-select-selected {
+    &.phovea-select-selected {
       fill: $select-color;
     }
-    &.caleydo-select-hovered {
+    &.phovea-select-hovered {
       fill: $hover-color;
     }
   }
 }
 
-.caleydo-histogram {
-  .caleydo-select-selected rect {
+.phovea-histogram {
+  .phovea-select-selected rect {
     fill: $select-color;
   }
-  .caleydo-select-hovered rect {
+  .phovea-select-hovered rect {
     fill: $hover-color;
   }
 }

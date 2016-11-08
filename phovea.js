@@ -68,7 +68,7 @@ module.exports = function(registry) {
     filter: 'matrix'
 
   });
-  registry.push('vis', 'caleydo-vis-heatmap', function () {
+  registry.push('vis', 'phovea-vis-heatmap', function () {
     return System.import('./src/heatmap');
   }, {
     name: 'HeatMap',
@@ -77,7 +77,7 @@ module.exports = function(registry) {
     filter: 'matrix'
 
   });
-  registry.push('vis', 'caleydo-vis-heatmap1d', function () {
+  registry.push('vis', 'phovea-vis-heatmap1d', function () {
     return System.import('./src/heatmap');
   }, {
     name: 'HeatMap 1D',
@@ -90,7 +90,7 @@ module.exports = function(registry) {
     filter: 'vector'
 
   });
-  registry.push('vis', 'caleydo-vis-kaplanmeier', function () {
+  registry.push('vis', 'phovea-vis-kaplanmeier', function () {
     return System.import('./src/kaplanmeier');
   }, {
     name: 'Kaplanmeier Plot',
@@ -103,7 +103,7 @@ module.exports = function(registry) {
     filter: ['vector', 'int']
 
   });
-  registry.push('vis', 'caleydo-vis-histogram', function () {
+  registry.push('vis', 'phovea-vis-histogram', function () {
     return System.import('./src/distribution');
   }, {
     name: 'Histogram',
@@ -114,7 +114,7 @@ module.exports = function(registry) {
     ]
 
   });
-  registry.push('vis', 'caleydo-vis-mosaic', function () {
+  registry.push('vis', 'phovea-vis-mosaic', function () {
     return System.import('./src/distribution');
   }, {
     name: 'Mosaic',
@@ -131,7 +131,7 @@ module.exports = function(registry) {
     ]
 
   });
-  registry.push('vis', 'caleydo-vis-pie', function () {
+  registry.push('vis', 'phovea-vis-pie', function () {
     return System.import('./src/distribution');
   }, {
     name: 'Pie',
@@ -144,7 +144,7 @@ module.exports = function(registry) {
     ]
 
   });
-  registry.push('vis', 'caleydo-vis-box', function () {
+  registry.push('vis', 'phovea-vis-box', function () {
     return System.import('./src/box');
   }, {
     name: 'BoxPlot',

@@ -93,7 +93,7 @@ class HeatMapDOMRenderer implements IHeatMapRenderer {
     var $svg = $parent.append('svg').attr({
       width: width * scale[0],
       height: height * scale[1],
-      'class': 'caleydo-heatmap'
+      'class': 'phovea-heatmap'
     });
     var $g = $svg.append('g').attr('transform','scale('+scale[0]+','+scale[1]+')');
     this.color = c;
@@ -120,13 +120,13 @@ class HeatMapDOMRenderer implements IHeatMapRenderer {
       onReady();
     });
     var l = function (event, type, selected: Range[]) {
-      $g.selectAll('rect').classed('caleydo-select-' + type, false);
+      $g.selectAll('rect').classed('phovea-select-' + type, false);
       if (selected.length === 0) {
         return;
       }
       selected.forEach((cell) => {
         cell.product((indices) => {
-          $g.select(`g:nth-child(${indices[0] + 1})`).select(`rect:nth-child(${indices[1] + 1})`).classed('caleydo-select-' + type, true);
+          $g.select(`g:nth-child(${indices[0] + 1})`).select(`rect:nth-child(${indices[1] + 1})`).classed('phovea-select-' + type, true);
         }, data.dim);
       });
     };
@@ -152,13 +152,13 @@ class AHeatMapCanvasRenderer {
   }
 
   rescale($node: d3.Selection<any>, dim: number[], scale: number[]) {
-    $node.selectAll('canvas.caleydo-heatmap-selection').attr({
+    $node.selectAll('canvas.phovea-heatmap-selection').attr({
       width: dim[1] * scale[0],
       height: dim[0] * scale[1]
     });
     if (this.selectAble) {
       $node.datum().productSelections().then((selected) => {
-        this.redrawSelection(<HTMLCanvasElement>$node.select('canvas.caleydo-heatmap-selection').node(), dim,
+        this.redrawSelection(<HTMLCanvasElement>$node.select('canvas.phovea-heatmap-selection').node(), dim,
           defaultSelectionType, selected);
       });
     }
@@ -200,7 +200,7 @@ class AHeatMapCanvasRenderer {
     const $selection = $root.append('canvas').attr({
       width: width * scale[0],
       height: height * scale[1],
-      'class': 'caleydo-heatmap-selection'
+      'class': 'phovea-heatmap-selection'
     });
 
     var toCoord = (evt) : [number,number] => {
@@ -313,11 +313,11 @@ class HeatMapCanvasRenderer extends AHeatMapCanvasRenderer implements IHeatMapRe
     var dims = data.dim;
     var width = dims[1], height = dims[0];
 
-    var $root = $parent.append('div').attr('class','caleydo-heatmap');
+    var $root = $parent.append('div').attr('class','phovea-heatmap');
     var $canvas = $root.append('canvas').attr({
       width: width * scale[0],
       height: height * scale[1],
-      'class': 'caleydo-heatmap-data'
+      'class': 'phovea-heatmap-data'
     });
 
     this.imageData = (<CanvasRenderingContext2D>(<HTMLCanvasElement>$canvas.node()).getContext('2d')).createImageData(width, height);//new (<any>ImageData)(data.ncol, data.nrow);
@@ -413,11 +413,11 @@ class HeatMapImageRenderer extends AHeatMapCanvasRenderer implements IHeatMapRen
     var dims = data.dim;
     var width = dims[1], height = dims[0];
 
-    var $root = $parent.append('div').attr('class','caleydo-heatmap');
+    var $root = $parent.append('div').attr('class','phovea-heatmap');
     $root.append('canvas').attr({
       width: width * scale[0],
       height: height * scale[1],
-      'class': 'caleydo-heatmap-data'
+      'class': 'phovea-heatmap-data'
     });
 
     this.image = new Image();
@@ -685,7 +685,7 @@ export class HeatMap1D extends AVisInstance implements IVisInstance {
     var $svg = $parent.append('svg').attr({
       width: width,
       height: height * this.options.initialScale,
-      'class': 'caleydo-heatmap'
+      'class': 'phovea-heatmap'
     });
     var $g = $svg.append('g').attr('transform', 'scale(1,' + this.options.initialScale + ')');
 

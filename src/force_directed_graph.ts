@@ -95,7 +95,7 @@ export class ForceDirectedGraphVis extends AVisInstance implements IVisInstance 
     var $svg = $parent.append('svg').attr({
       width: size[0],
       height: size[1],
-      'class': 'caleydo-graph-force'
+      'class': 'phovea-graph-force'
     });
     var $root = $svg.append('g').attr('transform','scale('+scaleFactor[0]+','+scaleFactor[1]+')');
 

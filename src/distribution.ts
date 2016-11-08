@@ -137,11 +137,11 @@ export class Histogram extends AVisInstance implements IVisInstance {
     const $svg = $parent.append('svg').attr({
       width: size[0],
       height: size[1],
-      'class': 'caleydo-histogram'
+      'class': 'phovea-histogram'
     });
     const $t = $svg.append('g');
     const $data = $t.append('g');
-    const $highlight = $t.append('g').style('pointer-events', 'none').classed('caleydo-select-selected', true);
+    const $highlight = $t.append('g').style('pointer-events', 'none').classed('phovea-select-selected', true);
 
     //using range bands with an ordinal scale for uniform distribution
     const xscale = this.xscale = d3.scale.ordinal<number,number>().rangeBands([0, size[0]], 0.1);
@@ -304,11 +304,11 @@ export class Mosaic extends AVisInstance implements IVisInstance {
     const $svg = $parent.append('svg').attr({
       width: size[0],
       height: size[1],
-      'class': 'caleydo-mosaic'
+      'class': 'phovea-mosaic'
     });
     const $scale = $svg.append('g').attr('transform', 'scale(' + o.scale[0] + ',' + o.scale[1] + ')');
     const $data = $scale.append('g');
-    const $highlight = $scale.append('g').style('pointer-events', 'none').classed('caleydo-select-selected', true);
+    const $highlight = $scale.append('g').style('pointer-events', 'none').classed('phovea-select-selected', true);
 
     const l = (event:any, type:string, selected:Range) => {
       if (!this.hist_data) {
@@ -323,7 +323,7 @@ export class Mosaic extends AVisInstance implements IVisInstance {
         };
       }).filter((entry) => entry.v > 0);
       var $m = $highlight.selectAll('rect').data(highlights);
-      $m.enter().append('rect').attr('width', '100%').classed('caleydo-select-selected', true);
+      $m.enter().append('rect').attr('width', '100%').classed('phovea-select-selected', true);
       $m.attr({
         y: (d) => d.acc,
         height: (d) => d.v
@@ -489,11 +489,11 @@ export class Pie extends AVisInstance implements IVisInstance {
     const $svg = $parent.append('svg').attr({
       width: size[0],
       height: size[1],
-      'class': 'caleydo-pie'
+      'class': 'phovea-pie'
     });
     var $base = $svg.append('g').attr('transform', 'translate(' + o.radius + ',' + o.radius + ')');
     var $data = $base.append('g');
-    var $highlight = $base.append('g').style('pointer-events', 'none').classed('caleydo-select-selected', true);
+    var $highlight = $base.append('g').style('pointer-events', 'none').classed('phovea-select-selected', true);
 
     var scale = this.scale = d3.scale.linear().range([0, 2 * Math.PI]);
     var arc = this.arc = d3.svg.arc<IRadialHistData>().innerRadius(o.innerRadius).outerRadius(o.radius)

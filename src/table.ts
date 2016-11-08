@@ -80,7 +80,7 @@ export class Table extends AVisInstance implements IVisInstance {
   }
 
   private build($parent:d3.Selection<any>, promises:any[]) {
-    var $table = $parent.append('table').attr('class', 'caleydo-table');
+    var $table = $parent.append('table').attr('class', 'phovea-table');
     $table.append('thead').append('tr');
     $table.append('tbody');
     var onClick = selectionUtil(this.data, $table.select('tbody'), 'tr');

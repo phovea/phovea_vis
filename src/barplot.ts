@@ -50,7 +50,7 @@ export class BarPlot extends AVisInstance implements IVisInstance {
     const $svg = $parent.append('svg').attr({
       width: size[0],
       height: size[1],
-      'class': 'caleydo-barplot ' + o.cssClass
+      'class': 'phovea-barplot ' + o.cssClass
     });
 
     //using range bands with an ordinal scale for uniform distribution
@@ -62,15 +62,15 @@ export class BarPlot extends AVisInstance implements IVisInstance {
     };
 
     const l = function (event, type, selected) {
-      $svg.selectAll('rect').classed('caleydo-select-' + type, false);
+      $svg.selectAll('rect').classed('phovea-select-' + type, false);
       if (selected.isNone) {
         return;
       }
       var dim0 = selected.dim(0);
       if (selected.isAll) {
-        $svg.selectAll('rect').classed('caleydo-select-' + type, true);
+        $svg.selectAll('rect').classed('phovea-select-' + type, true);
       } else {
-        dim0.forEach((j) => $svg.selectAll('rect:nth-child(' + (j + 1) + ')').classed('caleydo-select-' + type, true));
+        dim0.forEach((j) => $svg.selectAll('rect:nth-child(' + (j + 1) + ')').classed('phovea-select-' + type, true));
       }
     };
     data.on('select', l);

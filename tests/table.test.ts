@@ -11,8 +11,9 @@ describe('create', () => {
         ['1', '2'], // row_ids
         ['A', 'B'] // col_ids
     );
-    // const element = new HTMLElement(); // "Illegal constructor"
-    // const table = create(data, element);
-    // expect(table.node.innerHTML).toEqual('<something>');
+    const element = document.createElement('div');
+    const table = create(data, element);
+    expect(table.node.innerHTML).toEqual('<thead><tr></tr></thead><tbody></tbody>');
+    // TODO: But it's not actually filling in the table!
   });
 });

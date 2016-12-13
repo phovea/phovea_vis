@@ -16,7 +16,7 @@ import {IVector} from 'phovea_core/src/vector';
 import {toSelectOperation, defaultSelectionType} from 'phovea_core/src/idtype';
 
 
-function defaultColor(value: any) {
+export function defaultColor(value: any) {
   if (value.type === 'categorical') {
     return value.categories.map((c) => c.color);
   }
@@ -27,14 +27,14 @@ function defaultColor(value: any) {
   }
   return ['white', 'red'];
 }
-function defaultDomain(value) {
+export function defaultDomain(value) {
   if (value.type === 'categorical') {
     return value.categories.map((c) => c.name);
   }
   const r = value.range;
   if (r[0] < 0 && r[1] > 0) {
     //use a symmetric range
-    return [Math.min(r[0], -r[1]), Math.max(-r[0], r[1])];
+    return [Math.min(r[0], -r[1]), 0, Math.max(-r[0], r[1])];
   }
   return r;
 }
@@ -48,7 +48,7 @@ interface IScale {
   range(values: any[]): IScale;
 }
 
-function toScale(value): IScale {
+export function toScale(value): IScale {
   if (value.type === 'categorical') {
     return d3.scale.ordinal();
   }

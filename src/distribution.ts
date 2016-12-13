@@ -75,9 +75,9 @@ function createHistData(hist:IHistogram, desc:IDataDescription, data:IDataType) 
   return createNumericalHistData(hist, (<any>data).valuetype.range);
 }
 
-function resolveHistMax(hist, totalHeight) {
+function resolveHistMax(hist, totalHeight):Promise<number> {
   var op = d3.functor(totalHeight);
-  return Promise.resolve(op(hist)).then(function (r) {
+  return Promise.resolve<number>(op(hist)).then(function (r:any) {
     if (r === true) {
       return hist.validCount;
     }

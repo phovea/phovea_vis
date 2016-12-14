@@ -44,3 +44,20 @@ describe('table', () => {
         +'</tbody>');
   });
 });
+
+// TODO
+// describe('MatrixView', () => {
+//   it('sub-selects columns', () => {
+//     const matrix = parseMatrix(
+//         [ // raw data as 2D array
+//           [1, 2],
+//           [3, 4]
+//         ],
+//         ['X', 'Y'], // row_ids
+//         ['A', 'B'] // col_ids
+//     );
+//     const col_range = parse([[0,1],[1]]);
+//     const view = new MatrixView(matrix, col_range);
+//     expect(view.cols()).toEqual("foo");
+//   })
+// });

@@ -2,7 +2,7 @@ import {create} from '../src/table';
 import {parseMatrix} from 'phovea_d3/src/parser';
 import {parse} from 'phovea_core/src/range';
 
-describe('table rendering', () => {
+describe('table', () => {
   var square_table;
   var col_table;
   var row_table;
@@ -24,23 +24,23 @@ describe('table rendering', () => {
       done();
     }, 1000); // TODO: Can we do better than this? create() doesn't let us provide a callback?
   });
-  it('renders square', () => {
+  it('renders', () => {
     expect(square_table.node.innerHTML).toEqual(
         '<thead><tr><th>ID</th><th>A</th><th>B</th></tr></thead>'
         +'<tbody>'
         +'<tr><th>X</th><td>1</td><td>2</td></tr><tr>'
         +'<th>Y</th><td>3</td><td>4</td></tr>'
         +'</tbody>');
-  });
-  it('renders column', () => {
     expect(col_table.node.innerHTML).toEqual(
         '<thead><tr><th>ID</th><th>A</th><th>B</th></tr></thead>' // TODO: Should just be "B", right?
-        +'<tbody><tr><th>X</th><td>2</td></tr>'
-        +'<tr><th>Y</th><td>4</td></tr></tbody>');
-  });
-  it('renders row', () => {
+        +'<tbody>'
+        +'<tr><th>X</th><td>2</td></tr>'
+        +'<tr><th>Y</th><td>4</td></tr>'
+        +'</tbody>');
     expect(row_table.node.innerHTML).toEqual(
         '<thead><tr><th>ID</th><th>B</th></tr></thead>' // TODO: Should be "A" + "B", right?
-        +'<tbody><tr><th>Y</th><td>3</td><td>4</td></tr></tbody>');
+        +'<tbody>'
+        +'<tr><th>Y</th><td>3</td><td>4</td></tr>'
+        +'</tbody>');
   });
 });

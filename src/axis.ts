@@ -5,12 +5,35 @@
 import './style.scss';
 import * as d3 from 'd3';
 import {mixin} from 'phovea_core/src';
-import {AVisInstance, IVisInstance, assignVis, ITransform} from 'phovea_core/src/vis';
+import {AVisInstance, IVisInstance, assignVis, ITransform, IVisInstanceOptions} from 'phovea_core/src/vis';
 import {selectionUtil} from 'phovea_d3/src/d3util';
 import {IVector} from 'phovea_core/src/vector';
+import {Range} from 'phovea_core/src/range';
+
+export interface IAxisOptions extends IVisInstanceOptions {
+  /**
+   * axis shift
+   * @default 10
+   */
+  shift?: number;
+  /**
+   * axis orientation (left, right, top, bottom)
+   * @default left
+   */
+  orient?: string;
+  /**
+   * @default 2
+   */
+  tickSize?: number;
+  /**
+   * radius
+   * @default 2
+   */
+  r?: number;
+}
 
 export class Axis extends AVisInstance implements IVisInstance {
-  private options = {
+  private readonly options: IAxisOptions = {
     shift: 10,
     tickSize: 2,
     orient: 'left',
@@ -19,30 +42,30 @@ export class Axis extends AVisInstance implements IVisInstance {
     rotate: 0
   };
 
-  private $node:d3.Selection<Axis>;
-  private $axis:d3.Selection<any>;
-  private $points:d3.Selection<any>;
-  private scale:d3.scale.Linear<number, number>;
-  private axis:d3.svg.Axis;
+  private readonly $node: d3.Selection<Axis>;
+  private $axis: d3.Selection<any>;
+  private $points: d3.Selection<any>;
+  private scale: d3.scale.Linear<number, number>;
+  private axis: d3.svg.Axis;
 
-  constructor(public data:IVector, parent:Element, options:any = {}) {
+  constructor(public readonly data: IVector, parent: HTMLElement, options: IAxisOptions = {}) {
     super();
     mixin(this.options, options);
 
     this.$node = this.build(d3.select(parent));
     this.$node.datum(this);
-    assignVis(<Element>this.$node.node(), this);
+    assignVis(this.node, this);
   }
 
-  get rawSize():[number, number] {
+  get rawSize(): [number, number] {
     return [50, 300];
   }
 
   get node() {
-    return <Element>this.$node.node();
+    return <HTMLElement>this.$node.node();
   }
 
-  private build($parent:d3.Selection<any>) {
+  private build($parent: d3.Selection<any>) {
     const o = this.options,
       size = this.size,
       data = this.data;
@@ -85,7 +108,7 @@ export class Axis extends AVisInstance implements IVisInstance {
 
     const cxy = (o.orient === 'left' || o.orient === 'right') ? 'cy' : 'cx';
     data.data().then((arr) => {
-      var $p = $points.selectAll('circle').data(arr);
+      const $p = $points.selectAll('circle').data(arr);
       $p.enter().append('circle').attr('r', o.r).on('click', onClick);
       $p.exit().remove();
       $p.attr(cxy, s);
@@ -94,39 +117,38 @@ export class Axis extends AVisInstance implements IVisInstance {
     return $svg;
   }
 
-  locateImpl(range) {
-    var that = this;
+  locateImpl(range: Range) {
     if (range.isAll || range.isNone) {
-      var r = this.scale.range();
-      return Promise.resolve(that.wrap({y: r[0], h: r[1] - r[0]}));
+      const r = this.scale.range();
+      return Promise.resolve(this.wrap({y: r[0], h: r[1] - r[0]}));
     }
     return this.data.data(range).then((data) => {
-      var ex = d3.extent(data, that.scale);
-      return that.wrap({y: ex[0], h: ex[1] - ex[0]});
+      const ex = d3.extent(data, this.scale);
+      return this.wrap({y: ex[0], h: ex[1] - ex[0]});
     });
   }
 
-  transform(scale?:number[], rotate?:number):ITransform {
-    var bak = {
+  transform(scale?: [number, number], rotate?: number): ITransform {
+    const bak = {
       scale: this.options.scale || [1, 1],
       rotate: this.options.rotate || 0
     };
     if (arguments.length === 0) {
       return bak;
     }
-    var o = this.options;
-    var size = this.rawSize;
+    const o = this.options;
+    const size = this.rawSize;
     this.$node.attr({
       width: size[0] * scale[0],
       height: size[1] * scale[1]
     }).style('transform', 'rotate(' + rotate + 'deg)');
 
     this.scale.range([o.shift, ((o.orient === 'left' || o.orient === 'right') ? size[1] * scale[1] : size[0] * scale[0]) - o.shift]);
-    var cxy = (o.orient === 'left' || o.orient === 'right') ? 'cy' : 'cx';
+    const cxy = (o.orient === 'left' || o.orient === 'right') ? 'cy' : 'cx';
     this.$points.selectAll('circle').attr(cxy, this.scale);
     this.$axis.call(this.axis);
 
-    var new_ = {
+    const new_ = {
       scale: scale,
       rotate: rotate
     };
@@ -137,7 +159,7 @@ export class Axis extends AVisInstance implements IVisInstance {
   }
 
   private wrap(base) {
-    var s = this.rawSize;
+    const s = this.rawSize;
     switch (this.options.orient) {
       case 'left':
         base.x = s[0] - this.options.shift;
@@ -168,6 +190,8 @@ export class Axis extends AVisInstance implements IVisInstance {
   }
 }
 
-export function create(data:IVector, parent:Element, options) {
+export default Axis;
+
+export function create(data: IVector, parent: HTMLElement, options: IAxisOptions) {
   return new Axis(data, parent, options);
 }

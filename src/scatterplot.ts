@@ -5,20 +5,24 @@
 
 import './style.scss';
 import * as d3 from 'd3';
-import {AVisInstance, IVisInstance, assignVis} from 'phovea_core/src/vis';
-import {identity, mixin} from 'phovea_core/src';
+import {AVisInstance, IVisInstance, assignVis, IVisInstanceOptions} from 'phovea_core/src/vis';
+import {mixin} from 'phovea_core/src';
 import bindTooltip from 'phovea_d3/src/tooltip';
 import {IMatrix} from 'phovea_core/src/matrix';
 
+export interface IScatterPlotOptions extends IVisInstanceOptions {
+
+}
+
 export class ScatterPlot extends AVisInstance implements IVisInstance {
-  private options = {
+  private readonly options : IScatterPlotOptions= {
     scale: [1, 1],
     rotate: 0
   };
 
-  private $node:d3.Selection<ScatterPlot>;
+  private readonly $node:d3.Selection<ScatterPlot>;
 
-  constructor(public data:IMatrix, parent:Element, options:any = {}) {
+  constructor(public readonly data:IMatrix, parent:Element, options:IScatterPlotOptions = {}) {
     super();
     mixin(this.options, options);
 
@@ -41,24 +45,24 @@ export class ScatterPlot extends AVisInstance implements IVisInstance {
 
     const width = size[0], height = size[1];
 
-    var xcol = 0;
-    var ycol = 1;
+    let xcol = 0;
+    let ycol = 1;
 
     const svg = $parent.append('svg').attr({
       width: width,
       height: height,
-      class: 'phovea-scatterplot'
+      'class': 'phovea-scatterplot'
     });
 
-    var that = this;
+    const that = this;
 
     // bind data to chart
     Promise.all<any[]>([data.data(), data.rows()]).then((promise) => {
-      var arr : any[] = promise[0];
-      var rowNames : string[] = promise[1];
+      const arr : any[] = promise[0];
+      const rowNames : string[] = promise[1];
 
       // create scales
-      var x = d3.scale.linear().domain([0, d3.max(arr, (d) => d[xcol])]).range([0, width]),
+      const x = d3.scale.linear().domain([0, d3.max(arr, (d) => d[xcol])]).range([0, width]),
         y = d3.scale.linear().domain([0, d3.max(arr, (d) => d[ycol])]).range([height, 0]);
 
       svg.selectAll('circle')
@@ -74,7 +78,7 @@ export class ScatterPlot extends AVisInstance implements IVisInstance {
       that.data.data().then((arr) => {
 
         // create scales
-        var x = d3.scale.linear().domain([0, d3.max(arr, (d) => d[xcol])]).range([0, width]),
+        const x = d3.scale.linear().domain([0, d3.max(arr, (d) => d[xcol])]).range([0, width]),
           y = d3.scale.linear().domain([0, d3.max(arr, (d) => d[ycol])]).range([height, 0]);
 
         svg.selectAll('circle')
@@ -86,22 +90,22 @@ export class ScatterPlot extends AVisInstance implements IVisInstance {
       });
     }
 
-    var $xaxis = $parent.append('select')
+    const $xaxis = $parent.append('select')
       .on('change', function () {
         xcol = this.selectedIndex;
         update();
       });
-    var $yaxis = $parent.append('select')
+    const $yaxis = $parent.append('select')
       .on('change', function () {
         ycol = this.selectedIndex;
         update();
       });
 
     data.cols().then((cols) => {
-      var $x = $xaxis.selectAll('option').data(cols);
+      const $x = $xaxis.selectAll('option').data(cols);
       $x.enter().append('option');
       $x.attr('value', (d, i) => i)
-        .text(identity)
+        .text(String)
         .each(function (d, i) {
           if (i === xcol) {
             d3.select(this).attr('selected', 'selected');
@@ -109,10 +113,10 @@ export class ScatterPlot extends AVisInstance implements IVisInstance {
         });
       $x.exit().remove();
 
-      var $y = $yaxis.selectAll('option').data(cols);
+      const $y = $yaxis.selectAll('option').data(cols);
       $y.enter().append('option');
       $y.attr('value', (d, i) => i)
-        .text(identity)
+        .text(String)
         .each(function (d, i) {
           if (i === ycol) {
             d3.select(this).attr('selected', 'selected');
@@ -125,6 +129,6 @@ export class ScatterPlot extends AVisInstance implements IVisInstance {
   }
 }
 
-export function create(data:IMatrix, parent:Element, options) {
+export function create(data:IMatrix, parent:Element, options?: IScatterPlotOptions) {
   return new ScatterPlot(data, parent, options);
 }

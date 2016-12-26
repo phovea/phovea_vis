@@ -6,8 +6,12 @@ import './style.scss';
 import * as d3 from 'd3';
 import {onDOMNodeRemoved, mixin} from 'phovea_core/src';
 import {Range} from 'phovea_core/src/range';
-import {AVisInstance, IVisInstance, assignVis, ITransform} from 'phovea_core/src/vis';
-import {IDataType, IDataDescription} from 'phovea_core/src/datatype';
+import {AVisInstance, IVisInstance, assignVis, ITransform, IVisInstanceOptions} from 'phovea_core/src/vis';
+import {
+  VALUE_TYPE_CATEGORICAL,
+  IHistAbleDataType, INumberValueTypeDesc
+} from 'phovea_core/src/datatype';
+import {IStratification} from 'phovea_core/src/stratification';
 import {ICatHistogram, IHistogram} from 'phovea_core/src/math';
 import {toSelectOperation} from 'phovea_core/src/idtype';
 import {vec2, polygon} from 'phovea_core/src/geom';
@@ -15,19 +19,19 @@ import bindTooltip from 'phovea_d3/src/tooltip';
 
 
 interface IHistData {
-  v: number;
-  acc: number;
-  ratio: number;
-  range: Range;
-  name: string;
-  color: string;
+  readonly v: number;
+  readonly acc: number;
+  readonly ratio: number;
+  readonly range: Range;
+  readonly name: string;
+  readonly color: string;
 }
 
-function createCategoricalHistData(hist:ICatHistogram):IHistData[] {
-  var categories:any[] = hist.categories,
+function createCategoricalHistData(hist: ICatHistogram): IHistData[] {
+  const categories: any[] = hist.categories,
     cols = hist.colors || d3.scale.category10().range(),
     total = hist.validCount;
-  var data = [],
+  let data = [],
     acc = 0;
   hist.forEach((b, i) => {
     data[i] = {
@@ -44,12 +48,12 @@ function createCategoricalHistData(hist:ICatHistogram):IHistData[] {
   return data;
 }
 
-function createNumericalHistData(hist:IHistogram, range:number[]):IHistData[] {
-  var data = [],
+function createNumericalHistData(hist: IHistogram, range: number[]): IHistData[] {
+  const data = [],
     cols = d3.scale.linear<string, string>().domain(range).range(['#111111', '#999999']),
     total = hist.validCount,
-    binWidth = (range[1] - range[0]) / hist.bins,
-    acc = 0;
+    binWidth = (range[1] - range[0]) / hist.bins;
+  let acc = 0;
   hist.forEach((b, i) => {
     data[i] = {
       v: b,
@@ -65,36 +69,58 @@ function createNumericalHistData(hist:IHistogram, range:number[]):IHistData[] {
   return data;
 }
 
-function createHistData(hist:IHistogram, desc:IDataDescription, data:IDataType) {
-  if (desc.type === 'stratification') {
+function createHistData(hist: IHistogram, data: IHistAbleDataType|IStratification) {
+  if (data.desc.type === 'stratification') {
     return createCategoricalHistData(<ICatHistogram>hist);
   }
-  if ((<any>data).valuetype.type === 'categorical') {
+  const d = (<IHistAbleDataType>data).valuetype;
+  if (d.type === VALUE_TYPE_CATEGORICAL) {
     return createCategoricalHistData(<ICatHistogram>hist);
   }
-  return createNumericalHistData(hist, (<any>data).valuetype.range);
+  return createNumericalHistData(hist, (<INumberValueTypeDesc>d).range);
 }
 
-function resolveHistMax(hist, totalHeight):Promise<number> {
-  var op = d3.functor(totalHeight);
-  return Promise.resolve<number>(op(hist)).then(function (r:any) {
+
+function resolveHistMax(hist: IHistogram, totalHeight: ITotalHeight): Promise<number> {
+  const op: ((hist: IHistogram) => number|boolean) = typeof totalHeight === 'function' ? (<(hist: IHistogram) => number|boolean>totalHeight) : () => <number|boolean>totalHeight;
+  return Promise.resolve<number|boolean>(op(hist)).then((r: number|boolean) => {
     if (r === true) {
       return hist.validCount;
     }
     if (r === false) {
       return hist.largestBin;
     }
-    return r;
+    return <number>r;
   });
 }
 
-export interface IHistable extends IDataType {
-  hist(nbins?:number): Promise<IHistogram>;
-  length: number;
+export declare type ITotalHeight = number|boolean|((hist: IHistogram) => number|boolean|Promise<number|boolean>);
+
+export interface IDistributionOptions extends IVisInstanceOptions {
+
+}
+
+
+export interface IHistogramOptions extends IDistributionOptions {
+  /**
+   * options to specify how the total value is computed
+   * @default true
+   */
+  total?: ITotalHeight;
+
+  /**
+   * @default Math.floor(Math.sqrt(data.length))
+   */
+  nbins?: number;
+
+  /**
+   * @default 200
+   */
+  duration?: number;
 }
 
 export class Histogram extends AVisInstance implements IVisInstance {
-  private options = {
+  private options: IHistogramOptions = {
     nbins: 5,
     total: true,
     duration: 200,
@@ -102,15 +128,15 @@ export class Histogram extends AVisInstance implements IVisInstance {
     rotate: 0
   };
 
-  private $node:d3.Selection<Histogram>;
+  private readonly $node: d3.Selection<Histogram>;
 
-  private xscale:d3.scale.Ordinal<number, number>;
-  private yscale:d3.scale.Linear<number, number>;
+  private xscale: d3.scale.Ordinal<number, number>;
+  private yscale: d3.scale.Linear<number, number>;
 
-  private hist:IHistogram;
-  private hist_data:IHistData[];
+  private hist: IHistogram;
+  private hist_data: IHistData[];
 
-  constructor(public data:IHistable, parent:Element, options:any = {}) {
+  constructor(public readonly data: IHistAbleDataType|IStratification, parent: Element, options: IHistogramOptions = {}) {
     super();
     mixin(this.options, {
       nbins: Math.floor(Math.sqrt(data.length)),
@@ -118,18 +144,18 @@ export class Histogram extends AVisInstance implements IVisInstance {
 
     this.$node = this.build(d3.select(parent));
     this.$node.datum(this);
-    assignVis(<Element>this.$node.node(), this);
+    assignVis(this.node, this);
   }
 
-  get rawSize():[number, number] {
+  get rawSize(): [number, number] {
     return [200, 100];
   }
 
   get node() {
-    return <Element>this.$node.node();
+    return <SVGSVGElement>this.$node.node();
   }
 
-  private build($parent:d3.Selection<any>) {
+  private build($parent: d3.Selection<any>) {
     const size = this.size,
       data = this.data,
       o = this.options;
@@ -147,18 +173,18 @@ export class Histogram extends AVisInstance implements IVisInstance {
     const xscale = this.xscale = d3.scale.ordinal<number,number>().rangeBands([0, size[0]], 0.1);
     const yscale = this.yscale = d3.scale.linear().range([0, size[1]]);
 
-    const l = (event:any, type:string, selected:Range) => {
+    const l = (event: any, type: string, selected: Range) => {
       if (!this.hist_data) {
         return;
       }
       const highlights = this.hist_data.map((entry, i) => {
-        var s = entry.range.intersect(selected);
+        const s = entry.range.intersect(selected);
         return {
           i: i,
           v: s.size()[0]
         };
       }).filter((entry) => entry.v > 0);
-      var $m = $highlight.selectAll('rect').data(highlights);
+      const $m = $highlight.selectAll('rect').data(highlights);
       $m.enter().append('rect').attr('width', xscale.rangeBand());
       $m.attr({
         x: function (d) {
@@ -186,16 +212,14 @@ export class Histogram extends AVisInstance implements IVisInstance {
       xscale.domain(d3.range(hist.bins));
       return resolveHistMax(hist, this.options.total);
     }).then((hist_max) => {
-      var hist = this.hist;
+      const hist = this.hist;
       yscale.domain([0, hist_max]);
-      var hist_data = this.hist_data = createHistData(hist, this.data.desc, this.data);
+      const hist_data = this.hist_data = createHistData(hist, this.data);
 
-      var $m = $data.selectAll('rect').data(hist_data);
+      const $m = $data.selectAll('rect').data(hist_data);
       $m.enter().append('rect')
         .attr('width', xscale.rangeBand())
-        .call(bindTooltip<IHistData>((d) => {
-          return d.name + ' ' + (d.v) + ' entries (' + Math.round(d.ratio * 100) + '%)';
-        }))
+        .call(bindTooltip<IHistData>((d) => `${d.name} ${d.v} entries (${Math.round(d.ratio * 100)}%)`))
         .on('click', onClick);
       $m.attr({
         x: (d, i) => xscale(i),
@@ -212,27 +236,25 @@ export class Histogram extends AVisInstance implements IVisInstance {
     return $svg;
   }
 
-  locateImpl(range:Range) {
-    var that = this, size = this.rawSize;
+  locateImpl(range: Range) {
+    const size = this.rawSize;
     if (range.isAll || range.isNone) {
       return Promise.resolve({x: 0, y: 0, w: size[0], h: size[1]});
     }
-    return (<any>this.data).data(range).then(function (data) {
-      var ex = d3.extent(data, function (value) {
-        return that.hist.binOf(value);
-      });
-      var h0 = that.hist_data[ex[0]];
-      var h1 = that.hist_data[ex[1]];
+    return (<any>this.data).data(range).then((data) => {
+      const ex = d3.extent(data, (value) => this.hist.binOf(value));
+      const h0 = this.hist_data[ex[0]];
+      const h1 = this.hist_data[ex[1]];
       return Promise.resolve({
-        x: that.xscale(ex[0]),
-        width: (that.xscale(ex[1]) - that.xscale(ex[0]) + that.xscale.rangeBand()),
-        height: that.yscale(Math.max(h0.v, h1.v)),
-        y: that.yscale(that.yscale.domain()[1] - Math.max(h0.v, h1.v))
+        x: this.xscale(ex[0]),
+        width: (this.xscale(ex[1]) - this.xscale(ex[0]) + this.xscale.rangeBand()),
+        height: this.yscale(Math.max(h0.v, h1.v)),
+        y: this.yscale(this.yscale.domain()[1] - Math.max(h0.v, h1.v))
       });
     });
   }
 
-  transform(scale?:number[], rotate?:number):ITransform {
+  transform(scale?: [number, number], rotate?: number): ITransform {
     const bak = {
       scale: this.options.scale || [1, 1],
       rotate: this.options.rotate || 0
@@ -240,14 +262,14 @@ export class Histogram extends AVisInstance implements IVisInstance {
     if (arguments.length === 0) {
       return bak;
     }
-    var size = this.rawSize;
+    const size = this.rawSize;
     this.$node.attr({
       width: size[0] * scale[0],
       height: size[1] * scale[1]
     }).style('transform', 'rotate(' + rotate + 'deg)');
     this.$node.select('g').attr('transform', 'scale(' + scale[0] + ',' + scale[1] + ')');
 
-    var new_ = {
+    const new_ = {
       scale: scale,
       rotate: rotate
     };
@@ -258,8 +280,33 @@ export class Histogram extends AVisInstance implements IVisInstance {
   }
 }
 
+
+export interface IMosaicOptions extends IDistributionOptions {
+  /**
+   * @default 20
+   */
+  width?: number;
+  /**
+   * @default 200
+   */
+  duration?: number;
+  /**
+   * target height such that the mosaic will fit
+   * @default null
+   */
+  heightTo?: number;
+  /**
+   * @default 10
+   */
+  initialScale?: number;
+  /**
+   * @default true
+   */
+  selectAble?: boolean;
+}
+
 export class Mosaic extends AVisInstance implements IVisInstance {
-  private options = {
+  private readonly options: IMosaicOptions = {
     width: 20,
     initialScale: 10,
     duration: 200,
@@ -269,26 +316,27 @@ export class Mosaic extends AVisInstance implements IVisInstance {
     rotate: 0
   };
 
-  private $node:d3.Selection<Mosaic>;
+  private readonly $node: d3.Selection<Mosaic>;
 
-  private hist:IHistogram;
-  private hist_data:IHistData[];
+  private hist: IHistogram;
+  private hist_data: IHistData[];
 
-  constructor(public data:IHistable, parent:Element, options:any = {}) {
+  constructor(public readonly data: IHistAbleDataType|IStratification, parent: Element, options: IMosaicOptions = {}) {
     super();
     mixin(this.options, {
       scale: [1, this.options.initialScale]
     }, options);
 
-    if (this.options.heightTo) {
+    if (typeof this.options.heightTo === 'number') {
       this.options.scale[1] = this.options.heightTo / this.data.dim[0];
     }
 
     this.$node = this.build(d3.select(parent));
     this.$node.datum(this);
+    assignVis(this.node, this);
   }
 
-  get rawSize():[number, number] {
+  get rawSize(): [number, number] {
     return [this.options.width, this.data.dim[0]];
   }
 
@@ -296,7 +344,7 @@ export class Mosaic extends AVisInstance implements IVisInstance {
     return <Element>this.$node.node();
   }
 
-  private build($parent:d3.Selection<any>) {
+  private build($parent: d3.Selection<any>) {
     const size = this.size,
       data = this.data,
       o = this.options;
@@ -310,19 +358,19 @@ export class Mosaic extends AVisInstance implements IVisInstance {
     const $data = $scale.append('g');
     const $highlight = $scale.append('g').style('pointer-events', 'none').classed('phovea-select-selected', true);
 
-    const l = (event:any, type:string, selected:Range) => {
+    const l = (event: any, type: string, selected: Range) => {
       if (!this.hist_data) {
         return;
       }
-      var highlights = this.hist_data.map((entry, i) => {
-        var s = entry.range.intersect(selected);
+      const highlights = this.hist_data.map((entry, i) => {
+        const s = entry.range.intersect(selected);
         return {
           i: i,
           acc: entry.acc,
           v: s.size()[0]
         };
       }).filter((entry) => entry.v > 0);
-      var $m = $highlight.selectAll('rect').data(highlights);
+      const $m = $highlight.selectAll('rect').data(highlights);
       $m.enter().append('rect').attr('width', '100%').classed('phovea-select-selected', true);
       $m.attr({
         y: (d) => d.acc,
@@ -333,25 +381,21 @@ export class Mosaic extends AVisInstance implements IVisInstance {
     };
     if (o.selectAble) {
       data.on('select', l);
-      onDOMNodeRemoved(<Element>$data.node(), function () {
-        data.off('select', l);
-      });
+      onDOMNodeRemoved(<Element>$data.node(), () => data.off('select', l));
     }
 
     const onClick = o.selectAble ? (d) => {
-      data.select(0, d.range, toSelectOperation(d3.event));
-    } : null;
+        data.select(0, d.range, toSelectOperation(d3.event));
+      } : null;
 
     this.data.hist().then((hist) => {
       this.hist = hist;
-      var hist_data = this.hist_data = createHistData(hist, data.desc, data);
+      const hist_data = this.hist_data = createHistData(hist, data);
 
-      var $m = $data.selectAll('rect').data(hist_data);
+      const $m = $data.selectAll('rect').data(hist_data);
       $m.enter().append('rect')
         .attr('width', '100%')
-        .call(bindTooltip<IHistData>(function (d) {
-          return d.name + ' ' + (d.v) + ' entries (' + Math.round(d.ratio * 100) + '%)';
-        }))
+        .call(bindTooltip<IHistData>((d) => `${d.name} ${d.v} entries (${Math.round(d.ratio * 100)}%)`))
         .on('click', onClick);
       $m.attr({
         y: (d) => d.acc,
@@ -370,29 +414,26 @@ export class Mosaic extends AVisInstance implements IVisInstance {
     return $svg;
   }
 
-  locateImpl(range:Range) {
-    var that = this;
+  locateImpl(range: Range) {
     if (range.isAll || range.isNone) {
-      return Promise.resolve({x: 0, y: 0, w: this.rawSize[0], h: (<any>this.data).length});
+      return Promise.resolve({x: 0, y: 0, w: this.rawSize[0], h: this.data.length});
     }
     return (<any>this.data).data(range).then((data) => {
-      var ex = d3.extent(data, function (value) {
-        return that.hist.binOf(value);
-      });
-      var h0 = that.hist_data[ex[0]];
-      var h1 = that.hist_data[ex[1]];
-      var y = Math.min(h0.acc, h1.acc);
-      var y2 = Math.max(h0.acc + h0.v, h1.acc + h1.v);
+      const ex = d3.extent(data, (value) => this.hist.binOf(value));
+      const h0 = this.hist_data[ex[0]];
+      const h1 = this.hist_data[ex[1]];
+      const y = Math.min(h0.acc, h1.acc);
+      const y2 = Math.max(h0.acc + h0.v, h1.acc + h1.v);
       return Promise.resolve({
         x: 0,
-        width: that.rawSize[0],
+        width: this.rawSize[0],
         height: y2 - y,
         y: y
       });
     });
   }
 
-  transform(scale?:number[], rotate?:number):ITransform {
+  transform(scale?: [number, number], rotate?: number): ITransform {
     const bak = {
       scale: this.options.scale || [1, 1],
       rotate: this.options.rotate || 0
@@ -400,14 +441,14 @@ export class Mosaic extends AVisInstance implements IVisInstance {
     if (arguments.length === 0) {
       return bak;
     }
-    var size = this.rawSize;
+    const size = this.rawSize;
     this.$node.attr({
       width: size[0] * scale[0],
       height: size[1] * scale[1]
     }).style('transform', 'rotate(' + rotate + 'deg)');
     this.$node.select('g').attr('transform', 'scale(' + scale[0] + ',' + scale[1] + ')');
 
-    var new_ = {
+    const new_ = {
       scale: scale,
       rotate: rotate
     };
@@ -418,8 +459,8 @@ export class Mosaic extends AVisInstance implements IVisInstance {
   }
 }
 
-function toPolygon(start:number, end:number, radius:number) {
-  var r = [
+function toPolygon(start: number, end: number, radius: number) {
+  const r = [
     vec2(radius, radius),
     vec2(radius + Math.cos(start) * radius, radius + Math.sin(start) * radius),
     vec2(radius + Math.cos(end) * radius, radius + Math.sin(end) * radius)
@@ -446,8 +487,30 @@ interface IRadialHistHelper {
   end: number;
 }
 
+export interface IPieOptions extends IDistributionOptions {
+  /**
+   * options to specify how the total value is computed
+   * @default true
+   */
+  total?: ITotalHeight;
+
+  /**
+   * @default 200
+   */
+  duration?: number;
+
+  /**
+   * @default 50
+   */
+  radius?: number;
+  /**
+   * @default 0
+   */
+  innerRadius?: number;
+}
+
 export class Pie extends AVisInstance implements IVisInstance {
-  private options = {
+  private readonly options: IPieOptions = {
     radius: 50,
     innerRadius: 0,
     duration: 200,
@@ -456,24 +519,25 @@ export class Pie extends AVisInstance implements IVisInstance {
     rotate: 0
   };
 
-  private $node:d3.Selection<Mosaic>;
+  private readonly $node: d3.Selection<Pie>;
 
-  private scale:d3.scale.Linear<number, number>;
-  private arc:d3.svg.Arc<IRadialHistHelper>;
+  private scale: d3.scale.Linear<number, number>;
+  private arc: d3.svg.Arc<IRadialHistHelper>;
 
-  private hist:ICatHistogram;
-  private hist_data:IRadialHistData[];
+  private hist: ICatHistogram;
+  private hist_data: IRadialHistData[];
 
-  constructor(public data:IHistable, parent:Element, options:any = {}) {
+  constructor(public readonly data: IHistAbleDataType|IStratification, parent: Element, options: IPieOptions = {}) {
     super();
     mixin(this.options, options);
 
     this.$node = this.build(d3.select(parent));
     this.$node.datum(this);
+    assignVis(this.node, this);
   }
 
-  get rawSize():[number, number] {
-    var r = this.options.radius;
+  get rawSize(): [number, number] {
+    const r = this.options.radius;
     return [r * 2, r * 2];
   }
 
@@ -481,7 +545,7 @@ export class Pie extends AVisInstance implements IVisInstance {
     return <Element>this.$node.node();
   }
 
-  private build($parent:d3.Selection<any>) {
+  private build($parent: d3.Selection<any>) {
     const size = this.size,
       data = this.data,
       o = this.options;
@@ -491,27 +555,27 @@ export class Pie extends AVisInstance implements IVisInstance {
       height: size[1],
       'class': 'phovea-pie'
     });
-    var $base = $svg.append('g').attr('transform', 'translate(' + o.radius + ',' + o.radius + ')');
-    var $data = $base.append('g');
-    var $highlight = $base.append('g').style('pointer-events', 'none').classed('phovea-select-selected', true);
+    const $base = $svg.append('g').attr('transform', 'translate(' + o.radius + ',' + o.radius + ')');
+    const $data = $base.append('g');
+    const $highlight = $base.append('g').style('pointer-events', 'none').classed('phovea-select-selected', true);
 
-    var scale = this.scale = d3.scale.linear().range([0, 2 * Math.PI]);
-    var arc = this.arc = d3.svg.arc<IRadialHistData>().innerRadius(o.innerRadius).outerRadius(o.radius)
+    const scale = this.scale = d3.scale.linear().range([0, 2 * Math.PI]);
+    const arc = this.arc = d3.svg.arc<IRadialHistData>().innerRadius(o.innerRadius).outerRadius(o.radius)
       .startAngle((d) => scale(d.start))
       .endAngle((d) => scale(d.end));
 
-    var l = (event, type, selected) => {
+    const l = (event, type, selected) => {
       if (!this.hist_data) {
         return;
       }
-      var highlights = this.hist_data.map((entry) => {
-        var s = entry.range.intersect(selected);
+      const highlights = this.hist_data.map((entry) => {
+        const s = entry.range.intersect(selected);
         return {
           start: entry.start,
           end: entry.start + s.size()[0]
         };
       }).filter((entry) => entry.start < entry.end);
-      var $m = $highlight.selectAll('path').data(highlights);
+      const $m = $highlight.selectAll('path').data(highlights);
       $m.enter().append('path');
       $m.exit().remove();
       $m.attr('d', arc);
@@ -525,11 +589,12 @@ export class Pie extends AVisInstance implements IVisInstance {
       this.hist = <ICatHistogram>hist;
       return resolveHistMax(hist, this.options.total);
     }).then((total) => {
-      var hist = this.hist;
+      const hist = this.hist;
       scale.domain([0, total]);
-      var hist_data = this.hist_data = [], prev = 0, cats:any[] = hist.categories;
+      const hist_data = this.hist_data = [], cats: any[] = hist.categories;
+      let prev = 0;
 
-      var cols = hist.colors || d3.scale.category10().range();
+      const cols = hist.colors || d3.scale.category10().range();
       hist.forEach(function (b, i) {
         hist_data[i] = {
           name: (typeof cats[i] === 'string') ? cats[i] : cats[i].name,
@@ -542,7 +607,7 @@ export class Pie extends AVisInstance implements IVisInstance {
         };
         prev += b;
       });
-      var $m = $data.selectAll('path').data(hist_data);
+      const $m = $data.selectAll('path').data(hist_data);
       $m.enter()
         .append('path')
         .call(bindTooltip<IRadialHistData>((d) => d.name + ' ' + (d.size) + ' entries (' + Math.round(d.ratio * 100) + '%)'))
@@ -562,23 +627,21 @@ export class Pie extends AVisInstance implements IVisInstance {
     return $svg;
   }
 
-  locateImpl(range:Range) {
-    const that = this, o = this.options;
+  locateImpl(range: Range) {
+    const o = this.options;
     if (range.isAll || range.isNone) {
       return Promise.resolve({x: o.radius, y: o.radius, radius: o.radius});
     }
-    return (<any>this.data).data(range).then(function (data) {
-      var ex = d3.extent(data, function (value) {
-        return that.hist.binOf(value);
-      });
-      var startAngle = that.scale(that.hist_data[ex[0]].start);
-      var endAngle = that.scale(that.hist_data[ex[1]].end);
+    return (<any>this.data).data(range).then((data) => {
+      const ex = d3.extent(data, (value) => this.hist.binOf(value));
+      const startAngle = this.scale(this.hist_data[ex[0]].start);
+      const endAngle = this.scale(this.hist_data[ex[1]].end);
       return Promise.resolve(toPolygon(startAngle, endAngle, o.radius));
     });
   }
 
-  transform(scale?:number[], rotate?:number):ITransform {
-    var bak = {
+  transform(scale?: [number, number], rotate?: number): ITransform {
+    const bak = {
       scale: this.options.scale || [1, 1],
       rotate: this.options.rotate || 0
     };
@@ -591,7 +654,7 @@ export class Pie extends AVisInstance implements IVisInstance {
     }).style('transform', 'rotate(' + rotate + 'deg)');
     this.$node.select('g').attr('transform', 'scale(' + scale[0] + ',' + scale[1] + ')translate(' + this.options.radius + ',' + this.options.radius + ')');
 
-    var new_ = {
+    const new_ = {
       scale: scale,
       rotate: rotate
     };
@@ -616,12 +679,12 @@ export class Pie extends AVisInstance implements IVisInstance {
   //}
 }
 
-export function create(data:IHistable, parent:Element, options?) {
+export function create(data: IHistAbleDataType|IStratification, parent: Element, options?: IHistogramOptions) {
   return new Histogram(data, parent, options);
 }
-export function createMosaic(data:IHistable, parent:Element, options?) {
+export function createMosaic(data: IHistAbleDataType|IStratification, parent: Element, options?: IMosaicOptions) {
   return new Mosaic(data, parent, options);
 }
-export function createPie(data:IHistable, parent:Element, options?) {
+export function createPie(data: IHistAbleDataType|IStratification, parent: Element, options?: IPieOptions) {
   return new Pie(data, parent, options);
 }

@@ -1,7 +1,8 @@
 /**
  * Created by Samuel Gratzl on 26.01.2016.
  */
-import './style.scss';
+
+import '../style.scss';
 import * as d3 from 'd3';
 import {onDOMNodeRemoved, mixin} from 'phovea_core/src';
 import {Range} from 'phovea_core/src/range';
@@ -9,7 +10,7 @@ import {AVisInstance, IVisInstance, assignVis, ITransform} from 'phovea_core/src
 import {IHistAbleDataType} from 'phovea_core/src/datatype';
 import {IStratification} from 'phovea_core/src/stratification';
 import {IHistogram} from 'phovea_core/src/math';
-import {toSelectOperation} from 'phovea_core/src/idtype';
+import {toSelectOperation} from 'phovea_core/src/idtype'
 import {vec2, polygon} from 'phovea_core/src/geom';
 import bindTooltip from 'phovea_d3/src/tooltip';
 import {createHistData, IDistributionOptions, IHistData} from './utils';

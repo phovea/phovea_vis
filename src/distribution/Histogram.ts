@@ -2,7 +2,7 @@
  * Created by Samuel Gratzl on 26.01.2016.
  */
 
-import './style.scss';
+import '../style.scss';
 import * as d3 from 'd3';
 import {onDOMNodeRemoved, mixin} from 'phovea_core/src';
 import {Range} from 'phovea_core/src/range';

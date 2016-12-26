@@ -4,7 +4,7 @@
 
 import * as d3 from 'd3';
 import {IMatrix} from 'phovea_core/src/matrix';
-import {IScale} from './utils';
+import {IScale} from './internal';
 
 export enum ESelectOption {
   CELL,

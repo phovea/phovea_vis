@@ -10,10 +10,9 @@ import {AVisInstance, IVisInstance, assignVis, ITransform} from 'phovea_core/src
 import {IHistAbleDataType} from 'phovea_core/src/datatype';
 import {IStratification} from 'phovea_core/src/stratification';
 import {IHistogram} from 'phovea_core/src/math';
-import {toSelectOperation} from 'phovea_core/src/idtype'
-import {vec2, polygon} from 'phovea_core/src/geom';
+import {toSelectOperation} from 'phovea_core/src/idtype';
 import bindTooltip from 'phovea_d3/src/tooltip';
-import {createHistData, IDistributionOptions, IHistData} from './utils';
+import {createHistData, IDistributionOptions, IHistData} from './internal';
 
 
 export interface IMosaicOptions extends IDistributionOptions {

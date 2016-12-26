@@ -6,7 +6,7 @@
 import * as d3 from 'd3';
 import {all} from 'phovea_core/src/range';
 import {IMatrix, IHeatMapUrlOptions} from 'phovea_core/src/matrix';
-import {IScale} from './utils';
+import {IScale} from './internal';
 import {IHeatMapRenderer, ESelectOption} from './IHeatMapRenderer';
 import AHeatMapCanvasRenderer from './AHeatMapCanvasRenderer';
 

@@ -10,7 +10,7 @@ import {AVisInstance, IVisInstance, assignVis} from 'phovea_core/src/vis';
 import {rect} from 'phovea_core/src/geom';
 import {mixin} from 'phovea_core/src';
 import {IMatrix} from 'phovea_core/src/matrix';
-import {defaultColor, defaultDomain, toScale, IScale, ICommonHeatMapOptions} from './utils';
+import {defaultColor, defaultDomain, toScale, IScale, ICommonHeatMapOptions} from './internal';
 import {IHeatMapRenderer, ESelectOption} from './IHeatMapRenderer';
 import HeatMapDOMRenderer from './HeatMapDOMRenderer';
 import HeatMapImageRenderer from './HeatMapImageRenderer';

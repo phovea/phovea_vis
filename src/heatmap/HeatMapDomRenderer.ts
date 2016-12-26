@@ -8,7 +8,7 @@ import {Range, cell} from 'phovea_core/src/range';
 import {onDOMNodeRemoved} from 'phovea_core/src';
 import {IMatrix} from 'phovea_core/src/matrix';
 import {toSelectOperation, defaultSelectionType} from 'phovea_core/src/idtype';
-import {IScale} from './utils';
+import {IScale} from './internal';
 import {IHeatMapRenderer, ESelectOption} from './IHeatMapRenderer';
 
 export default class HeatMapDOMRenderer implements IHeatMapRenderer {

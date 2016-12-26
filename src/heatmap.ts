@@ -55,6 +55,13 @@ export function toScale(value): IScale {
   return d3.scale.linear();
 }
 
+enum ESelectOption {
+  CELL,
+  ROW,
+  COLUMN,
+  NONE
+}
+
 interface IHeatMapRenderer {
   rescale($node: d3.Selection<any>, dim: number[], scale: number[]);
   redraw($node: d3.Selection<any>, scale: number[]);
@@ -65,7 +72,7 @@ interface IHeatMapRenderer {
 class HeatMapDOMRenderer implements IHeatMapRenderer {
   private color: IScale;
 
-  constructor(private selectAble = true) {
+  constructor(private selectAble = ESelectOption.CELL) {
 
   }
 
@@ -109,7 +116,7 @@ class HeatMapDOMRenderer implements IHeatMapRenderer {
           y: i,
           fill: (d) => c(d)
         });
-        if (that.selectAble) {
+        if (that.selectAble !== ESelectOption.NONE) {
           $cols_enter.on('click', (d, j) => {
             data.selectProduct([cell(i,j)], toSelectOperation(d3.event));
           });
@@ -130,7 +137,7 @@ class HeatMapDOMRenderer implements IHeatMapRenderer {
         }, data.dim);
       });
     };
-    if (this.selectAble) {
+    if (this.selectAble !== ESelectOption.NONE) {
       data.on('selectProduct', l);
       onDOMNodeRemoved(<Element>$g.node(), function () {
         data.off('selectProduct', l);
@@ -147,7 +154,7 @@ class HeatMapDOMRenderer implements IHeatMapRenderer {
 
 class AHeatMapCanvasRenderer {
 
-  constructor(protected selectAble = true) {
+  constructor(protected selectAble =  ESelectOption.CELL) {
 
   }
 
@@ -156,7 +163,7 @@ class AHeatMapCanvasRenderer {
       width: dim[1] * scale[0],
       height: dim[0] * scale[1]
     });
-    if (this.selectAble) {
+    if (this.selectAble !== ESelectOption.NONE) {
       $node.datum().productSelections().then((selected) => {
         this.redrawSelection(<HTMLCanvasElement>$node.select('canvas.phovea-heatmap-selection').node(), dim,
           defaultSelectionType, selected);
@@ -191,7 +198,7 @@ class AHeatMapCanvasRenderer {
   }
 
   protected buildSelection(data: IMatrix, $root: d3.Selection<any>, scale: [number,number]) {
-    if (!this.selectAble) {
+    if (this.selectAble !== ESelectOption.NONE) {
       return;
     }
     const dims = data.dim;
@@ -236,7 +243,7 @@ class HeatMapCanvasRenderer extends AHeatMapCanvasRenderer implements IHeatMapRe
   private imageData : ImageData;
   private ready = false;
 
-  constructor(selectAble = true) {
+  constructor(selectAble = ESelectOption.CELL) {
     super(selectAble);
   }
 
@@ -341,7 +348,7 @@ class HeatMapImageRenderer extends AHeatMapCanvasRenderer implements IHeatMapRen
   private ready = false;
   private color: IScale;
 
-  constructor(selectAble = true) {
+  constructor(selectAble = ESelectOption.CELL) {
     super(selectAble);
   }
 
@@ -451,7 +458,7 @@ class HeatMapImageRenderer extends AHeatMapCanvasRenderer implements IHeatMapRen
   }
 }
 
-function createRenderer(d: IMatrix, selectAble = true, forceThumbnails = false): IHeatMapRenderer {
+function createRenderer(d: IMatrix, selectAble = ESelectOption.CELL, forceThumbnails = false): IHeatMapRenderer {
   const cells = d.length;
   if (cells <= 1000) {
     return new HeatMapDOMRenderer(selectAble);
@@ -473,7 +480,7 @@ export class HeatMap extends AVisInstance implements IVisInstance {
 
   constructor(public data:IMatrix, public parent:Element, private options: any) {
     super();
-    var value = (<any>this.data.desc).value;
+    const value = (<any>this.data.desc).value;
     this.options = mixin({
       initialScale: 10,
       scaleTo: null,
@@ -491,7 +498,7 @@ export class HeatMap extends AVisInstance implements IVisInstance {
     this.options.rotate = 0;
     this.colorer = toScale(value).domain(this.options.domain).range(this.options.color);
 
-    this.renderer = createRenderer(data, this.options.selectAble, this.options.forceThumbnails);
+    this.renderer = createRenderer(data, typeof this.options.selectAble === 'boolean' ? (this.options.selectAble ? ESelectOption.CELL : ESelectOption.NONE): ESelectOption[<string>this.options.selectAble], this.options.forceThumbnails);
 
     this.$node = this.build(d3.select(parent));
     this.$node.datum(data);
@@ -640,7 +647,7 @@ export class HeatMap1D extends AVisInstance implements IVisInstance {
       if (r.isAll || r.isNone) {
         return [0, max * s];
       }
-      var ex:any = d3.extent(r.iter().asList());
+      var ex:any = d3.extent(r.asList());
       return [ex[0] * s, (ex[1] - ex[0] + 1) * s];
     }
 

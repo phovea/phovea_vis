@@ -10,7 +10,7 @@ import {
 import {IVisInstanceOptions} from 'phovea_core/src/vis';
 
 
-export function defaultColor(value: IValueTypeDesc): string[] {
+export function defaultColor(value: INumberValueTypeDesc|ICategoricalValueTypeDesc): string[] {
   if (value.type === VALUE_TYPE_CATEGORICAL) {
     return (<ICategoricalValueTypeDesc>value).categories.map((c) => typeof c === 'string' ? 'gray' : (<ICategory>c).color || 'gray');
   }
@@ -22,7 +22,7 @@ export function defaultColor(value: IValueTypeDesc): string[] {
   }
   return ['white', 'red'];
 }
-export function defaultDomain(value: IValueTypeDesc): (string|number)[] {
+export function defaultDomain(value: INumberValueTypeDesc|ICategoricalValueTypeDesc): (string|number)[] {
   if (value.type === VALUE_TYPE_CATEGORICAL) {
     return (<ICategoricalValueTypeDesc>value).categories.map((c) => typeof c === 'string' ? <string>c : (<ICategory>c).name);
   }

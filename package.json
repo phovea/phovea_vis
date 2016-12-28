@@ -64,8 +64,8 @@
     "extract-loader": "0.0.2"
   },
   "dependencies": {
-    "phovea_core": "github:phovea/phovea_core#split_files",
-    "phovea_d3": "github:phovea/phovea_d3#code_cleanup",
+    "phovea_core": "github:phovea/phovea_core#generic_datatypes",
+    "phovea_d3": "github:phovea/phovea_d3#generic_datatypes",
     "@types/d3": "3.5.36",
     "d3": "3.5.17"
   },

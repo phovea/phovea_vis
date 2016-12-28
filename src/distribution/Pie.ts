@@ -8,7 +8,7 @@ import * as d3 from 'd3';
 import {onDOMNodeRemoved, mixin} from 'phovea_core/src';
 import {Range} from 'phovea_core/src/range';
 import {AVisInstance, IVisInstance, assignVis, ITransform} from 'phovea_core/src/vis';
-import {IHistAbleDataType} from 'phovea_core/src/datatype';
+import {IHistAbleDataType, ICategoricalValueTypeDesc, INumberValueTypeDesc} from 'phovea_core/src/datatype';
 import {IStratification} from 'phovea_core/src/stratification';
 import {ICatHistogram} from 'phovea_core/src/math';
 import {toSelectOperation} from 'phovea_core/src/idtype';
@@ -85,7 +85,7 @@ export default class Pie extends AVisInstance implements IVisInstance {
   private hist: ICatHistogram;
   private hist_data: IRadialHistData[];
 
-  constructor(public readonly data: IHistAbleDataType|IStratification, parent: Element, options: IPieOptions = {}) {
+  constructor(public readonly data: IHistAbleDataType<ICategoricalValueTypeDesc|INumberValueTypeDesc>|IStratification, parent: Element, options: IPieOptions = {}) {
     super();
     mixin(this.options, options);
 
@@ -237,6 +237,6 @@ export default class Pie extends AVisInstance implements IVisInstance {
   //}
 }
 
-export function create(data: IHistAbleDataType|IStratification, parent: Element, options?: IPieOptions) {
+export function create(data: IHistAbleDataType<ICategoricalValueTypeDesc|INumberValueTypeDesc>|IStratification, parent: Element, options?: IPieOptions) {
   return new Pie(data, parent, options);
 }

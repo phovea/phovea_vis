@@ -7,9 +7,9 @@ import * as d3 from 'd3';
 import {Range} from 'phovea_core/src/range';
 import {AVisInstance, IVisInstance, assignVis, IVisInstanceOptions} from 'phovea_core/src/vis';
 import {rect} from 'phovea_core/src/geom';
-import {IMatrix} from 'phovea_core/src/matrix';
+import {IAnyMatrix} from 'phovea_core/src/matrix';
 import {ITable} from 'phovea_core/src/table';
-import {IVector} from 'phovea_core/src/vector';
+import {IAnyVector} from 'phovea_core/src/vector';
 import {selectionUtil} from 'phovea_d3/src/d3util';
 import {mixin} from 'phovea_core/src';
 
@@ -24,13 +24,13 @@ export class Table extends AVisInstance implements IVisInstance {
     rotate: 0
   };
 
-  constructor(public readonly data: IMatrix|ITable|IVector, parent: Element, options: ITableOptions = {}) {
+  constructor(public readonly data: IAnyMatrix|ITable|IAnyVector, parent: Element, options: ITableOptions = {}) {
     super();
     mixin(this.options, options);
     const $p = d3.select(parent);
     switch (data.desc.type) { //depending on the type of the data, create a different table
       case 'matrix':
-        const dmatrix = <IMatrix>data;
+        const dmatrix = <IAnyMatrix>data;
         this.$node = this.build($p, [dmatrix.cols(), dmatrix.rows(), dmatrix.data()]);
         break;
       case 'table':
@@ -38,7 +38,7 @@ export class Table extends AVisInstance implements IVisInstance {
         this.$node = this.build($p, [dtable.cols().map((v) => v.desc.name), dtable.rows(), this.data.data()]);
         break;
       case 'vector':
-        const dvector = <IVector>data;
+        const dvector = <IAnyVector>data;
         this.$node = this.build($p, [
           [dvector.desc.name],
           dvector.names(),
@@ -124,6 +124,6 @@ export class Table extends AVisInstance implements IVisInstance {
   }
 }
 
-export function create(data: IMatrix|ITable|IVector, parent: Element, options?: ITableOptions) {
+export function create(data: IAnyMatrix|ITable|IAnyVector, parent: Element, options?: ITableOptions) {
   return new Table(data, parent, options);
 }

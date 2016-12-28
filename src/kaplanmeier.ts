@@ -8,7 +8,7 @@ import * as d3 from 'd3';
 import {Range} from 'phovea_core/src/range';
 import {AVisInstance, IVisInstance, assignVis, IVisInstanceOptions} from 'phovea_core/src/vis';
 import {mixin} from 'phovea_core/src';
-import {IVector} from 'phovea_core/src/vector';
+import {INumericalVector} from 'phovea_core/src/vector';
 import {} from 'phovea_core/src/vis';
 import {} from 'phovea_core/src/range';
 import {} from 'phovea_core/src';
@@ -43,7 +43,7 @@ export class KaplanMeierPlot extends AVisInstance implements IVisInstance {
 
   private readonly line = d3.svg.line().interpolate('step');
 
-  constructor(public readonly data: IVector, public parent: Element, options: IKaplanMaierOptions = {}) {
+  constructor(public readonly data: INumericalVector, public parent: Element, options: IKaplanMaierOptions = {}) {
     super();
     //var value = (<any>this.data.desc).value;
     mixin(this.options, options);
@@ -142,6 +142,6 @@ export class KaplanMeierPlot extends AVisInstance implements IVisInstance {
   }
 }
 
-export function create(data: IVector, parent: Element, options?: IKaplanMaierOptions) {
+export function create(data: INumericalVector, parent: Element, options?: IKaplanMaierOptions) {
   return new KaplanMeierPlot(data, parent, options);
 }

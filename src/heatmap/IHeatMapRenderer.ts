@@ -3,8 +3,8 @@
  */
 
 import * as d3 from 'd3';
-import {IMatrix} from 'phovea_core/src/matrix';
 import {IScale} from './internal';
+import {IHeatMapAbleMatrix} from './HeatMap';
 
 export enum ESelectOption {
   CELL,
@@ -16,6 +16,6 @@ export enum ESelectOption {
 export interface IHeatMapRenderer {
   rescale($node: d3.Selection<any>, dim: number[], scale: number[]);
   redraw($node: d3.Selection<any>, scale: number[]);
-  recolor($node: d3.Selection<any>, data: IMatrix, color: IScale, scale: number[]);
-  build(data: IMatrix, $parent: d3.Selection<any>, scale: [number, number], c: IScale, onReady: () => void);
+  recolor($node: d3.Selection<any>, data: IHeatMapAbleMatrix, color: IScale, scale: number[]);
+  build(data: IHeatMapAbleMatrix, $parent: d3.Selection<any>, scale: [number, number], c: IScale, onReady: () => void);
 }

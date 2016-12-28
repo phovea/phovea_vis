@@ -7,7 +7,7 @@ import {Range} from 'phovea_core/src/range';
 import {IVisInstanceOptions} from 'phovea_core/src/vis';
 import {
   VALUE_TYPE_CATEGORICAL,
-  IHistAbleDataType, INumberValueTypeDesc
+  IHistAbleDataType, INumberValueTypeDesc, ICategoricalValueTypeDesc
 } from 'phovea_core/src/datatype';
 import {IStratification} from 'phovea_core/src/stratification';
 import {ICatHistogram, IHistogram} from 'phovea_core/src/math';
@@ -64,11 +64,11 @@ function createNumericalHistData(hist: IHistogram, range: number[]): IHistData[]
   return data;
 }
 
-export function createHistData(hist: IHistogram, data: IHistAbleDataType|IStratification) {
+export function createHistData(hist: IHistogram, data: IHistAbleDataType<ICategoricalValueTypeDesc|INumberValueTypeDesc>|IStratification) {
   if (data.desc.type === 'stratification') {
     return createCategoricalHistData(<ICatHistogram>hist);
   }
-  const d = (<IHistAbleDataType>data).valuetype;
+  const d = (<IHistAbleDataType<ICategoricalValueTypeDesc|INumberValueTypeDesc>>data).valuetype;
   if (d.type === VALUE_TYPE_CATEGORICAL) {
     return createCategoricalHistData(<ICatHistogram>hist);
   }

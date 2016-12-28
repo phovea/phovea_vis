@@ -9,14 +9,16 @@ import {Range} from 'phovea_core/src/range';
 import {AVisInstance, IVisInstance, assignVis} from 'phovea_core/src/vis';
 import {rect} from 'phovea_core/src/geom';
 import {mixin} from 'phovea_core/src';
-import {IMatrix} from 'phovea_core/src/matrix';
+import {INumericalMatrix,ICategoricalMatrix} from 'phovea_core/src/matrix';
 import {defaultColor, defaultDomain, toScale, IScale, ICommonHeatMapOptions} from './internal';
 import {IHeatMapRenderer, ESelectOption} from './IHeatMapRenderer';
 import HeatMapDOMRenderer from './HeatMapDOMRenderer';
 import HeatMapImageRenderer from './HeatMapImageRenderer';
 import HeatMapCanvasRenderer from './HeatMapCanvasRenderer';
 
-function createRenderer(d: IMatrix, selectAble: ESelectOption = ESelectOption.CELL, forceThumbnails: boolean = false): IHeatMapRenderer {
+export declare type IHeatMapAbleMatrix = INumericalMatrix|ICategoricalMatrix;
+
+function createRenderer(d: IHeatMapAbleMatrix, selectAble: ESelectOption = ESelectOption.CELL, forceThumbnails: boolean = false): IHeatMapRenderer {
   const cells = d.length;
   if (cells <= 1000) {
     return new HeatMapDOMRenderer(selectAble);
@@ -66,7 +68,7 @@ export default class HeatMap extends AVisInstance implements IVisInstance {
     rotate: 0
   };
 
-  constructor(public data: IMatrix, public parent: Element, options: IHeatMapOptions = {}) {
+  constructor(public data: IHeatMapAbleMatrix, public parent: Element, options: IHeatMapOptions = {}) {
     super();
     const value = this.data.valuetype;
     mixin(this.options, {
@@ -171,6 +173,6 @@ export default class HeatMap extends AVisInstance implements IVisInstance {
   }
 }
 
-export function create(data: IMatrix, parent: HTMLElement, options?: IHeatMapOptions){
+export function create(data: IHeatMapAbleMatrix, parent: HTMLElement, options?: IHeatMapOptions){
   return new HeatMap(data, parent, options);
 }

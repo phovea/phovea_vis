@@ -7,7 +7,7 @@ import * as d3 from 'd3';
 import {onDOMNodeRemoved, mixin} from 'phovea_core/src';
 import {AVisInstance, IVisInstance, assignVis, IVisInstanceOptions} from 'phovea_core/src/vis';
 import {rect} from 'phovea_core/src/geom';
-import {IVector} from 'phovea_core/src/vector';
+import {INumericalVector} from 'phovea_core/src/vector';
 import {toSelectOperation} from 'phovea_core/src/idtype';
 import {Range} from 'phovea_core/src/range';
 
@@ -52,7 +52,7 @@ export class BarPlot extends AVisInstance implements IVisInstance {
   private xscale: d3.scale.Linear<number, number>;
   private yscale: d3.scale.Linear<number, number>;
 
-  constructor(public readonly data: IVector, parent: Element, options: IBarPlotOptions = {}) {
+  constructor(public readonly data: INumericalVector, parent: Element, options: IBarPlotOptions = {}) {
     super();
     mixin(this.options, options);
 
@@ -147,6 +147,6 @@ export class BarPlot extends AVisInstance implements IVisInstance {
 }
 export default BarPlot;
 
-export function create(data: IVector, parent: Element, options?: IBarPlotOptions) {
+export function create(data: INumericalVector, parent: Element, options?: IBarPlotOptions) {
   return new BarPlot(data, parent, options);
 }

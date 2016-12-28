@@ -1,8 +1,9 @@
 import {toScale, defaultDomain, defaultColor} from '../src/heatmap/internal';
+import {INumberValueTypeDesc} from 'phovea_core/src/datatype';
 
 describe('toScale', () => {
   it('handles negative and positive', () => {
-    const value = {
+    const value: INumberValueTypeDesc = {
       type: 'real',
       range: [-1, 1]
     };
@@ -14,7 +15,7 @@ describe('toScale', () => {
     expect(scale(1)).toEqual('#ff0000');
   });
   it('handles skewed data', () => {
-    const value = {
+    const value: INumberValueTypeDesc = {
       type: 'real',
       range: [-0.1, 10]
     };
@@ -27,7 +28,7 @@ describe('toScale', () => {
     expect(scale(10)).toEqual('#ff0000');
   });
   it('handles positive', () => {
-    const value = {
+    const value: INumberValueTypeDesc = {
       type: 'real',
       range: [0, 1]
     };
@@ -39,7 +40,7 @@ describe('toScale', () => {
     expect(scale(1)).toEqual('#ff0000');
   });
   it('handles negative', () => {
-    const value = {
+    const value: INumberValueTypeDesc = {
       type: 'real',
       range: [-1, 0]
     };

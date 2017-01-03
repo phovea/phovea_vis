@@ -9,7 +9,7 @@ import {AVisInstance, IVisInstance, assignVis} from 'phovea_core/src/vis';
 import {rect} from 'phovea_core/src/geom';
 import {mixin} from 'phovea_core/src';
 import {selectionUtil} from 'phovea_d3/src/d3util';
-import {IVector} from 'phovea_core/src/vector';
+import {INumericalVector, ICategoricalVector} from 'phovea_core/src/vector';
 import {defaultColor, defaultDomain, toScale, IScale, ICommonHeatMapOptions} from './internal';
 
 export interface IHeatMap1DOptions extends ICommonHeatMapOptions {
@@ -25,6 +25,8 @@ export interface IHeatMap1DOptions extends ICommonHeatMapOptions {
   heightTo?: number;
 }
 
+export declare type IHeatMapAbleVector = INumericalVector|ICategoricalVector;
+
 export default class HeatMap1D extends AVisInstance implements IVisInstance {
   private readonly $node: d3.Selection<any>;
   private readonly colorer: IScale;
@@ -37,7 +39,7 @@ export default class HeatMap1D extends AVisInstance implements IVisInstance {
     rotate: 0
   };
 
-  constructor(public readonly data: IVector, public parent: Element, options: IHeatMap1DOptions = {}) {
+  constructor(public readonly data: IHeatMapAbleVector, public parent: Element, options: IHeatMap1DOptions = {}) {
     super();
     const value = this.data.valuetype;
     mixin(this.options, {
@@ -158,6 +160,6 @@ export default class HeatMap1D extends AVisInstance implements IVisInstance {
 }
 
 
-export function create(data: IVector, parent: HTMLElement, options?: IHeatMap1DOptions): AVisInstance {
+export function create(data: IHeatMapAbleVector, parent: HTMLElement, options?: IHeatMap1DOptions): AVisInstance {
   return new HeatMap1D(data, parent, options);
 }

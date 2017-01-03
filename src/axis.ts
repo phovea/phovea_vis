@@ -7,7 +7,7 @@ import * as d3 from 'd3';
 import {mixin} from 'phovea_core/src';
 import {AVisInstance, IVisInstance, assignVis, ITransform, IVisInstanceOptions} from 'phovea_core/src/vis';
 import {selectionUtil} from 'phovea_d3/src/d3util';
-import {IVector} from 'phovea_core/src/vector';
+import {INumericalVector} from 'phovea_core/src/vector';
 import {Range} from 'phovea_core/src/range';
 
 export interface IAxisOptions extends IVisInstanceOptions {
@@ -48,7 +48,7 @@ export class Axis extends AVisInstance implements IVisInstance {
   private scale: d3.scale.Linear<number, number>;
   private axis: d3.svg.Axis;
 
-  constructor(public readonly data: IVector, parent: HTMLElement, options: IAxisOptions = {}) {
+  constructor(public readonly data: INumericalVector, parent: HTMLElement, options: IAxisOptions = {}) {
     super();
     mixin(this.options, options);
 
@@ -192,6 +192,6 @@ export class Axis extends AVisInstance implements IVisInstance {
 
 export default Axis;
 
-export function create(data: IVector, parent: HTMLElement, options: IAxisOptions) {
+export function create(data: INumericalVector, parent: HTMLElement, options: IAxisOptions) {
   return new Axis(data, parent, options);
 }

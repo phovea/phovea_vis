@@ -5,10 +5,11 @@
 
 import * as d3 from 'd3';
 import {all} from 'phovea_core/src/range';
-import {IMatrix, IHeatMapUrlOptions} from 'phovea_core/src/matrix';
+import {IHeatMapUrlOptions} from 'phovea_core/src/matrix';
 import {IScale} from './internal';
 import {IHeatMapRenderer, ESelectOption} from './IHeatMapRenderer';
 import AHeatMapCanvasRenderer from './AHeatMapCanvasRenderer';
+import {IHeatMapAbleMatrix} from './HeatMap';
 
 
 export default class HeatMapImageRenderer extends AHeatMapCanvasRenderer implements IHeatMapRenderer {
@@ -76,14 +77,14 @@ export default class HeatMapImageRenderer extends AHeatMapCanvasRenderer impleme
      }*/
   }
 
-  recolor($node: d3.Selection<any>, data: IMatrix, color: IScale, scale: number[]) {
+  recolor($node: d3.Selection<any>, data: IHeatMapAbleMatrix, color: IScale, scale: number[]) {
     //can't do that
     this.color = color;
     this.redrawImpl($node, scale);
   }
 
 
-  build(data: IMatrix, $parent: d3.Selection<any>, scale: [number, number], c: IScale, onReady: () => void) {
+  build(data: IHeatMapAbleMatrix, $parent: d3.Selection<any>, scale: [number, number], c: IScale, onReady: () => void) {
     this.color = c;
     const dims = data.dim;
     const width = dims[1], height = dims[0];

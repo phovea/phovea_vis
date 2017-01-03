@@ -8,7 +8,7 @@ import {Range} from 'phovea_core/src/range';
 import {AVisInstance, IVisInstance, assignVis, IVisInstanceOptions} from 'phovea_core/src/vis';
 import {rect} from 'phovea_core/src/geom';
 import {mixin} from 'phovea_core/src';
-import {IVector} from 'phovea_core/src/vector';
+import {INumericalVector} from 'phovea_core/src/vector';
 import bindTooltip from 'phovea_d3/src/tooltip';
 
 
@@ -36,7 +36,7 @@ export class BoxPlot extends AVisInstance implements IVisInstance {
 
   private scale: d3.scale.Linear<number, number>;
 
-  constructor(public data: IVector, parent: Element, options: IBoxPlotOptions = {}) {
+  constructor(public data: INumericalVector, parent: Element, options: IBoxPlotOptions = {}) {
     super();
     mixin(this.options, options);
 
@@ -108,6 +108,6 @@ export class BoxPlot extends AVisInstance implements IVisInstance {
 }
 export default BoxPlot;
 
-export function create(data: IVector, parent: Element, options?: IBoxPlotOptions) {
+export function create(data: INumericalVector, parent: Element, options?: IBoxPlotOptions) {
   return new BoxPlot(data, parent, options);
 }

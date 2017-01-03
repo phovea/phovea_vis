@@ -6,10 +6,10 @@
 import * as d3 from 'd3';
 import {Range, cell} from 'phovea_core/src/range';
 import {onDOMNodeRemoved} from 'phovea_core/src';
-import {IMatrix} from 'phovea_core/src/matrix';
 import {toSelectOperation, defaultSelectionType} from 'phovea_core/src/idtype';
 import {IScale} from './internal';
 import {IHeatMapRenderer, ESelectOption} from './IHeatMapRenderer';
+import {IHeatMapAbleMatrix} from './HeatMap';
 
 export default class HeatMapDOMRenderer implements IHeatMapRenderer {
   private color: IScale;
@@ -26,7 +26,7 @@ export default class HeatMapDOMRenderer implements IHeatMapRenderer {
     $node.select('g').attr('transform', 'scale(' + scale[0] + ',' + scale[1] + ')');
   }
 
-  recolor($node: d3.Selection<any>, data: IMatrix, color: IScale, scale: number[]) {
+  recolor($node: d3.Selection<any>, data: IHeatMapAbleMatrix, color: IScale, scale: number[]) {
     this.color = color;
     $node.selectAll('rect').attr('fill', (d) => color(d));
   }
@@ -35,7 +35,7 @@ export default class HeatMapDOMRenderer implements IHeatMapRenderer {
     $node.selectAll('rect').attr('fill', (d) => this.color(d));
   }
 
-  build(data: IMatrix, $parent: d3.Selection<any>, scale: [number, number], c: IScale, onReady: () => void) {
+  build(data: IHeatMapAbleMatrix, $parent: d3.Selection<any>, scale: [number, number], c: IScale, onReady: () => void) {
     const dims = data.dim, that = this;
     const width = dims[1], height = dims[0];
 

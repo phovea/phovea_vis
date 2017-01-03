@@ -4,10 +4,10 @@
 
 
 import * as d3 from 'd3';
-import {IMatrix} from 'phovea_core/src/matrix';
 import {IScale} from './internal';
 import {IHeatMapRenderer, ESelectOption} from './IHeatMapRenderer';
 import AHeatMapCanvasRenderer from './AHeatMapCanvasRenderer';
+import {IHeatMapAbleMatrix} from './HeatMap';
 
 export default class HeatMapCanvasRenderer extends AHeatMapCanvasRenderer implements IHeatMapRenderer {
   private imageData: ImageData;
@@ -35,7 +35,7 @@ export default class HeatMapCanvasRenderer extends AHeatMapCanvasRenderer implem
     }
   }
 
-  recolor($node: d3.Selection<any>, data: IMatrix, color: IScale, scale: number[]) {
+  recolor($node: d3.Selection<any>, data: IHeatMapAbleMatrix, color: IScale, scale: number[]) {
     const rgba = this.imageData.data;
     if (this.ready) {
       data.data().then((arr) => {
@@ -45,7 +45,7 @@ export default class HeatMapCanvasRenderer extends AHeatMapCanvasRenderer implem
     }
   }
 
-  private genImage(rgba: Uint8ClampedArray|number[], arr: number[][], ncol: number, c: IScale) {
+  private genImage(rgba: Uint8ClampedArray|number[], arr: any[][], ncol: number, c: IScale) {
     arr.forEach((row, j) => {
       const t = j * ncol;
       row.forEach((cell, i) => {
@@ -85,7 +85,7 @@ export default class HeatMapCanvasRenderer extends AHeatMapCanvasRenderer implem
   }
 
 
-  build(data: IMatrix, $parent: d3.Selection<any>, scale: [number, number], c: IScale, onReady: () => void) {
+  build(data: IHeatMapAbleMatrix, $parent: d3.Selection<any>, scale: [number, number], c: IScale, onReady: () => void) {
 
     const dims = data.dim;
     const width = dims[1], height = dims[0];

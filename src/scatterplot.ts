@@ -8,7 +8,7 @@ import * as d3 from 'd3';
 import {AVisInstance, IVisInstance, assignVis, IVisInstanceOptions} from 'phovea_core/src/vis';
 import {mixin} from 'phovea_core/src';
 import bindTooltip from 'phovea_d3/src/tooltip';
-import {IMatrix} from 'phovea_core/src/matrix';
+import {INumericalMatrix} from 'phovea_core/src/matrix';
 
 export interface IScatterPlotOptions extends IVisInstanceOptions {
 
@@ -22,7 +22,7 @@ export class ScatterPlot extends AVisInstance implements IVisInstance {
 
   private readonly $node:d3.Selection<ScatterPlot>;
 
-  constructor(public readonly data:IMatrix, parent:Element, options:IScatterPlotOptions = {}) {
+  constructor(public readonly data:INumericalMatrix, parent:Element, options:IScatterPlotOptions = {}) {
     super();
     mixin(this.options, options);
 
@@ -129,6 +129,6 @@ export class ScatterPlot extends AVisInstance implements IVisInstance {
   }
 }
 
-export function create(data:IMatrix, parent:Element, options?: IScatterPlotOptions) {
+export function create(data:INumericalMatrix, parent:Element, options?: IScatterPlotOptions) {
   return new ScatterPlot(data, parent, options);
 }

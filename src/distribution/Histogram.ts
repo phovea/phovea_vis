@@ -7,7 +7,7 @@ import * as d3 from 'd3';
 import {onDOMNodeRemoved, mixin} from 'phovea_core/src';
 import {Range} from 'phovea_core/src/range';
 import {AVisInstance, IVisInstance, assignVis, ITransform} from 'phovea_core/src/vis';
-import {IHistAbleDataType} from 'phovea_core/src/datatype';
+import {IHistAbleDataType, ICategoricalValueTypeDesc, INumberValueTypeDesc} from 'phovea_core/src/datatype';
 import {IStratification} from 'phovea_core/src/stratification';
 import {IHistogram} from 'phovea_core/src/math';
 import {toSelectOperation} from 'phovea_core/src/idtype';
@@ -49,7 +49,7 @@ export default class Histogram extends AVisInstance implements IVisInstance {
   private hist: IHistogram;
   private hist_data: IHistData[];
 
-  constructor(public readonly data: IHistAbleDataType|IStratification, parent: Element, options: IHistogramOptions = {}) {
+  constructor(public readonly data: IHistAbleDataType<ICategoricalValueTypeDesc|INumberValueTypeDesc>|IStratification, parent: Element, options: IHistogramOptions = {}) {
     super();
     mixin(this.options, {
       nbins: Math.floor(Math.sqrt(data.length)),
@@ -194,6 +194,6 @@ export default class Histogram extends AVisInstance implements IVisInstance {
 }
 
 
-export function create(data: IHistAbleDataType|IStratification, parent: Element, options?: IHistogramOptions) {
+export function create(data: IHistAbleDataType<ICategoricalValueTypeDesc|INumberValueTypeDesc>, parent: Element, options?: IHistogramOptions) {
   return new Histogram(data, parent, options);
 }

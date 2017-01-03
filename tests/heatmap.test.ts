@@ -1,4 +1,4 @@
-import {toScale, defaultDomain, defaultColor} from '../src/heatmap';
+import {toScale, defaultDomain, defaultColor} from '../src/heatmap/internal';
 
 describe('toScale', () => {
   it('handles negative and positive', () => {

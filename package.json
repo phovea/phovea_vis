@@ -64,15 +64,15 @@
     "extract-loader": "0.0.2"
   },
   "dependencies": {
-    "phovea_core": "github:phovea/phovea_core#split_files",
-    "phovea_d3": "github:phovea/phovea_d3#code_cleanup",
+    "phovea_core": "github:phovea/phovea_core#develop",
+    "phovea_d3": "github:phovea/phovea_d3#develop",
     "@types/d3": "3.5.36",
     "d3": "3.5.17"
   },
   "name": "phovea_vis",
   "description": "Utilitiy reposititory containing common visualizations (table, heatmap, scatterplot, axis, pie, distribution, ..)",
   "homepage": "https://phovea.caleydo.org",
-  "version": "0.0.3",
+  "version": "0.1.0-SNAPSHOT",
   "author": {
     "name": "The Caleydo Team",
     "email": "contact@caleydo.org",

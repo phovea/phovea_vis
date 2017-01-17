@@ -85,14 +85,11 @@ export class ForceDirectedGraphVis extends AVisInstance implements IVisInstance 
     this.$node.style('transform', 'rotate(' + rotate + 'deg)');
     this.$node.attr('width', raw[0] * scale[0]).attr('height', raw[1] * scale[1]);
     this.$node.select('g').attr('transform', 'scale(' + scale[0] + ',' + scale[1] + ')');
-    const new_ = {
-      scale: scale,
-      rotate: rotate
-    };
-    this.fire('transform', new_, bak);
+    const act = {scale, rotate};
+    this.fire('transform', act, bak);
     this.options.scale = scale;
     this.options.rotate = rotate;
-    return new_;
+    return act;
   }
 
   private build($parent: d3.Selection<any>) {

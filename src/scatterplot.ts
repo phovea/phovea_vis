@@ -10,9 +10,8 @@ import {mixin} from 'phovea_core/src';
 import bindTooltip from 'phovea_d3/src/tooltip';
 import {INumericalMatrix} from 'phovea_core/src/matrix';
 
-export interface IScatterPlotOptions extends IVisInstanceOptions {
 
-}
+export declare type IScatterPlotOptions = IVisInstanceOptions;
 
 export class ScatterPlot extends AVisInstance implements IVisInstance {
   private readonly options : IScatterPlotOptions= {
@@ -49,8 +48,8 @@ export class ScatterPlot extends AVisInstance implements IVisInstance {
     let ycol = 1;
 
     const svg = $parent.append('svg').attr({
-      width: width,
-      height: height,
+      width,
+      height,
       'class': 'phovea-scatterplot'
     });
 

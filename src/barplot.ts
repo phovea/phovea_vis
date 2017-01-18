@@ -132,15 +132,15 @@ export class BarPlot extends AVisInstance implements IVisInstance {
 
   locateImpl(range: Range) {
     const o = this.options;
-    const ex_i = d3.extent(range.dim(0).iter().asList());
+    const exI = d3.extent(range.dim(0).iter().asList());
 
     return this.data.data(range).then((data) => {
-      const ex_v = d3.extent(data);
+      const exV = d3.extent(data);
       return rect(
-        this.xscale(ex_v[0]) / 100.0 * o.width,
-        ex_i[0] * o.heighti,
-        this.xscale(ex_v[1]) / 100.0 * o.width,
-        (ex_i[1] + 1) * o.heighti
+        this.xscale(exV[0]) / 100.0 * o.width,
+        exI[0] * o.heighti,
+        this.xscale(exV[1]) / 100.0 * o.width,
+        (exI[1] + 1) * o.heighti
       );
     });
   }

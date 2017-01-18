@@ -31,11 +31,11 @@ export default class HeatMap1D extends AVisInstance implements IVisInstance {
   private readonly $node: d3.Selection<any>;
   private readonly colorer: IScale;
 
-  private readonly options : IHeatMap1DOptions = {
+  private readonly options: IHeatMap1DOptions = {
     initialScale: 10,
     width: 20,
     heightTo: null,
-    scale: [1,1],
+    scale: [1, 1],
     rotate: 0
   };
 
@@ -112,14 +112,11 @@ export default class HeatMap1D extends AVisInstance implements IVisInstance {
       height: height * scale[1]
     }).style('transform', 'rotate(' + rotate + 'deg)');
     this.$node.select('g').attr('transform', 'scale(' + scale[0] + ',' + scale[1] + ')');
-    const new_ = {
-      scale: scale,
-      rotate: rotate
-    };
-    this.fire('transform', new_, bak);
+    const act = {scale, rotate};
+    this.fire('transform', act, bak);
     this.options.scale = scale;
     this.options.rotate = rotate;
-    return new_;
+    return act;
   }
 
   private recolor() {
@@ -132,19 +129,18 @@ export default class HeatMap1D extends AVisInstance implements IVisInstance {
     const dims = this.data.dim;
     const width = this.options.width, height = dims[0];
     const $svg = $parent.append('svg').attr({
-      width: width,
+      width,
       height: height * this.options.initialScale,
       'class': 'phovea-heatmap'
     });
     const $g = $svg.append('g').attr('transform', 'scale(1,' + this.options.initialScale + ')');
 
     const c = this.colorer;
-    const data = this.data;
 
-
-    data.data().then((arr) => {
+    const t = <Promise<string|number[]>>this.data.data();
+    t.then((arr: any[]) => {
       const $rows = $g.selectAll('rect').data(arr);
-      const onClick = selectionUtil(data, $g, 'rect');
+      const onClick = selectionUtil(this.data, $g, 'rect');
       $rows.enter().append('rect').on('click', onClick).attr({
         width: this.options.width,
         height: 1

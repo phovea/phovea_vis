@@ -148,14 +148,11 @@ export class Axis extends AVisInstance implements IVisInstance {
     this.$points.selectAll('circle').attr(cxy, this.scale);
     this.$axis.call(this.axis);
 
-    const new_ = {
-      scale: scale,
-      rotate: rotate
-    };
-    this.fire('transform', new_, bak);
+    const act = {scale, rotate};
+    this.fire('transform', act, bak);
     this.options.scale = scale;
     this.options.rotate = rotate;
-    return new_;
+    return act;
   }
 
   private wrap(base) {

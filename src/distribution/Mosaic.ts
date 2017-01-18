@@ -53,7 +53,7 @@ export default class Mosaic extends AVisInstance implements IVisInstance {
   private readonly $node: d3.Selection<Mosaic>;
 
   private hist: IHistogram;
-  private hist_data: IHistData[];
+  private histData: IHistData[];
 
   constructor(public readonly data: IHistAbleDataType<ICategoricalValueTypeDesc|INumberValueTypeDesc>|IStratification, parent: Element, options: IMosaicOptions = {}) {
     super();
@@ -93,10 +93,10 @@ export default class Mosaic extends AVisInstance implements IVisInstance {
     const $highlight = $scale.append('g').style('pointer-events', 'none').classed('phovea-select-selected', true);
 
     const l = (event: any, type: string, selected: Range) => {
-      if (!this.hist_data) {
+      if (!this.histData) {
         return;
       }
-      const highlights = this.hist_data.map((entry, i) => {
+      const highlights = this.histData.map((entry, i) => {
         const s = entry.range.intersect(selected);
         return {
           i: i,
@@ -124,9 +124,9 @@ export default class Mosaic extends AVisInstance implements IVisInstance {
 
     this.data.hist().then((hist) => {
       this.hist = hist;
-      const hist_data = this.hist_data = createHistData(hist, data);
+      const histData = this.histData = createHistData(hist, data);
 
-      const $m = $data.selectAll('rect').data(hist_data);
+      const $m = $data.selectAll('rect').data(histData);
       $m.enter().append('rect')
         .attr('width', '100%')
         .call(bindTooltip<IHistData>((d) => `${d.name} ${d.v} entries (${Math.round(d.ratio * 100)}%)`))
@@ -154,8 +154,8 @@ export default class Mosaic extends AVisInstance implements IVisInstance {
     }
     return (<any>this.data).data(range).then((data) => {
       const ex = d3.extent(data, (value) => this.hist.binOf(value));
-      const h0 = this.hist_data[ex[0]];
-      const h1 = this.hist_data[ex[1]];
+      const h0 = this.histData[ex[0]];
+      const h1 = this.histData[ex[1]];
       const y = Math.min(h0.acc, h1.acc);
       const y2 = Math.max(h0.acc + h0.v, h1.acc + h1.v);
       return Promise.resolve({
@@ -182,14 +182,11 @@ export default class Mosaic extends AVisInstance implements IVisInstance {
     }).style('transform', 'rotate(' + rotate + 'deg)');
     this.$node.select('g').attr('transform', 'scale(' + scale[0] + ',' + scale[1] + ')');
 
-    const new_ = {
-      scale: scale,
-      rotate: rotate
-    };
-    this.fire('transform', new_, bak);
+    const act = {scale, rotate};
+    this.fire('transform', act, bak);
     this.options.scale = scale;
     this.options.rotate = rotate;
-    return new_;
+    return act;
   }
 }
 

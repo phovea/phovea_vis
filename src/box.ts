@@ -12,8 +12,7 @@ import {INumericalVector} from 'phovea_core/src/vector';
 import bindTooltip from 'phovea_d3/src/tooltip';
 
 
-export interface IBoxPlotOptions extends IVisInstanceOptions {
-}
+export declare type IBoxPlotOptions = IVisInstanceOptions;
 
 function createText(stats) {
   let r = '<table><tbody>';

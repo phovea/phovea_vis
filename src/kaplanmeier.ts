@@ -79,14 +79,11 @@ export class KaplanMeierPlot extends AVisInstance implements IVisInstance {
       height: height * scale[1]
     }).style('transform', 'rotate(' + rotate + 'deg)');
     this.$node.select('g').attr('transform', 'scale(' + scale[0] + ',' + scale[1] + ')');
-    const new_ = {
-      scale: scale,
-      rotate: rotate
-    };
-    this.fire('transform', new_, bak);
+    const act = {scale, rotate};
+    this.fire('transform', act, bak);
     this.options.scale = scale;
     this.options.rotate = rotate;
-    return new_;
+    return act;
   }
 
   private build($parent: d3.Selection<any>) {
@@ -121,17 +118,17 @@ export class KaplanMeierPlot extends AVisInstance implements IVisInstance {
         xscale.domain([0, maxAxisTime]);
 
         //0 ... 100%
-        let points = [[0, 0]],
-          prev_i = 0;
+        const points = [[0, 0]];
+        let prevI = 0;
         for (let i = 1; i < died.length; ++i) {
           while (died[i] === died[i - 1] && i < died.length) {
             ++i;
           }
-          points.push([died[prev_i], prev_i + 1]);
-          prev_i = i;
+          points.push([died[prevI], prevI + 1]);
+          prevI = i;
         }
         if (died.length > 0) {
-          points.push([died[prev_i], prev_i + 1]);
+          points.push([died[prevI], prevI + 1]);
         }
         points.push([maxAxisTime, died.length]);
         $g.append('path').datum(points).attr('d', this.line);

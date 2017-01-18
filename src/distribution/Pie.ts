@@ -83,7 +83,7 @@ export default class Pie extends AVisInstance implements IVisInstance {
   private arc: d3.svg.Arc<IRadialHistHelper>;
 
   private hist: ICatHistogram;
-  private hist_data: IRadialHistData[];
+  private histData: IRadialHistData[];
 
   constructor(public readonly data: IHistAbleDataType<ICategoricalValueTypeDesc|INumberValueTypeDesc>|IStratification, parent: Element, options: IPieOptions = {}) {
     super();
@@ -123,10 +123,10 @@ export default class Pie extends AVisInstance implements IVisInstance {
       .endAngle((d) => scale(d.end));
 
     const l = (event, type, selected) => {
-      if (!this.hist_data) {
+      if (!this.histData) {
         return;
       }
-      const highlights = this.hist_data.map((entry) => {
+      const highlights = this.histData.map((entry) => {
         const s = entry.range.intersect(selected);
         return {
           start: entry.start,
@@ -149,12 +149,12 @@ export default class Pie extends AVisInstance implements IVisInstance {
     }).then((total) => {
       const hist = this.hist;
       scale.domain([0, total]);
-      const hist_data = this.hist_data = [], cats: any[] = hist.categories;
+      const histData = this.histData = [], cats: any[] = hist.categories;
       let prev = 0;
 
       const cols = hist.colors || d3.scale.category10().range();
       hist.forEach(function (b, i) {
-        hist_data[i] = {
+        histData[i] = {
           name: (typeof cats[i] === 'string') ? cats[i] : cats[i].name,
           start: prev,
           size: b,
@@ -165,7 +165,7 @@ export default class Pie extends AVisInstance implements IVisInstance {
         };
         prev += b;
       });
-      const $m = $data.selectAll('path').data(hist_data);
+      const $m = $data.selectAll('path').data(histData);
       $m.enter()
         .append('path')
         .call(bindTooltip<IRadialHistData>((d) => d.name + ' ' + (d.size) + ' entries (' + Math.round(d.ratio * 100) + '%)'))
@@ -192,8 +192,8 @@ export default class Pie extends AVisInstance implements IVisInstance {
     }
     return (<any>this.data).data(range).then((data) => {
       const ex = d3.extent(data, (value) => this.hist.binOf(value));
-      const startAngle = this.scale(this.hist_data[ex[0]].start);
-      const endAngle = this.scale(this.hist_data[ex[1]].end);
+      const startAngle = this.scale(this.histData[ex[0]].start);
+      const endAngle = this.scale(this.histData[ex[1]].end);
       return Promise.resolve(toPolygon(startAngle, endAngle, o.radius));
     });
   }
@@ -212,14 +212,11 @@ export default class Pie extends AVisInstance implements IVisInstance {
     }).style('transform', 'rotate(' + rotate + 'deg)');
     this.$node.select('g').attr('transform', 'scale(' + scale[0] + ',' + scale[1] + ')translate(' + this.options.radius + ',' + this.options.radius + ')');
 
-    const new_ = {
-      scale: scale,
-      rotate: rotate
-    };
-    this.fire('transform', new_, bak);
+    const act = {scale, rotate};
+    this.fire('transform', act, bak);
     this.options.scale = scale;
     this.options.rotate = rotate;
-    return new_;
+    return act;
   }
 
 

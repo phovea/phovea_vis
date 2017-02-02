@@ -87,7 +87,7 @@ module.exports = function(registry) {
       true
     ],
     scaling: 'height-only',
-    filter: 'vector'
+    filter: ['vector', '(real|int|categorical)']
 
   });
   registry.push('vis', 'phovea-vis-kaplanmeier', function () {

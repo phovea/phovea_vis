@@ -60,7 +60,7 @@ export default class HeatMapDOMRenderer implements IHeatMapRenderer {
         });
         if (that.selectAble !== ESelectOption.NONE) {
           $colsEnter.on('click', (d, j) => {
-            data.selectProduct([cell(i, j)], toSelectOperation(d3.event));
+            data.selectProduct([cell(i, j)], toSelectOperation(<MouseEvent>d3.event));
           });
         }
         $colsEnter.append('title').text(String);

@@ -169,7 +169,7 @@ export default class Pie extends AVisInstance implements IVisInstance {
       $m.enter()
         .append('path')
         .call(bindTooltip<IRadialHistData>((d) => d.name + ' ' + (d.size) + ' entries (' + Math.round(d.ratio * 100) + '%)'))
-        .on('click', (d) => data.select(0, d.range, toSelectOperation(d3.event)));
+        .on('click', (d) => data.select(0, d.range, toSelectOperation(<MouseEvent>d3.event)));
       $m.attr('d', arc)
         .attr('fill', (d) => d.color)
         .style('opacity', 0);

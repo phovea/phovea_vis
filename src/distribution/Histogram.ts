@@ -114,7 +114,7 @@ export default class Histogram extends AVisInstance implements IVisInstance {
       data.off('select', l);
     });
 
-    const onClick = (d) => data.select(0, d.range, toSelectOperation(d3.event));
+    const onClick = (d) => data.select(0, d.range, toSelectOperation(<MouseEvent>d3.event));
 
     this.data.hist(Math.floor(o.nbins)).then((hist) => {
       this.hist = hist;

@@ -119,7 +119,7 @@ export default class Mosaic extends AVisInstance implements IVisInstance {
     }
 
     const onClick = o.selectAble ? (d) => {
-        data.select(0, d.range, toSelectOperation(d3.event));
+        data.select(0, d.range, toSelectOperation(<MouseEvent>d3.event));
       } : null;
 
     this.data.hist().then((hist) => {

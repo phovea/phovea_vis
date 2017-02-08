@@ -84,7 +84,7 @@ export class BarPlot extends AVisInstance implements IVisInstance {
     const yscale = this.yscale = d3.scale.linear().range([0, 100]);
 
     const onClick = function (d, i) {
-      data.select(0, [i], toSelectOperation(d3.event));
+      data.select(0, [i], toSelectOperation(<MouseEvent>d3.event));
     };
 
     const l = function (event, type: string, selected: Range) {

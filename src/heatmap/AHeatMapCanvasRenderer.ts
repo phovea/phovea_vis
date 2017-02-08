@@ -80,7 +80,7 @@ export abstract class AHeatMapCanvasRenderer {
 
     $selection.on('click', () => {
       const ij = toCoord(d3.event);
-      data.selectProduct([cell(...ij)], toSelectOperation(d3.event));
+      data.selectProduct([cell(...ij)], toSelectOperation(<MouseEvent>d3.event));
     });
 
     const l = (event, type, selected) => {

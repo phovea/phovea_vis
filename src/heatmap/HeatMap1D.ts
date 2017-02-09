@@ -150,6 +150,7 @@ export default class HeatMap1D extends AVisInstance implements IVisInstance {
         y: (d, i) => i
       });
       $rows.exit().remove();
+      this.markReady();
     });
     return $svg;
   }

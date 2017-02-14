@@ -150,7 +150,8 @@ export default class Mosaic extends AVisInstance implements IVisInstance {
 
   locateImpl(range: Range) {
     if (range.isAll || range.isNone) {
-      return Promise.resolve({x: 0, y: 0, w: this.rawSize[0], h: this.data.length});
+      const s = this.size;
+      return Promise.resolve({x: 0, y: 0, w: s[0], h: s[1]});
     }
     return (<any>this.data).data(range).then((data) => {
       const ex = d3.extent(data, (value) => this.hist.binOf(value));
@@ -158,11 +159,12 @@ export default class Mosaic extends AVisInstance implements IVisInstance {
       const h1 = this.histData[ex[1]];
       const y = Math.min(h0.acc, h1.acc);
       const y2 = Math.max(h0.acc + h0.v, h1.acc + h1.v);
+      const scale = this.options.scale;
       return Promise.resolve({
         x: 0,
-        width: this.rawSize[0],
-        height: y2 - y,
-        y: y
+        width: this.rawSize[0]*scale[0],
+        height: (y2 - y)*scale[1],
+        y: y*scale[1]
       });
     });
   }

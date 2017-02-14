@@ -56,7 +56,7 @@ export abstract class AHeatMapCanvasRenderer {
   }
 
   protected buildSelection(data: IMatrix<any, any>, $root: d3.Selection<any>, scale: [number, number]) {
-    if (this.selectAble !== ESelectOption.NONE) {
+    if (this.selectAble === ESelectOption.NONE) {
       return;
     }
     const dims = data.dim;

@@ -50,8 +50,8 @@
     "dist": "mkdirp dist && cd build && tar cvzf ../dist/phovea_vis.tar.gz *"
   },
   "dependencies": {
-    "phovea_core": "github:phovea/phovea_core#develop",
-    "phovea_d3": "github:phovea/phovea_d3#develop",
+    "phovea_core": "github:phovea/phovea_core#provenance_steering",
+    "phovea_d3": "github:phovea/phovea_d3#provenance_steering",
     "@types/d3": "3.5.36",
     "d3": "3.5.17"
   },

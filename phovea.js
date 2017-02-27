@@ -61,6 +61,13 @@ module.exports = function(registry) {
     sizeDependsOnDataDimension: true
 
   });
+  registry.push('vis', 'list', function () {
+    return System.import('./src/list');
+  }, {
+    name: 'List',
+    filter: 'vector',
+    sizeDependsOnDataDimension: true
+  });
   registry.push('vis', 'scatterplot', function () {
     return System.import('./src/scatterplot');
   }, {

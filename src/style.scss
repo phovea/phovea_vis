@@ -127,3 +127,15 @@ div.phovea-heatmap {
     fill: $hover-color;
   }
 }
+
+.phovea-list {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  overflow: hidden;
+  text-overflow: ellipsis;
+
+  > div {
+    white-space: nowrap;
+  }
+}

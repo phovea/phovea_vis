@@ -16,7 +16,7 @@ import {mixin} from 'phovea_core/src';
 export interface ITableOptions extends IVisInstanceOptions {
   /**
    * width
-   * @default 20
+   * @default null
    */
   width?: number;
   /**

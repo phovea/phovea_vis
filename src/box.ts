@@ -16,7 +16,7 @@ export declare type IBoxPlotOptions = IVisInstanceOptions;
 
 function createText(stats) {
   let r = '<table><tbody>';
-  const keys = ['min', 'max', 'sum', 'mean', 'var', 'sd', 'n', 'nans', 'moment2', 'moment3', 'moment4', 'kurtosis', 'skewness'];
+  const keys = ['min', 'max', 'sum', 'mean', 'median', 'q1', 'q3', 'var', 'sd', 'n', 'nans', 'moment2', 'moment3', 'moment4', 'kurtosis', 'skewness'];
   keys.forEach(function (key) {
     const value = stats[key];
     r = `${r}<tr><td>${key}</td><td>${value}</td></tr>`;
@@ -69,20 +69,20 @@ export class BoxPlot extends AVisInstance implements IVisInstance {
       d: 'M0,0 L0,$ M0,§ L%,§ M%,0 L%,$'.replace(/%/g, String(size[0])).replace(/\$/g, String(size[1])).replace(/\§/g, String(size[1] / 2)),
       'class': 'axis'
     });
-    data.stats().then((stats) => {
+    data.statsAdvanced().then((stats) => {
       const text = createText(stats);
 
       $t.append('rect').attr({
-        x: s(stats.mean - stats.sd),
+        x: s(stats.q1),
         y: '10%',
-        width: s(stats.sd * 2),
+        width: s(stats.q3),
         height: '80%',
         'class': 'box'
       }).call(bindTooltip(text));
 
       $t.append('line').attr({
-        x1: s(stats.mean),
-        x2: s(stats.mean),
+        x1: s(stats.median),
+        x2: s(stats.median),
         y1: '10%',
         y2: '90%',
         'class': 'mean'

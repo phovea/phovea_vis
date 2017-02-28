@@ -11,8 +11,19 @@ import {mixin} from 'phovea_core/src';
 import {INumericalVector} from 'phovea_core/src/vector';
 import bindTooltip from 'phovea_d3/src/tooltip';
 
+export interface IBoxPlotOptions extends IVisInstanceOptions{
+  /**
+   * width
+   * @default 20
+   */
+  width?: number;
+  /**
+   * scale such that the height matches the argument
+   * @default null
+   */
+  heightTo?: number;
+}
 
-export declare type IBoxPlotOptions = IVisInstanceOptions;
 
 function createText(stats) {
   let r = '<table><tbody>';
@@ -45,7 +56,7 @@ export class BoxPlot extends AVisInstance implements IVisInstance {
   }
 
   get rawSize(): [number, number] {
-    return [300, 50];
+    return [ this.options.width || 300, this.options.heightTo||50];
   }
 
   get node() {
@@ -53,20 +64,23 @@ export class BoxPlot extends AVisInstance implements IVisInstance {
   }
 
   private build($parent: d3.Selection<any>) {
-    const size = this.size,
+    const size = [this.options.width,this.options.heightTo],
       data = this.data;
     const $svg = $parent.append('svg').attr({
-      width: size[0],
-      height: size[1],
+      width: this.options.width,
+      height: this.options.heightTo,
       'class': 'phovea-box'
     });
 
-    const $t = $svg.append('g');
+    var height = this.options.width/5>=20?this.options.width/5:20;
+    height = height>this.options.heightTo?this.options.heightTo:height;
 
-    const s = this.scale = d3.scale.linear().domain((<any>this.data.desc).value.range).range([0, size[0]]).clamp(true);
+
+    const $t = $svg.append('g');
+    const s = this.scale = d3.scale.linear().domain((<any>this.data.desc).value.range).range([0.1*size[0], 0.9*size[0]]).clamp(true);
 
     $t.append('path').attr({
-      d: 'M0,0 L0,$ M0,§ L%,§ M%,0 L%,$'.replace(/%/g, String(size[0])).replace(/\$/g, String(size[1])).replace(/\§/g, String(size[1] / 2)),
+      d: 'M&,@ L&,$ M&,§ L%,§ M%,@ L%,$'.replace(/\&/g,String( 0.1*size[0])).replace(/\%/g, String(0.9*size[0])).replace(/\$/g, String(size[1]/2+ height/2)).replace(/\§/g, String(size[1] / 2)).replace(/\@/g, String(size[1]/2 - height/2)),
       'class': 'axis'
     });
     data.stats().then((stats) => {
@@ -74,17 +88,17 @@ export class BoxPlot extends AVisInstance implements IVisInstance {
 
       $t.append('rect').attr({
         x: s(stats.mean - stats.sd),
-        y: '10%',
+        y: size[1]/2- height/2,
         width: s(stats.sd * 2),
-        height: '80%',
+        height: height,
         'class': 'box'
       }).call(bindTooltip(text));
 
       $t.append('line').attr({
         x1: s(stats.mean),
         x2: s(stats.mean),
-        y1: '10%',
-        y2: '90%',
+        y1: size[1]/2- height/2,
+        y2: size[1]/2+ height/2,
         'class': 'mean'
       });
       this.markReady();

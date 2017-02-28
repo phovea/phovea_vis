@@ -13,7 +13,19 @@ import {IAnyVector} from 'phovea_core/src/vector';
 import {selectionUtil} from 'phovea_d3/src/d3util';
 import {mixin} from 'phovea_core/src';
 
-export declare type ITableOptions = IVisInstanceOptions;
+export interface ITableOptions extends IVisInstanceOptions{
+  /**
+   * width
+   * @default 20
+   */
+  width?: number;
+  /**
+   * scale such that the height matches the argument
+   * @default null
+   */
+  heightTo?: number;
+}
+
 
 export class Table extends AVisInstance implements IVisInstance {
   private readonly $node: d3.Selection<any>;
@@ -79,7 +91,8 @@ export class Table extends AVisInstance implements IVisInstance {
     if (arguments.length === 0) {
       return bak;
     }
-    this.$node.style('transform', 'rotate(' + rotate + 'deg)scale(' + scale[0] + ',' + scale[1] + ')');
+    this.$node.style('height', this.rawSize[1]*scale[1] +'px');
+    this.$node.style('transform', 'rotate(' + rotate + 'deg)');
     const act = {scale, rotate};
     this.fire('transform', act, bak);
     this.options.scale = scale;
@@ -114,6 +127,8 @@ export class Table extends AVisInstance implements IVisInstance {
       $rows.exit().remove();
       this.markReady();
     });
+
+    $table.style('height', this.options.heightTo +'px');
 
     return $table;
   }

@@ -30,6 +30,16 @@ export interface IHistogramOptions extends IDistributionOptions {
    * @default 200
    */
   duration?: number;
+   /**
+   * width
+   * @default 20
+   */
+  width?: number;
+  /**
+   * scale such that the height matches the argument
+   * @default null
+   */
+  heightTo?: number;
 }
 
 export default class Histogram extends AVisInstance implements IVisInstance {
@@ -61,7 +71,7 @@ export default class Histogram extends AVisInstance implements IVisInstance {
   }
 
   get rawSize(): [number, number] {
-    return [200, 100];
+    return [ this.options.width || 200, this.options.heightTo||100];
   }
 
   get node() {
@@ -69,7 +79,7 @@ export default class Histogram extends AVisInstance implements IVisInstance {
   }
 
   private build($parent: d3.Selection<any>) {
-    const size = this.size,
+    const size = [this.options.width,this.options.heightTo],
       data = this.data,
       o = this.options;
 

@@ -44,8 +44,9 @@ export default class HeatMap1D extends AVisInstance implements IVisInstance {
     const value = this.data.valuetype;
     mixin(this.options, {
       color: defaultColor(value),
-      domain: defaultDomain(value)
+      domain: defaultDomain(value),
     }, options);
+    this.options.initialScale = this.options.heightTo/data.dim[0];
     this.options.scale = [1, this.options.initialScale];
     if (this.options.heightTo) {
       this.options.scale[1] = this.options.heightTo / this.data.dim[0];

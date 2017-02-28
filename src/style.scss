@@ -26,6 +26,10 @@ $hover-color: #ffc46b;
   rect {
     stroke: white;
     fill: black;
+    &.phovea-select-selected {
+      border: 1px solid $select-color;
+      fill: $select-color;
+    }
   }
 }
 

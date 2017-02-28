@@ -41,7 +41,7 @@ export interface IBarPlotOptions extends IVisInstanceOptions {
    */
   heightTo?: number;
   /**
-   * @default 10
+   * @default null
    */
   initialScale?: number;
 }
@@ -50,7 +50,6 @@ export class BarPlot extends AVisInstance implements IVisInstance {
   private readonly options: IBarPlotOptions = {
     cssClass: '',
     width: 100,
-    heighti: 10,
     min: 0,
     max: NaN,
     scale: [1, 1],

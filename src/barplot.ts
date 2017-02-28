@@ -22,6 +22,7 @@ export interface IBarPlotOptions extends IVisInstanceOptions {
    */
   width?: number;
   /**
+   * Row height
    * @default 10
    */
   heighti?: number;
@@ -31,7 +32,7 @@ export interface IBarPlotOptions extends IVisInstanceOptions {
    */
   min?: number;
   /**
-   * @default NaN
+   * @default null
    */
   max?: number;
   /**

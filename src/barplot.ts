@@ -41,7 +41,7 @@ export interface IBarPlotOptions extends IVisInstanceOptions {
    */
   heightTo?: number;
   /**
-   * @default 10
+   * @default null
    */
   initialScale?: number;
 }

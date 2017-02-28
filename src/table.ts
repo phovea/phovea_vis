@@ -13,7 +13,7 @@ import {IAnyVector} from 'phovea_core/src/vector';
 import {selectionUtil} from 'phovea_d3/src/d3util';
 import {mixin} from 'phovea_core/src';
 
-export interface ITableOptions extends IVisInstanceOptions{
+export interface ITableOptions extends IVisInstanceOptions {
   /**
    * width
    * @default 20

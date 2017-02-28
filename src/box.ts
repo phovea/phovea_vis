@@ -14,12 +14,12 @@ import bindTooltip from 'phovea_d3/src/tooltip';
 export interface IBoxPlotOptions extends IVisInstanceOptions {
   /**
    * width
-   * @default 20
+   * @default 300
    */
   width?: number;
   /**
    * scale such that the height matches the argument
-   * @default null
+   * @default 50
    */
   heightTo?: number;
 }
@@ -56,7 +56,7 @@ export class BoxPlot extends AVisInstance implements IVisInstance {
   }
 
   get rawSize(): [number, number] {
-    return [ this.options.width || 300, this.options.heightTo||50];
+    return [this.options.width || 300, this.options.heightTo || 50];
   }
 
   get node() {
@@ -72,8 +72,8 @@ export class BoxPlot extends AVisInstance implements IVisInstance {
       'class': 'phovea-box'
     });
 
-    let height = this.options.width/5>=20?this.options.width/5:20;
-    height = height>this.options.heightTo?this.options.heightTo:height;
+    let height = (this.options.width/5 >= 20) ? (this.options.width/5) : 20;
+    height = (height > this.options.heightTo) ? this.options.heightTo : height;
 
 
     const $t = $svg.append('g');
@@ -88,7 +88,7 @@ export class BoxPlot extends AVisInstance implements IVisInstance {
 
       $t.append('rect').attr({
         x: s(stats.mean - stats.sd),
-        y: size[1]/2- height/2,
+        y: size[1]/2 - height/2,
         width: s(stats.sd * 2),
         height,
         'class': 'box'
@@ -97,8 +97,8 @@ export class BoxPlot extends AVisInstance implements IVisInstance {
       $t.append('line').attr({
         x1: s(stats.mean),
         x2: s(stats.mean),
-        y1: size[1]/2- height/2,
-        y2: size[1]/2+ height/2,
+        y1: size[1]/2 - height/2,
+        y2: size[1]/2 + height/2,
         'class': 'mean'
       });
       this.markReady();

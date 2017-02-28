@@ -11,7 +11,7 @@ import {mixin} from 'phovea_core/src';
 import {INumericalVector} from 'phovea_core/src/vector';
 import bindTooltip from 'phovea_d3/src/tooltip';
 
-export interface IBoxPlotOptions extends IVisInstanceOptions{
+export interface IBoxPlotOptions extends IVisInstanceOptions {
   /**
    * width
    * @default 20
@@ -72,7 +72,7 @@ export class BoxPlot extends AVisInstance implements IVisInstance {
       'class': 'phovea-box'
     });
 
-    var height = this.options.width/5>=20?this.options.width/5:20;
+    let height = this.options.width/5>=20?this.options.width/5:20;
     height = height>this.options.heightTo?this.options.heightTo:height;
 
 
@@ -90,7 +90,7 @@ export class BoxPlot extends AVisInstance implements IVisInstance {
         x: s(stats.mean - stats.sd),
         y: size[1]/2- height/2,
         width: s(stats.sd * 2),
-        height: height,
+        height,
         'class': 'box'
       }).call(bindTooltip(text));
 

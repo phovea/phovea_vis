@@ -2,37 +2,39 @@
  * Created by Samuel Gratzl on 25.01.2016.
  */
 
-import './style.scss';
-import {select, extent, format} from 'd3';
+import '../../style.scss';
+import {select, extent, selection} from 'd3';
 import {mixin} from 'phovea_core/src';
-import {AVisInstance, IVisInstance, assignVis, ITransform, IVisInstanceOptions} from 'phovea_core/src/vis';
+import {AVisInstance, IVisInstance, assignVis, IVisInstanceOptions} from 'phovea_core/src/vis';
 import {selectionUtil} from 'phovea_d3/src/d3util';
-import {IAnyVector} from 'phovea_core/src/vector';
+import {IVector} from 'phovea_core/src/vector';
 import {rect} from 'phovea_core/src/geom';
-import {Range} from 'phovea_core/src/range';
+import Range from 'phovea_core/src/range/Range';
+import {IValueTypeDesc} from 'phovea_core/src/datatype';
 
-export interface IListOptions extends IVisInstanceOptions {
-  format?: string;
+export interface IAListOptions extends IVisInstanceOptions {
   width?: number;
   rowHeight?: number;
+  cssClass?: string;
 }
 
-export class List extends AVisInstance implements IVisInstance {
-  private readonly options: IListOptions = {
-    format: null,
-    scale: [1, 1],
-    rotate: 0,
-    width: 200,
-    rowHeight: 20
-  };
+const DEFAULT_OPTIONS = {
+  scale: [1, 1],
+  rotate: 0,
+  width: 200,
+  rowHeight: 20,
+  cssClass: ''
+};
 
-  private readonly $node: d3.Selection<List>;
+export abstract class AList<T, D extends IValueTypeDesc, O extends IAListOptions> extends AVisInstance implements IVisInstance {
+  protected readonly options: O;
 
-  constructor(public readonly data: IAnyVector, parent: HTMLElement, options: IListOptions = {}) {
+  private readonly $node: d3.Selection<any>;
+
+  constructor(public readonly data: IVector<T,D>, private readonly parent: HTMLElement, options: O) {
     super();
-    mixin(this.options, options);
-
-    this.$node = this.build(select(parent));
+    this.options = mixin(<any>{}, DEFAULT_OPTIONS, options);
+    this.$node = select(parent).append('div').attr('class', 'phovea-list ' + this.options.cssClass);
     this.$node.datum(this);
     assignVis(this.node, this);
   }
@@ -75,31 +77,30 @@ export class List extends AVisInstance implements IVisInstance {
     this.fire('transform', act, bak);
     this.options.scale = scale;
     this.options.rotate = rotate;
+    this.update();
     return act;
   }
 
-  private build($parent: d3.Selection<any>) {
-    const scale = this.options.scale;
-    const $list = $parent.append('div').attr('class', 'phovea-list');
-    $list.style('width', `${scale[0] * this.options.width}px`);
-    $list.style('height', `${scale[1] * this.data.length * this.options.rowHeight}px`);
+  protected abstract render($enter: d3.Selection<T>, $update: d3.Selection<T>);
 
-    const onClick = selectionUtil(this.data, $list, 'div');
-    this.data.data().then((arr: any[]) => {
-      const $rows = $list.selectAll('div').data(arr);
-      $rows.enter().append('div').on('click', onClick);
-      const formatter =  this.options.format ? format(this.options.format) : String;
-      $rows.text(formatter);
+  update() {
+    this.render(selection(), this.$node.selectAll('div'));
+  }
+
+  protected build() {
+    const scale = this.options.scale;
+    this.$node.style('width', `${scale[0] * this.options.width}px`);
+    this.$node.style('height', `${scale[1] * this.data.length * this.options.rowHeight}px`);
+
+    const onClick = selectionUtil(this.data, this.$node, 'div');
+    this.data.data().then((arr: T[]) => {
+      const $rows = this.$node.selectAll('div').data(arr);
+      const $rowsEnter = $rows.enter().append('div').on('click', onClick);
+      this.render($rowsEnter, $rows);
       $rows.exit().remove();
       this.markReady();
     });
-    return $list;
   }
 
 }
-
-export default List;
-
-export function create(data: IAnyVector, parent: HTMLElement, options: IListOptions) {
-  return new List(data, parent, options);
-}
+export default AList;

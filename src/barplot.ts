@@ -25,7 +25,7 @@ export interface IBarPlotOptions extends IVisInstanceOptions {
    * Row height
    * @default 10
    */
-  heighti?: number;
+  rowHeight?: number;
 
   /**
    * @default 0
@@ -40,17 +40,13 @@ export interface IBarPlotOptions extends IVisInstanceOptions {
    * @default null
    */
   heightTo?: number;
-  /**
-   * @default null
-   */
-  initialScale?: number;
 }
 
 export class BarPlot extends AVisInstance implements IVisInstance {
   private readonly options: IBarPlotOptions = {
     cssClass: '',
     width: 100,
-    heighti: 10,
+    rowHeight: 10,
     min: 0,
     max: NaN,
     scale: [1, 1],
@@ -60,11 +56,15 @@ export class BarPlot extends AVisInstance implements IVisInstance {
   private readonly $node: d3.Selection<BarPlot>;
 
   private xscale: d3.scale.Linear<number, number>;
+  private yscale: d3.scale.Linear<number, number>;
 
   constructor(public readonly data: INumericalVector, parent: Element, options: IBarPlotOptions = {}) {
     super();
+
+    this.options.heightTo = data.dim[0] * this.options.rowHeight;
+    this.options.scale = [1, options.heightTo / (data.dim[0] * this.options.rowHeight) || 1];
+
     mixin(this.options, options);
-    this.options.initialScale = this.options.heightTo/(this.data.dim[0] * this.options.heighti);
 
     this.$node = this.build(d3.select(parent));
     this.$node.datum(this);
@@ -72,7 +72,7 @@ export class BarPlot extends AVisInstance implements IVisInstance {
   }
 
   get rawSize(): [number, number] {
-    return [this.options.width, this.data.dim[0] * this.options.heighti];
+    return [this.options.width, this.data.dim[0] * this.options.rowHeight];
   }
 
   get node() {
@@ -103,16 +103,17 @@ export class BarPlot extends AVisInstance implements IVisInstance {
   private build($parent: d3.Selection<any>) {
     const o = this.options,
       data = this.data;
-    const width = this.options.width, height = this.rawSize[1];
+    const width = this.rawSize[0], height = this.rawSize[1];
     const $svg = $parent.append('svg').attr({
-      width,
-      height: height * this.options.initialScale,
+      width:  width * this.options.scale[0],
+      height: height * this.options.scale[1],
       'class': 'phovea-barplot ' + o.cssClass
     });
-   const $g = $svg.append('g').attr('transform', 'scale(1,' + this.options.initialScale + ')');
+   const $g = $svg.append('g').attr('transform', 'scale('+ this.options.scale[0] + ', ' + this.options.scale[1] + ')');
 
     //using range bands with an ordinal scale for uniform distribution
-    const xscale = this.xscale = d3.scale.linear().range([0, 100]);
+    const xscale = this.xscale = d3.scale.linear().range([0, this.rawSize[0]]);
+    const yscale = this.yscale = d3.scale.linear().range([0, this.rawSize[1]]);
 
     const onClick = function (d, i) {
       data.select(0, [i], toSelectOperation(<MouseEvent>d3.event));
@@ -134,6 +135,7 @@ export class BarPlot extends AVisInstance implements IVisInstance {
     onDOMNodeRemoved(<Element>$g.node(), () => data.off('select', l));
 
     data.data().then((_data) => {
+      yscale.domain([0, data.length]);
       if (isNaN(o.min) || isNaN(o.max)) {
         const minmax = d3.extent(_data);
         if (isNaN(o.min)) {
@@ -150,8 +152,8 @@ export class BarPlot extends AVisInstance implements IVisInstance {
       $m.enter().append('rect')
         .on('click', onClick);
       $m.attr({
-        y: (d, i) => i*this.options.heighti ,
-        height: (d) => this.options.heighti,
+        y: (d, i) => yscale(i),
+        height: (d) => yscale(1),
         width: xscale
       });
       this.markReady();
@@ -169,9 +171,9 @@ export class BarPlot extends AVisInstance implements IVisInstance {
       const exV = d3.extent(data);
       return rect(
         this.xscale(exV[0]) / 100.0 * o.width,
-        exI[0] * o.heighti,
+        exI[0] * o.rowHeight,
         this.xscale(exV[1]) / 100.0 * o.width,
-        (exI[1] + 1) * o.heighti
+        (exI[1] + 1) * o.rowHeight
       );
     });
   }

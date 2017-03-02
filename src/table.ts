@@ -36,6 +36,9 @@ export class Table extends AVisInstance implements IVisInstance {
 
   constructor(public readonly data: IAnyMatrix|ITable|IAnyVector, parent: Element, options: ITableOptions = {}) {
     super();
+    this.options.heightTo = data.dim[0] * 22;
+    this.options.width = (data.dim[1] || 1) * 200 * 22;
+
     mixin(this.options, options);
     const $p = d3.select(parent);
     switch (data.desc.type) { //depending on the type of the data, create a different table
@@ -91,7 +94,8 @@ export class Table extends AVisInstance implements IVisInstance {
     if (arguments.length === 0) {
       return bak;
     }
-    this.$node.style('height', this.rawSize[1]*scale[1] +'px');
+    this.$node.style('height', this.rawSize[1] * scale[1] +'px');
+    this.$node.style('width', this.rawSize[0] * scale[0] +'px');
     this.$node.style('transform', 'rotate(' + rotate + 'deg)');
     const act = {scale, rotate};
     this.fire('transform', act, bak);
@@ -129,6 +133,7 @@ export class Table extends AVisInstance implements IVisInstance {
     });
 
     $table.style('height', this.options.heightTo +'px');
+    $table.style('width', this.options.width +'px');
 
     return $table;
   }

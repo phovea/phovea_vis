@@ -46,6 +46,8 @@ export default class Histogram extends AVisInstance implements IVisInstance {
   private options: IHistogramOptions = {
     nbins: 5,
     total: true,
+    width: 200,
+    heightTo: 100,
     duration: 200,
     scale: [1, 1],
     rotate: 0
@@ -61,6 +63,9 @@ export default class Histogram extends AVisInstance implements IVisInstance {
 
   constructor(public readonly data: IHistAbleDataType<ICategoricalValueTypeDesc|INumberValueTypeDesc>|IStratification, parent: Element, options: IHistogramOptions = {}) {
     super();
+
+    this.options.scale = [options.width / this.rawSize[0] || 1, options.heightTo / this.rawSize[1] || 1];
+
     mixin(this.options, {
       nbins: Math.floor(Math.sqrt(data.length)),
     }, options);
@@ -71,7 +76,7 @@ export default class Histogram extends AVisInstance implements IVisInstance {
   }
 
   get rawSize(): [number, number] {
-    return [this.options.width || 200, this.options.heightTo || 100];
+    return [200, 100];
   }
 
   get node() {
@@ -79,7 +84,7 @@ export default class Histogram extends AVisInstance implements IVisInstance {
   }
 
   private build($parent: d3.Selection<any>) {
-    const size = [this.options.width, this.options.heightTo],
+    const size = this.size,
       data = this.data,
       o = this.options;
 
@@ -88,13 +93,13 @@ export default class Histogram extends AVisInstance implements IVisInstance {
       height: size[1],
       'class': 'phovea-histogram'
     });
-    const $t = $svg.append('g');
+    const $t = $svg.append('g').attr('transform', 'scale(' + this.options.scale[0] + ',' + this.options.scale[1] + ')');
     const $data = $t.append('g');
     const $highlight = $t.append('g').style('pointer-events', 'none').classed('phovea-select-selected', true);
 
     //using range bands with an ordinal scale for uniform distribution
-    const xscale = this.xscale = d3.scale.ordinal<number,number>().rangeBands([0, size[0]], 0.1);
-    const yscale = this.yscale = d3.scale.linear().range([0, size[1]]);
+    const xscale = this.xscale = d3.scale.ordinal<number,number>().rangeBands([0, this.rawSize[0]], 0.1);
+    const yscale = this.yscale = d3.scale.linear().range([0, this.rawSize[1]]);
 
     const l = (event: any, type: string, selected: Range) => {
       if (!this.histData) {
@@ -187,7 +192,6 @@ export default class Histogram extends AVisInstance implements IVisInstance {
       height: size[1] * scale[1]
     }).style('transform', 'rotate(' + rotate + 'deg)');
     this.$node.select('g').attr('transform', 'scale(' + scale[0] + ',' + scale[1] + ')');
-
     const act = {scale, rotate};
     this.fire('transform', act, bak);
     this.options.scale = scale;

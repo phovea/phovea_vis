@@ -40,12 +40,12 @@ export default class HeatMap1D extends AVisInstance implements IVisInstance {
   constructor(public readonly data: IHeatMapAbleVector, public parent: Element, options: IHeatMap1DOptions = {}) {
     super();
     const value = this.data.valuetype;
-    this.options.heightTo = data.dim[0] * 10;
+    this.options.heightTo = data.dim[0];
     mixin(this.options, {
       color: defaultColor(value),
       domain: defaultDomain(value)
     }, options);
-    this.options.scale = [1, (this.options.heightTo / (data.dim[0] * 10)) || 1];
+    this.options.scale = [1, (this.options.heightTo / (data.dim[0])) || 10];
     this.colorer = toScale(value).domain(this.options.domain).range(this.options.color);
     this.$node = this.build(d3.select(parent));
     this.$node.datum(data);
@@ -54,7 +54,7 @@ export default class HeatMap1D extends AVisInstance implements IVisInstance {
 
   get rawSize(): [number, number] {
     const d = this.data.dim;
-    return [this.options.width, d[0] * 10];
+    return [this.options.width, d[0]];
   }
 
   get node() {

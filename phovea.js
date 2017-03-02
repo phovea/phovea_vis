@@ -156,7 +156,6 @@ module.exports = function(registry) {
   }, {
     name: 'BoxPlot',
     icon: function() { return System.import('./src/assets/box_icon.png'); },
-    scaling: 'aspect',
     filter: [
       'vector',
       '(real|int)'

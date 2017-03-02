@@ -32,9 +32,7 @@ export default class HeatMap1D extends AVisInstance implements IVisInstance {
   private readonly colorer: IScale;
 
   private readonly options: IHeatMap1DOptions = {
-    initialScale: 10,
     width: 20,
-    heightTo: null,
     scale: [1, 1],
     rotate: 0
   };
@@ -42,14 +40,12 @@ export default class HeatMap1D extends AVisInstance implements IVisInstance {
   constructor(public readonly data: IHeatMapAbleVector, public parent: Element, options: IHeatMap1DOptions = {}) {
     super();
     const value = this.data.valuetype;
+    this.options.heightTo = data.dim[0];
     mixin(this.options, {
       color: defaultColor(value),
       domain: defaultDomain(value)
     }, options);
-    this.options.scale = [1, this.options.initialScale];
-    if (this.options.heightTo) {
-      this.options.scale[1] = this.options.heightTo / this.data.dim[0];
-    }
+    this.options.scale = [1, (this.options.heightTo / (data.dim[0])) || 10];
     this.colorer = toScale(value).domain(this.options.domain).range(this.options.color);
     this.$node = this.build(d3.select(parent));
     this.$node.datum(data);
@@ -105,8 +101,7 @@ export default class HeatMap1D extends AVisInstance implements IVisInstance {
     if (arguments.length === 0) {
       return bak;
     }
-    const dims = this.data.dim;
-    const width = this.options.width, height = dims[0];
+    const width = this.options.width, height = this.rawSize[1];
     this.$node.attr({
       width: width * scale[0],
       height: height * scale[1]
@@ -126,14 +121,13 @@ export default class HeatMap1D extends AVisInstance implements IVisInstance {
   }
 
   private build($parent: d3.Selection<any>) {
-    const dims = this.data.dim;
-    const width = this.options.width, height = dims[0];
+    const width = this.options.width, height = this.rawSize[1];
     const $svg = $parent.append('svg').attr({
       width,
-      height: height * this.options.initialScale,
+      height: height * this.options.scale[1],
       'class': 'phovea-heatmap'
     });
-    const $g = $svg.append('g').attr('transform', 'scale(1,' + this.options.initialScale + ')');
+    const $g = $svg.append('g').attr('transform', 'scale(1,' + this.options.scale[1] + ')');
 
     const c = this.colorer;
 

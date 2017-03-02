@@ -11,8 +11,19 @@ import {mixin} from 'phovea_core/src';
 import {INumericalVector} from 'phovea_core/src/vector';
 import bindTooltip from 'phovea_d3/src/tooltip';
 
+export interface IBoxPlotOptions extends IVisInstanceOptions {
+  /**
+   * width
+   * @default 300
+   */
+  width?: number;
+  /**
+   * scale such that the height matches the argument
+   * @default 50
+   */
+  heightTo?: number;
+}
 
-export declare type IBoxPlotOptions = IVisInstanceOptions;
 
 function createText(stats) {
   let r = '<table><tbody>';
@@ -27,6 +38,8 @@ function createText(stats) {
 
 export class BoxPlot extends AVisInstance implements IVisInstance {
   private readonly options: IBoxPlotOptions = {
+    width: 300,
+    heightTo: 50,
     scale: [1, 1],
     rotate: 0
   };
@@ -37,8 +50,8 @@ export class BoxPlot extends AVisInstance implements IVisInstance {
 
   constructor(public data: INumericalVector, parent: Element, options: IBoxPlotOptions = {}) {
     super();
+    this.options.scale = [options.width / this.rawSize[0] || 1, options.heightTo / this.rawSize[1] || 1];
     mixin(this.options, options);
-
     this.$node = this.build(d3.select(parent));
     this.$node.datum(this);
     assignVis(this.node, this);
@@ -52,39 +65,63 @@ export class BoxPlot extends AVisInstance implements IVisInstance {
     return <Element>this.$node.node();
   }
 
+  transform(scale?: [number, number], rotate: number = 0) {
+    const bak = {
+      scale: this.options.scale || [1, 1],
+      rotate: this.options.rotate || 0
+    };
+    if (arguments.length === 0) {
+      return bak;
+    }
+
+    this.$node.attr({
+      width: this.rawSize[0] * scale[0],
+      height: this.rawSize[1] * scale[1]
+    }).style('transform', 'rotate(' + rotate + 'deg)');
+    const act = {scale, rotate};
+    this.fire('transform', act, bak);
+    this.options.scale = scale;
+    this.options.rotate = rotate;
+    return act;
+  }
+
+
   private build($parent: d3.Selection<any>) {
     const size = this.size,
       data = this.data;
     const $svg = $parent.append('svg').attr({
       width: size[0],
       height: size[1],
+      'viewBox': '0 0 '+ this.rawSize[0] + ' ' + this.rawSize[1],
+      'preserveAspectRatio': 'xMidMid meet',
       'class': 'phovea-box'
     });
 
+    const edgeOffset = 4;
     const $t = $svg.append('g');
-
-    const s = this.scale = d3.scale.linear().domain((<any>this.data.desc).value.range).range([0, size[0]]).clamp(true);
+    const s = this.scale = d3.scale.linear().domain((<any>this.data.desc).value.range).range([edgeOffset, this.rawSize[0] - edgeOffset]).clamp(true);
 
     $t.append('path').attr({
-      d: 'M0,0 L0,$ M0,§ L%,§ M%,0 L%,$'.replace(/%/g, String(size[0])).replace(/\$/g, String(size[1])).replace(/\§/g, String(size[1] / 2)),
+      d: 'M&,0 L&,$ M&,§ L%,§ M%,0 L%,$'.replace(/\&/g,String(edgeOffset)).replace(/\%/g, String(this.rawSize[0] - edgeOffset)).replace(/\$/g, String(this.rawSize[1])).replace(/\§/g, String(this.rawSize[1] / 2)),
       'class': 'axis'
     });
+
     data.stats().then((stats) => {
       const text = createText(stats);
 
       $t.append('rect').attr({
         x: s(stats.mean - stats.sd),
-        y: '10%',
+        y: 0,
         width: s(stats.sd * 2),
-        height: '80%',
+        height: this.rawSize[1],
         'class': 'box'
       }).call(bindTooltip(text));
 
       $t.append('line').attr({
         x1: s(stats.mean),
         x2: s(stats.mean),
-        y1: '10%',
-        y2: '90%',
+        y1: 0,
+        y2: this.rawSize[1],
         'class': 'mean'
       });
       this.markReady();

@@ -22,25 +22,31 @@ export interface IBarPlotOptions extends IVisInstanceOptions {
    */
   width?: number;
   /**
+   * Row height
    * @default 10
    */
-  heighti?: number;
+  rowHeight?: number;
 
   /**
    * @default 0
    */
   min?: number;
   /**
-   * @default NaN
+   * @default null
    */
   max?: number;
+  /**
+   * scale such that the height matches the argument
+   * @default null
+   */
+  heightTo?: number;
 }
 
 export class BarPlot extends AVisInstance implements IVisInstance {
   private readonly options: IBarPlotOptions = {
     cssClass: '',
     width: 100,
-    heighti: 10,
+    rowHeight: 10,
     min: 0,
     max: NaN,
     scale: [1, 1],
@@ -54,6 +60,10 @@ export class BarPlot extends AVisInstance implements IVisInstance {
 
   constructor(public readonly data: INumericalVector, parent: Element, options: IBarPlotOptions = {}) {
     super();
+
+    this.options.heightTo = data.dim[0] * this.options.rowHeight;
+    this.options.scale = [1, options.heightTo / (data.dim[0] * this.options.rowHeight) || 1];
+
     mixin(this.options, options);
 
     this.$node = this.build(d3.select(parent));
@@ -62,45 +72,67 @@ export class BarPlot extends AVisInstance implements IVisInstance {
   }
 
   get rawSize(): [number, number] {
-    return [this.options.width, this.data.dim[0] * this.options.heighti];
+    return [this.options.width, this.data.dim[0] * this.options.rowHeight];
   }
 
   get node() {
     return <Element>this.$node.node();
   }
 
+  transform(scale?: [number, number], rotate: number = 0) {
+    const bak = {
+      scale: this.options.scale || [1, 1],
+      rotate: this.options.rotate || 0
+    };
+    if (arguments.length === 0) {
+      return bak;
+    }
+    const width = this.options.width, height = this.rawSize[1];
+    this.$node.attr({
+      width: width * scale[0],
+      height: height * scale[1]
+    }).style('transform', 'rotate(' + rotate + 'deg)');
+    this.$node.select('g').attr('transform', 'scale(' + scale[0] + ',' + scale[1] + ')');
+    const act = {scale, rotate};
+    this.fire('transform', act, bak);
+    this.options.scale = scale;
+    this.options.rotate = rotate;
+    return act;
+  }
+
   private build($parent: d3.Selection<any>) {
     const o = this.options,
-      size = this.size,
       data = this.data;
+    const width = this.rawSize[0], height = this.rawSize[1];
     const $svg = $parent.append('svg').attr({
-      width: size[0],
-      height: size[1],
+      width:  width * this.options.scale[0],
+      height: height * this.options.scale[1],
       'class': 'phovea-barplot ' + o.cssClass
     });
+   const $g = $svg.append('g').attr('transform', 'scale('+ this.options.scale[0] + ', ' + this.options.scale[1] + ')');
 
     //using range bands with an ordinal scale for uniform distribution
-    const xscale = this.xscale = d3.scale.linear().range([0, 100]);
-    const yscale = this.yscale = d3.scale.linear().range([0, 100]);
+    const xscale = this.xscale = d3.scale.linear().range([0, this.rawSize[0]]);
+    const yscale = this.yscale = d3.scale.linear().range([0, this.rawSize[1]]);
 
     const onClick = function (d, i) {
       data.select(0, [i], toSelectOperation(<MouseEvent>d3.event));
     };
 
     const l = function (event, type: string, selected: Range) {
-      $svg.selectAll('rect').classed('phovea-select-' + type, false);
+      $g.selectAll('rect').classed('phovea-select-' + type, false);
       if (selected.isNone) {
         return;
       }
       const dim0 = selected.dim(0);
       if (selected.isAll) {
-        $svg.selectAll('rect').classed('phovea-select-' + type, true);
+        $g.selectAll('rect').classed('phovea-select-' + type, true);
       } else {
-        dim0.forEach((j) => $svg.selectAll('rect:nth-child(' + (j + 1) + ')').classed('phovea-select-' + type, true));
+        dim0.forEach((j) => $g.selectAll('rect:nth-child(' + (j + 1) + ')').classed('phovea-select-' + type, true));
       }
     };
     data.on('select', l);
-    onDOMNodeRemoved(<Element>$svg.node(), () => data.off('select', l));
+    onDOMNodeRemoved(<Element>$g.node(), () => data.off('select', l));
 
     data.data().then((_data) => {
       yscale.domain([0, data.length]);
@@ -115,7 +147,8 @@ export class BarPlot extends AVisInstance implements IVisInstance {
       }
       xscale.domain([o.min, o.max]);
 
-      const $m = $svg.selectAll('rect').data(_data);
+
+      const $m = $g.selectAll('rect').data(_data);
       $m.enter().append('rect')
         .on('click', onClick);
       $m.attr({
@@ -138,9 +171,9 @@ export class BarPlot extends AVisInstance implements IVisInstance {
       const exV = d3.extent(data);
       return rect(
         this.xscale(exV[0]) / 100.0 * o.width,
-        exI[0] * o.heighti,
+        exI[0] * o.rowHeight,
         this.xscale(exV[1]) / 100.0 * o.width,
-        (exI[1] + 1) * o.heighti
+        (exI[1] + 1) * o.rowHeight
       );
     });
   }

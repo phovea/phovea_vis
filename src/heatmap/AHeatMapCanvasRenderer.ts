@@ -56,7 +56,7 @@ export abstract class AHeatMapCanvasRenderer {
   }
 
   protected buildSelection(data: IMatrix<any, any>, $root: d3.Selection<any>, scale: [number, number]) {
-    if (this.selectAble !== ESelectOption.NONE) {
+    if (this.selectAble === ESelectOption.NONE) {
       return;
     }
     const dims = data.dim;
@@ -80,7 +80,7 @@ export abstract class AHeatMapCanvasRenderer {
 
     $selection.on('click', () => {
       const ij = toCoord(d3.event);
-      data.selectProduct([cell(...ij)], toSelectOperation(d3.event));
+      data.selectProduct([cell(...ij)], toSelectOperation(<MouseEvent>d3.event));
     });
 
     const l = (event, type, selected) => {

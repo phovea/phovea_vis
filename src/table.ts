@@ -13,9 +13,7 @@ import {IAnyVector} from 'phovea_core/src/vector';
 import {selectionUtil} from 'phovea_d3/src/d3util';
 import {mixin} from 'phovea_core/src';
 
-export interface ITableOptions extends IVisInstanceOptions {
-
-}
+export declare type ITableOptions = IVisInstanceOptions;
 
 export class Table extends AVisInstance implements IVisInstance {
   private readonly $node: d3.Selection<any>;
@@ -82,14 +80,11 @@ export class Table extends AVisInstance implements IVisInstance {
       return bak;
     }
     this.$node.style('transform', 'rotate(' + rotate + 'deg)scale(' + scale[0] + ',' + scale[1] + ')');
-    const new_ = {
-      scale: scale,
-      rotate: rotate
-    };
-    this.fire('transform', new_, bak);
+    const act = {scale, rotate};
+    this.fire('transform', act, bak);
     this.options.scale = scale;
     this.options.rotate = rotate;
-    return new_;
+    return act;
   }
 
   private build($parent: d3.Selection<any>, promises: any[]) {

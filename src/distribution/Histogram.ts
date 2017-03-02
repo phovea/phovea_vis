@@ -47,7 +47,7 @@ export default class Histogram extends AVisInstance implements IVisInstance {
   private yscale: d3.scale.Linear<number, number>;
 
   private hist: IHistogram;
-  private hist_data: IHistData[];
+  private histData: IHistData[];
 
   constructor(public readonly data: IHistAbleDataType<ICategoricalValueTypeDesc|INumberValueTypeDesc>|IStratification, parent: Element, options: IHistogramOptions = {}) {
     super();
@@ -87,25 +87,21 @@ export default class Histogram extends AVisInstance implements IVisInstance {
     const yscale = this.yscale = d3.scale.linear().range([0, size[1]]);
 
     const l = (event: any, type: string, selected: Range) => {
-      if (!this.hist_data) {
+      if (!this.histData) {
         return;
       }
-      const highlights = this.hist_data.map((entry, i) => {
+      const highlights = this.histData.map((entry, i) => {
         const s = entry.range.intersect(selected);
         return {
-          i: i,
+          i,
           v: s.size()[0]
         };
       }).filter((entry) => entry.v > 0);
       const $m = $highlight.selectAll('rect').data(highlights);
       $m.enter().append('rect').attr('width', xscale.rangeBand());
       $m.attr({
-        x: function (d) {
-          return xscale(d.i);
-        },
-        y: function (d) {
-          return yscale(yscale.domain()[1] - d.v);
-        },
+        x: (d) => xscale(d.i),
+        y: (d) => yscale(yscale.domain()[1] - d.v),
         height: 0
       });
       $m.transition().duration(o.duration).attr('height', function (d) {
@@ -118,18 +114,18 @@ export default class Histogram extends AVisInstance implements IVisInstance {
       data.off('select', l);
     });
 
-    const onClick = (d) => data.select(0, d.range, toSelectOperation(d3.event));
+    const onClick = (d) => data.select(0, d.range, toSelectOperation(<MouseEvent>d3.event));
 
     this.data.hist(Math.floor(o.nbins)).then((hist) => {
       this.hist = hist;
       xscale.domain(d3.range(hist.bins));
       return resolveHistMax(hist, this.options.total);
-    }).then((hist_max) => {
+    }).then((histmax) => {
       const hist = this.hist;
-      yscale.domain([0, hist_max]);
-      const hist_data = this.hist_data = createHistData(hist, this.data);
+      yscale.domain([0, histmax]);
+      const histData = this.histData = createHistData(hist, this.data);
 
-      const $m = $data.selectAll('rect').data(hist_data);
+      const $m = $data.selectAll('rect').data(histData);
       $m.enter().append('rect')
         .attr('width', xscale.rangeBand())
         .call(bindTooltip<IHistData>((d) => `${d.name} ${d.v} entries (${Math.round(d.ratio * 100)}%)`))
@@ -156,8 +152,8 @@ export default class Histogram extends AVisInstance implements IVisInstance {
     }
     return (<any>this.data).data(range).then((data) => {
       const ex = d3.extent(data, (value) => this.hist.binOf(value));
-      const h0 = this.hist_data[ex[0]];
-      const h1 = this.hist_data[ex[1]];
+      const h0 = this.histData[ex[0]];
+      const h1 = this.histData[ex[1]];
       return Promise.resolve({
         x: this.xscale(ex[0]),
         width: (this.xscale(ex[1]) - this.xscale(ex[0]) + this.xscale.rangeBand()),
@@ -182,14 +178,11 @@ export default class Histogram extends AVisInstance implements IVisInstance {
     }).style('transform', 'rotate(' + rotate + 'deg)');
     this.$node.select('g').attr('transform', 'scale(' + scale[0] + ',' + scale[1] + ')');
 
-    const new_ = {
-      scale: scale,
-      rotate: rotate
-    };
-    this.fire('transform', new_, bak);
+    const act = {scale, rotate};
+    this.fire('transform', act, bak);
     this.options.scale = scale;
     this.options.rotate = rotate;
-    return new_;
+    return act;
   }
 }
 

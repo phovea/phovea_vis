@@ -51,7 +51,7 @@ export default class HeatMapDOMRenderer implements IHeatMapRenderer {
       const $rows = $g.selectAll('g').data(arr);
       $rows.enter().append('g').each(function (row, i) {
         const $cols = d3.select(this).selectAll('rect').data(row);
-        const $cols_enter = $cols.enter().append('rect').attr({
+        const $colsEnter = $cols.enter().append('rect').attr({
           width: 1,
           height: 1,
           x: (d, j) => j,
@@ -59,11 +59,11 @@ export default class HeatMapDOMRenderer implements IHeatMapRenderer {
           fill: (d) => c(d)
         });
         if (that.selectAble !== ESelectOption.NONE) {
-          $cols_enter.on('click', (d, j) => {
-            data.selectProduct([cell(i, j)], toSelectOperation(d3.event));
+          $colsEnter.on('click', (d, j) => {
+            data.selectProduct([cell(i, j)], toSelectOperation(<MouseEvent>d3.event));
           });
         }
-        $cols_enter.append('title').text(String);
+        $colsEnter.append('title').text(String);
 
       });
       onReady();

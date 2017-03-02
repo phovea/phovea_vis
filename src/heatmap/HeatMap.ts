@@ -9,7 +9,7 @@ import {Range} from 'phovea_core/src/range';
 import {AVisInstance, IVisInstance, assignVis} from 'phovea_core/src/vis';
 import {rect} from 'phovea_core/src/geom';
 import {mixin} from 'phovea_core/src';
-import {INumericalMatrix,ICategoricalMatrix} from 'phovea_core/src/matrix';
+import {INumericalMatrix, ICategoricalMatrix} from 'phovea_core/src/matrix';
 import {defaultColor, defaultDomain, toScale, IScale, ICommonHeatMapOptions} from './internal';
 import {IHeatMapRenderer, ESelectOption} from './IHeatMapRenderer';
 import HeatMapDOMRenderer from './HeatMapDOMRenderer';
@@ -77,7 +77,7 @@ export default class HeatMap extends AVisInstance implements IVisInstance {
     }, options);
     this.options.scale = [this.options.initialScale, this.options.initialScale];
     if (this.options.scaleTo) {
-      let raw = this.data.dim;
+      const raw = this.data.dim;
       this.options.scale = <[number, number]>this.options.scaleTo.map((d, i) => d / raw[i]);
     }
     this.options.rotate = 0;
@@ -145,14 +145,11 @@ export default class HeatMap extends AVisInstance implements IVisInstance {
     if (bak.scale[0] !== scale[0] || bak.scale[1] !== scale[1]) {
       this.renderer.rescale(this.$node, dims, scale);
     }
-    const new_ = {
-      scale: scale,
-      rotate: rotate
-    };
-    this.fire('transform', new_, bak);
+    const act = {scale, rotate};
+    this.fire('transform', act, bak);
     this.options.scale = scale;
     this.options.rotate = rotate;
-    return new_;
+    return act;
   }
 
   private recolor() {
@@ -173,6 +170,6 @@ export default class HeatMap extends AVisInstance implements IVisInstance {
   }
 }
 
-export function create(data: IHeatMapAbleMatrix, parent: HTMLElement, options?: IHeatMapOptions){
+export function create(data: IHeatMapAbleMatrix, parent: HTMLElement, options?: IHeatMapOptions) {
   return new HeatMap(data, parent, options);
 }

@@ -140,7 +140,6 @@ export default class HeatMap1D extends AVisInstance implements IVisInstance {
     const t = <Promise<string|number[]>>this.data.data();
     t.then((arr: any[]) => {
       const $rows = $g.selectAll('rect').data(arr);
-      console.log(arr)
       const onClick = selectionUtil(this.data, $g, 'rect');
       $rows.enter().append('rect').on('click', onClick).attr({
         width: this.options.width,

@@ -20,7 +20,7 @@ export function defaultColor(value: INumberValueTypeDesc|ICategoricalValueTypeDe
     //use a symmetric range
     return ['blue', 'white', 'red'];
   }
-  return ['white', 'red'];
+  return ['#fff5f0', '#67000d'];
 }
 export function defaultDomain(value: INumberValueTypeDesc|ICategoricalValueTypeDesc): (string|number)[] {
   if (value.type === VALUE_TYPE_CATEGORICAL) {

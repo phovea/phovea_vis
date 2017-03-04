@@ -4,12 +4,14 @@
 
 import './style.scss';
 import {select, extent, format} from 'd3';
+import * as d3 from 'd3';
 import {mixin} from 'phovea_core/src';
 import {AVisInstance, IVisInstance, assignVis, ITransform, IVisInstanceOptions} from 'phovea_core/src/vis';
 import {selectionUtil} from 'phovea_d3/src/d3util';
 import {IAnyVector} from 'phovea_core/src/vector';
 import {rect} from 'phovea_core/src/geom';
 import {Range} from 'phovea_core/src/range';
+import {on, fire} from 'phovea_core/src/event';
 
 export interface IListOptions extends IVisInstanceOptions {
   format?: string;
@@ -26,6 +28,8 @@ export class List extends AVisInstance implements IVisInstance {
     rowHeight: 20
   };
 
+  private listArr;
+  static readonly EVENT_STRING_DRAG = 'dragString';
   private readonly $node: d3.Selection<List>;
 
   constructor(public readonly data: IAnyVector, parent: HTMLElement, options: IListOptions = {}) {
@@ -79,19 +83,41 @@ export class List extends AVisInstance implements IVisInstance {
   }
 
   private build($parent: d3.Selection<any>) {
+    const that = this;
     const scale = this.options.scale;
     const $list = $parent.append('div').attr('class', 'phovea-list');
     $list.style('width', `${scale[0] * this.options.width}px`);
     $list.style('height', `${scale[1] * this.data.length * this.options.rowHeight}px`);
+    const l = $parent.select('.phovea-list')
+
 
     const onClick = selectionUtil(this.data, $list, 'div');
     this.data.data().then((arr: any[]) => {
       const $rows = $list.selectAll('div').data(arr);
       $rows.enter().append('div').on('click', onClick);
-      const formatter =  this.options.format ? format(this.options.format) : String;
+      // .on('mousedown', (d) => {
+      //   console.log(d)
+      //   that.listArr = d;
+      //   fire(List.EVENT_STRING_DRAG, that.listArr);
+      // });
+      const formatter = this.options.format ? format(this.options.format) : String;
       $rows.text(formatter);
       $rows.exit().remove();
       this.markReady();
+
+      const t = $parent.select('.phovea-list').selectAll('div');
+      let a, b;
+      l.on('mousedown', (evt) => {
+        //   console.log((<any>d3.event).target.innerHTML)
+        a = ((<any>d3.event).target.__data__);
+      })
+      l.on('mouseup', (evt) => {
+        b = ((<any>d3.event).target.__data__);
+        console.log(a,b)
+        const elements = arr.slice(arr.indexOf(a), arr.indexOf(b) + 1);
+        fire(List.EVENT_STRING_DRAG, elements);
+
+      });
     });
     return $list;
   }

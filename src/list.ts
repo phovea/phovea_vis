@@ -95,7 +95,6 @@ export class List extends AVisInstance implements IVisInstance {
       $rows.text(formatter);
       $rows.exit().remove();
       this.markReady();
-
       let a, b;
       $parent.select('.phovea-list')
         .on('mousedown', () => {

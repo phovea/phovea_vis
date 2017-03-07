@@ -14,13 +14,30 @@ import {Range} from 'phovea_core/src/range';
 import {fire} from 'phovea_core/src/event';
 
 export interface IListOptions extends IVisInstanceOptions {
+  /**
+   * @default ''
+   */
+  cssClass?: string;
+
+  /**
+   * @default null
+   */
   format?: string;
+
+  /**
+   * @default 200
+   */
   width?: number;
+
+  /**
+   * @default 20
+   */
   rowHeight?: number;
 }
 
 export class List extends AVisInstance implements IVisInstance {
   private readonly options: IListOptions = {
+    cssClass: '',
     format: null,
     scale: [1, 1],
     rotate: 0,
@@ -83,7 +100,7 @@ export class List extends AVisInstance implements IVisInstance {
 
   private build($parent: d3.Selection<any>) {
     const scale = this.options.scale;
-    const $list = $parent.append('div').attr('class', 'phovea-list');
+    const $list = $parent.append('div').attr('class', 'phovea-list ' + this.options.cssClass);
     $list.style('width', `${scale[0] * this.options.width}px`);
     $list.style('height', `${scale[1] * this.data.length * this.options.rowHeight}px`);
 

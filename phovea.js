@@ -130,7 +130,6 @@ module.exports = function(registry) {
       false,
       true
     ],
-    scaling: 'height-only',
     filter: [
       '(vector|stratification)',
       'categorical'

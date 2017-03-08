@@ -93,7 +93,6 @@ module.exports = function(registry) {
       false,
       true
     ],
-    scaling: 'height-only',
     filter: ['vector', '(real|int|categorical)']
 
   });

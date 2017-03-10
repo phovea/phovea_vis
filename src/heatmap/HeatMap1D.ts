@@ -29,6 +29,7 @@ export declare type IHeatMapAbleVector = INumericalVector|ICategoricalVector;
 
 export default class HeatMap1D extends AVisInstance implements IVisInstance {
   private readonly $node: d3.Selection<any>;
+  private labels : d3.Selection<any>;
   private readonly colorer: IScale;
 
   private readonly options: IHeatMap1DOptions = {
@@ -111,6 +112,7 @@ export default class HeatMap1D extends AVisInstance implements IVisInstance {
     this.fire('transform', act, bak);
     this.options.scale = scale;
     this.options.rotate = rotate;
+        this.drawLabels();
     return act;
   }
 
@@ -144,10 +146,32 @@ export default class HeatMap1D extends AVisInstance implements IVisInstance {
         y: (d, i) => i
       });
       $rows.exit().remove();
+
+      this.labels = $svg.append('g');
+      this.drawLabels();
       this.markReady();
     });
     return $svg;
   }
+
+  private drawLabels(){
+       const rowHeight = this.size[1] / this.data.dim[0];
+       this.labels.attr({
+         'display' : (rowHeight > 8) ? 'inline' : 'none',
+         'font-size' : rowHeight + 'px'
+       });
+      const t = <Promise<string|number[]>>this.data.data();
+      t.then((arr: any[]) => {
+        const $n = this.labels.selectAll('text').data(arr);
+        $n.enter().append('text');
+        const padding = 2;
+        $n.attr({
+          y: (d,i) => (i+1) * rowHeight - padding/2,
+          height: (d) => rowHeight- padding
+        }).text(String);
+      });
+  }
+
 }
 
 

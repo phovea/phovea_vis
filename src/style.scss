@@ -31,6 +31,10 @@ $hover-color: #ffc46b;
       fill: $select-color;
     }
   }
+  text {
+    user-select: none;
+    pointer-events: none;
+  }
 }
 
 .phovea-box {
@@ -61,6 +65,10 @@ div.phovea-heatmap {
       left: 0;
       z-index: 2;
     }
+  }
+  text {
+    user-select: none;
+    pointer-events: none;
   }
 }
 
@@ -130,6 +138,10 @@ div.phovea-heatmap {
   }
   .phovea-select-hovered rect {
     fill: $hover-color;
+  }
+  text {
+    user-select: none;
+    pointer-events: none;
   }
 }
 

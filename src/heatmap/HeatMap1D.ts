@@ -112,7 +112,7 @@ export default class HeatMap1D extends AVisInstance implements IVisInstance {
     this.fire('transform', act, bak);
     this.options.scale = scale;
     this.options.rotate = rotate;
-        this.drawLabels();
+    this.drawLabels();
     return act;
   }
 
@@ -154,24 +154,25 @@ export default class HeatMap1D extends AVisInstance implements IVisInstance {
     return $svg;
   }
 
-  private drawLabels(){
-       const rowHeight = this.size[1] / this.data.dim[0];
-       this.labels.attr({
-         'display' : (rowHeight > 8) ? 'inline' : 'none',
-         'font-size' : rowHeight + 'px'
-       });
-      const t = <Promise<string|number[]>>this.data.data();
-      t.then((arr: any[]) => {
-        const $n = this.labels.selectAll('text').data(arr);
-        $n.enter().append('text');
-        const padding = 2;
+  private drawLabels() {
+    const rowHeight = this.size[1] / this.data.dim[0];
+    this.labels.attr({
+      'display' : (rowHeight >= 8) ? 'inline' : 'none',
+      'font-size' : rowHeight + 'px'
+    });
+    const t = <Promise<string|number[]>>this.data.data();
+    t.then((arr: any[]) => {
+      const $n = this.labels.selectAll('text').data(arr);
+      $n.enter().append('text');
+      const yPadding = 2;
+        const xPadding = 3;
         $n.attr({
-          y: (d,i) => (i+1) * rowHeight - padding/2,
-          height: (d) => rowHeight- padding
+          x: xPadding,
+          y: (d,i) => (i + 1) * rowHeight - yPadding/2,
+          height: (d) => rowHeight - yPadding
         }).text(String);
-      });
+    });
   }
-
 }
 
 

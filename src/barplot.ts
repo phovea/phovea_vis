@@ -159,9 +159,7 @@ export class BarPlot extends AVisInstance implements IVisInstance {
         width: xscale
       });
 
-
-      const $g2 = $svg.append('g');
-      this.labels = $g2;
+      this.labels = $svg.append('g');
       this.drawLabels();
       this.markReady();
       data.selections().then((selected) => l(null, 'selected', selected));
@@ -170,19 +168,21 @@ export class BarPlot extends AVisInstance implements IVisInstance {
     return $svg;
   }
 
-  private drawLabels(){
+  private drawLabels() {
     const rowHeight = this.size[1] / this.data.dim[0];
     this.labels.attr({
-      'display' : (rowHeight > 8) ? 'inline' : 'none',
+      'display' : (rowHeight >= 8) ? 'inline' : 'none',
       'font-size' : rowHeight + 'px'
     });
     this.data.data().then((_data) => {
       const $n = this.labels.selectAll('text').data(_data);
       $n.enter().append('text');
-      const padding = 2;
+      const yPadding = 2;
+      const xPadding = 3;
       $n.attr({
-        y: (d,i) => (i+1) * rowHeight - padding/2,
-        height: (d) => rowHeight - padding
+        x: xPadding,
+        y: (d,i) => (i+1) * rowHeight - yPadding/2,
+        height: (d) => rowHeight - yPadding
       }).text(String);
     });
   }

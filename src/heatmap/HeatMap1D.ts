@@ -154,7 +154,7 @@ export default class HeatMap1D extends AVisInstance implements IVisInstance {
     return $svg;
   }
 
-  private drawLabels(){
+  private drawLabels() {
        const rowHeight = this.size[1] / this.data.dim[0];
        this.labels.attr({
          'display' : (rowHeight > 8) ? 'inline' : 'none',

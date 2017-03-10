@@ -156,3 +156,10 @@ div.phovea-heatmap {
     white-space: nowrap;
   }
 }
+
+.phovea-mosaic{
+  text {
+    user-select: none;
+    pointer-events: none;
+  }
+}

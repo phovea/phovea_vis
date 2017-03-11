@@ -199,8 +199,8 @@ export default class Mosaic extends AVisInstance implements IVisInstance {
   private drawLabels() {
     const rowHeight = this.size[1] / this.data.dim[0];
     this.labels.attr({
-      'display' : (rowHeight >= 8) ? 'inline' : 'none',
-      'font-size' : rowHeight + 'px'
+      'display' : (rowHeight >= 10) ? 'inline' : 'none',
+      'font-size' : (3/4 * rowHeight) + 'px'
     });
     const $n = this.labels.selectAll('text').data(this.histData);
     $n.enter().append('text');

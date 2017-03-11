@@ -157,8 +157,8 @@ export default class HeatMap1D extends AVisInstance implements IVisInstance {
   private drawLabels() {
     const rowHeight = this.size[1] / this.data.dim[0];
     this.labels.attr({
-      'display' : (rowHeight >= 8) ? 'inline' : 'none',
-      'font-size' : rowHeight + 'px'
+      'display' : (rowHeight >= 10) ? 'inline' : 'none',
+      'font-size' : (3/4 * rowHeight) + 'px'
     });
     const t = <Promise<string|number[]>>this.data.data();
     t.then((arr: any[]) => {
@@ -167,8 +167,9 @@ export default class HeatMap1D extends AVisInstance implements IVisInstance {
       const yPadding = 2;
         const xPadding = 3;
         $n.attr({
+          'alignment-baseline' : 'central',
           x: xPadding,
-          y: (d,i) => (i + 1) * rowHeight - yPadding/2,
+          y: (d,i) => (i + 0.5) * rowHeight,
           height: (d) => rowHeight - yPadding
         }).text(String);
     });

@@ -209,9 +209,9 @@ export default class Histogram extends AVisInstance implements IVisInstance {
     xscale.domain(d3.range(this.hist.bins));
     const columnWidth = xscale.rangeBand();
     const lettersToFit = 5;
-    const fontSize = (columnWidth / lettersToFit  > 8) ? (columnWidth / lettersToFit) : 8 ;
+    const fontSize = (columnWidth / lettersToFit  > 12) ? (columnWidth / lettersToFit) : 12 ;
     this.labels.attr({
-      'display' : (columnWidth > 15) ? 'inline' : 'none',
+      'display' : (columnWidth > 25) ? 'inline' : 'none',
       'font-size' : fontSize + 'px'
     });
     const $m = this.labels.selectAll('text').data(this.histData);

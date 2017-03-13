@@ -66,10 +66,6 @@ div.phovea-heatmap {
       z-index: 2;
     }
   }
-  text {
-    user-select: none;
-    pointer-events: none;
-  }
 }
 
 
@@ -129,6 +125,10 @@ div.phovea-heatmap {
     &.phovea-select-hovered {
       fill: $hover-color;
     }
+  }
+  text {
+    user-select: none;
+    pointer-events: none;
   }
 }
 

@@ -55,6 +55,8 @@ export class BarPlot extends AVisInstance implements IVisInstance {
 
   private readonly $node: d3.Selection<BarPlot>;
 
+  private labels : d3.Selection<any>;
+
   private xscale: d3.scale.Linear<number, number>;
   private yscale: d3.scale.Linear<number, number>;
 
@@ -97,6 +99,7 @@ export class BarPlot extends AVisInstance implements IVisInstance {
     this.fire('transform', act, bak);
     this.options.scale = scale;
     this.options.rotate = rotate;
+    this.drawLabels();
     return act;
   }
 
@@ -147,7 +150,6 @@ export class BarPlot extends AVisInstance implements IVisInstance {
       }
       xscale.domain([o.min, o.max]);
 
-
       const $m = $g.selectAll('rect').data(_data);
       $m.enter().append('rect')
         .on('click', onClick);
@@ -156,11 +158,34 @@ export class BarPlot extends AVisInstance implements IVisInstance {
         height: (d) => yscale(1),
         width: xscale
       });
+
+      this.labels = $svg.append('g');
+      this.drawLabels();
       this.markReady();
       data.selections().then((selected) => l(null, 'selected', selected));
     });
 
     return $svg;
+  }
+
+  private drawLabels() {
+    const rowHeight = this.size[1] / this.data.dim[0];
+    this.labels.attr({
+      'display' : (rowHeight >= 10) ? 'inline' : 'none',
+      'font-size' : (3/4 * rowHeight) + 'px'
+    });
+    this.data.data().then((_data) => {
+      const $n = this.labels.selectAll('text').data(_data);
+      $n.enter().append('text');
+      const yPadding = 2;
+      const xPadding = 3;
+      $n.attr({
+        'alignment-baseline' : 'central',
+        x: xPadding,
+        y: (d,i) => (i+ 0.5) * rowHeight,
+        height: (d) => rowHeight - yPadding
+      }).text(String);
+    });
   }
 
   locateImpl(range: Range) {

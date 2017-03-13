@@ -31,6 +31,10 @@ $hover-color: #ffc46b;
       fill: $select-color;
     }
   }
+  text {
+    user-select: none;
+    pointer-events: none;
+  }
 }
 
 .phovea-box {
@@ -122,6 +126,10 @@ div.phovea-heatmap {
       fill: $hover-color;
     }
   }
+  text {
+    user-select: none;
+    pointer-events: none;
+  }
 }
 
 .phovea-histogram {
@@ -130,6 +138,10 @@ div.phovea-heatmap {
   }
   .phovea-select-hovered rect {
     fill: $hover-color;
+  }
+  text {
+    user-select: none;
+    pointer-events: none;
   }
 }
 
@@ -142,5 +154,12 @@ div.phovea-heatmap {
 
   > div {
     white-space: nowrap;
+  }
+}
+
+.phovea-mosaic{
+  text {
+    user-select: none;
+    pointer-events: none;
   }
 }

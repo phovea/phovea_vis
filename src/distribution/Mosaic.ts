@@ -47,7 +47,8 @@ export default class Mosaic extends AVisInstance implements IVisInstance {
     heightTo: null,
     selectAble: true,
     scale: [1, 1],
-    rotate: 0
+    rotate: 0,
+    sort: 'asc'
   };
 
   private readonly $node: d3.Selection<Mosaic>;
@@ -125,7 +126,7 @@ export default class Mosaic extends AVisInstance implements IVisInstance {
 
     this.data.hist().then((hist) => {
       this.hist = hist;
-      const histData = this.histData = createHistData(hist, data);
+      const histData = this.histData = createHistData(hist, data, this.options.sort);
 
       const $m = $data.selectAll('rect').data(histData);
       $m.enter().append('rect')

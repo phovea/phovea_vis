@@ -162,4 +162,7 @@ div.phovea-heatmap {
     user-select: none;
     pointer-events: none;
   }
+  .phovea-select-selected rect {
+    fill: $select-color;
+  }
 }

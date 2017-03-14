@@ -22,7 +22,7 @@ export interface IHistData {
   readonly color: string;
 }
 
-function createCategoricalHistData(hist: ICatHistogram): IHistData[] {
+function createCategoricalHistData(hist: ICatHistogram, sort? : string): IHistData[] {
   const categories: any[] = hist.categories,
     cols = hist.colors || d3.scale.category10().range(),
     total = hist.validCount;
@@ -40,6 +40,13 @@ function createCategoricalHistData(hist: ICatHistogram): IHistData[] {
     };
     acc += b;
   });
+  acc = 0;
+  data.sort((a, b) => sort == 'asc' ? (a.v - b.v) : (b.v - a.v));
+  data.forEach((d) => {
+    d.acc = acc;
+    acc += d.v;
+  });
+
   return data;
 }
 
@@ -64,13 +71,13 @@ function createNumericalHistData(hist: IHistogram, range: number[]): IHistData[]
   return data;
 }
 
-export function createHistData(hist: IHistogram, data: IHistAbleDataType<ICategoricalValueTypeDesc|INumberValueTypeDesc>|IStratification) {
+export function createHistData(hist: IHistogram, data: IHistAbleDataType<ICategoricalValueTypeDesc|INumberValueTypeDesc>|IStratification, sort? : string) {
   if (data.desc.type === 'stratification') {
-    return createCategoricalHistData(<ICatHistogram>hist);
+    return createCategoricalHistData(<ICatHistogram>hist, sort);
   }
   const d = (<IHistAbleDataType<ICategoricalValueTypeDesc|INumberValueTypeDesc>>data).valuetype;
   if (d.type === VALUE_TYPE_CATEGORICAL) {
-    return createCategoricalHistData(<ICatHistogram>hist);
+    return createCategoricalHistData(<ICatHistogram>hist, sort);
   }
   return createNumericalHistData(hist, (<INumberValueTypeDesc>d).range);
 }
@@ -92,5 +99,8 @@ export function resolveHistMax(hist: IHistogram, totalHeight: ITotalHeight): Pro
 export declare type ITotalHeight = number|boolean|((hist: IHistogram) => number|boolean|Promise<number|boolean>);
 
 export interface IDistributionOptions extends IVisInstanceOptions {
-
+  /**
+   * @default 'asc'
+   */
+  sort?: string;
 }

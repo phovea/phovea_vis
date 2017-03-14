@@ -50,7 +50,8 @@ export default class Histogram extends AVisInstance implements IVisInstance {
     heightTo: 100,
     duration: 200,
     scale: [1, 1],
-    rotate: 0
+    rotate: 0,
+    sort: 'asc'
   };
 
   private readonly $node: d3.Selection<Histogram>;
@@ -139,7 +140,7 @@ export default class Histogram extends AVisInstance implements IVisInstance {
     }).then((histmax) => {
       const hist = this.hist;
       yscale.domain([0, histmax]);
-      const histData = this.histData = createHistData(hist, this.data);
+      const histData = this.histData = createHistData(hist, this.data, this.options.sort);
 
       const $m = $data.selectAll('rect').data(histData);
       $m.enter().append('rect')

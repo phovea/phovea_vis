@@ -50,7 +50,8 @@ export default class Histogram extends AVisInstance implements IVisInstance {
     heightTo: 100,
     duration: 200,
     scale: [1, 1],
-    rotate: 0
+    rotate: 0,
+    sort: 'asc'
   };
 
   private readonly $node: d3.Selection<Histogram>;
@@ -58,6 +59,7 @@ export default class Histogram extends AVisInstance implements IVisInstance {
   private xscale: d3.scale.Ordinal<number, number>;
   private yscale: d3.scale.Linear<number, number>;
 
+  private labels : d3.Selection<any>;
   private hist: IHistogram;
   private histData: IHistData[];
 
@@ -138,7 +140,7 @@ export default class Histogram extends AVisInstance implements IVisInstance {
     }).then((histmax) => {
       const hist = this.hist;
       yscale.domain([0, histmax]);
-      const histData = this.histData = createHistData(hist, this.data);
+      const histData = this.histData = createHistData(hist, this.data, this.options.sort);
 
       const $m = $data.selectAll('rect').data(histData);
       $m.enter().append('rect')
@@ -155,6 +157,9 @@ export default class Histogram extends AVisInstance implements IVisInstance {
       data.selections().then((selected) => {
         l(null, 'selected', selected);
       });
+    }).then(()=>{
+      this.labels = $svg.append('g');
+      this.drawLabels();
     });
 
     return $svg;
@@ -196,7 +201,29 @@ export default class Histogram extends AVisInstance implements IVisInstance {
     this.fire('transform', act, bak);
     this.options.scale = scale;
     this.options.rotate = rotate;
+    this.drawLabels();
     return act;
+  }
+
+  private drawLabels() {
+    const xscale = this.xscale = d3.scale.ordinal<number,number>().rangeBands([0, this.size[0]], 0.1);
+    xscale.domain(d3.range(this.hist.bins));
+    const columnWidth = xscale.rangeBand();
+    const lettersToFit = 5;
+    const fontSize = (columnWidth / lettersToFit  > 12) ? (columnWidth / lettersToFit) : 12 ;
+    this.labels.attr({
+      'display' : (columnWidth > 25) ? 'inline' : 'none',
+      'font-size' : fontSize + 'px'
+    });
+    const $m = this.labels.selectAll('text').data(this.histData);
+    $m.enter().append('text');
+    const yPadding = 3;
+    $m.attr({
+        'text-anchor':"middle",
+        x: (d, i) =>  xscale.rangeBand() / 2 + xscale(i),
+        y: this.size[1] - yPadding,
+    }).text((d) => ((d.name).length > lettersToFit) ? ((d.name).substring(0, (lettersToFit - 1)) + "...") : (d.name));
+
   }
 }
 

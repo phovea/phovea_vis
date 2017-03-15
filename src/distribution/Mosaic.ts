@@ -47,13 +47,15 @@ export default class Mosaic extends AVisInstance implements IVisInstance {
     heightTo: null,
     selectAble: true,
     scale: [1, 1],
-    rotate: 0
+    rotate: 0,
+    sort: 'asc'
   };
 
   private readonly $node: d3.Selection<Mosaic>;
 
   private hist: IHistogram;
   private histData: IHistData[];
+  private labels : d3.Selection<any>;
 
   constructor(public readonly data: IHistAbleDataType<ICategoricalValueTypeDesc|INumberValueTypeDesc>|IStratification, parent: Element, options: IMosaicOptions = {}) {
     super();
@@ -124,7 +126,7 @@ export default class Mosaic extends AVisInstance implements IVisInstance {
 
     this.data.hist().then((hist) => {
       this.hist = hist;
-      const histData = this.histData = createHistData(hist, data);
+      const histData = this.histData = createHistData(hist, data, this.options.sort);
 
       const $m = $data.selectAll('rect').data(histData);
       $m.enter().append('rect')
@@ -143,6 +145,9 @@ export default class Mosaic extends AVisInstance implements IVisInstance {
           l(null, 'selected', selected);
         });
       }
+    }).then(()=>{
+      this.labels = $svg.append('g');
+      this.drawLabels();
     });
 
     return $svg;
@@ -188,7 +193,24 @@ export default class Mosaic extends AVisInstance implements IVisInstance {
     this.fire('transform', act, bak);
     this.options.scale = scale;
     this.options.rotate = rotate;
+    this.drawLabels();
     return act;
+  }
+
+  private drawLabels() {
+    const rowHeight = this.size[1] / this.data.dim[0];
+    this.labels.attr({
+      'display' : (rowHeight >= 10) ? 'inline' : 'none',
+      'font-size' : (3/4 * rowHeight) + 'px'
+    });
+    const $n = this.labels.selectAll('text').data(this.histData);
+    $n.enter().append('text');
+    const xPadding = 3;
+    $n.attr({
+       'alignment-baseline' : 'central',
+       x: xPadding,
+       y: (d,i) => (d.acc + d.v / 2) * this.options.scale[1],
+    }).text((d) => (d.name));
   }
 }
 

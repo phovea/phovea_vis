@@ -62,11 +62,27 @@ module.exports = function(registry) {
 
   });
   registry.push('vis', 'list', function () {
-    return System.import('./src/list');
+    return System.import('./src/list/list');
   }, {
     name: 'List',
     filter: 'vector',
-    sizeDependsOnDataDimension: true
+    sizeDependsOnDataDimension: [
+      false,
+      true
+    ]
+  });
+  registry.push('vis', 'proportionalSymbol', function () {
+    return System.import('./src/list/proportionalSymbol');
+  }, {
+    name: 'Proportional Symbol',
+    filter: [
+      'vector',
+      '(real|int)'
+    ],
+    sizeDependsOnDataDimension: [
+      false,
+      true
+    ]
   });
   registry.push('vis', 'scatterplot', function () {
     return System.import('./src/scatterplot');

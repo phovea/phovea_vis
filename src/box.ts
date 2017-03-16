@@ -27,7 +27,7 @@ export interface IBoxPlotOptions extends IVisInstanceOptions {
 
 function createText(stats) {
   let r = '<table><tbody>';
-  const keys = ['min', 'max', 'sum', 'mean', 'var', 'sd', 'n', 'nans', 'moment2', 'moment3', 'moment4', 'kurtosis', 'skewness'];
+  const keys = ['min', 'max', 'sum', 'mean', 'median', 'q1', 'q3', 'var', 'sd', 'n', 'nans', 'moment2', 'moment3', 'moment4', 'kurtosis', 'skewness'];
   keys.forEach(function (key) {
     const value = stats[key];
     r = `${r}<tr><td>${key}</td><td>${value}</td></tr>`;
@@ -102,24 +102,23 @@ export class BoxPlot extends AVisInstance implements IVisInstance {
     const s = this.scale = d3.scale.linear().domain((<any>this.data.desc).value.range).range([edgeOffset, this.rawSize[0] - edgeOffset]).clamp(true);
 
     $t.append('path').attr({
-      d: 'M&,0 L&,$ M&,ยง L%,ยง M%,0 L%,$'.replace(/\&/g,String(edgeOffset)).replace(/\%/g, String(this.rawSize[0] - edgeOffset)).replace(/\$/g, String(this.rawSize[1])).replace(/\ยง/g, String(this.rawSize[1] / 2)),
+      d: 'M&,0 L&,$ M&,ง L%,ง M%,0 L%,$'.replace(/\&/g,String(edgeOffset)).replace(/\%/g, String(this.rawSize[0] - edgeOffset)).replace(/\$/g, String(this.rawSize[1])).replace(/\ง/g, String(this.rawSize[1] / 2)),
       'class': 'axis'
     });
-
-    data.stats().then((stats) => {
+    data.statsAdvanced().then((stats) => {
       const text = createText(stats);
 
       $t.append('rect').attr({
-        x: s(stats.mean - stats.sd),
+        x: s(stats.q1),
         y: 0,
-        width: s(stats.sd * 2),
+        width: s(stats.q3),
         height: this.rawSize[1],
         'class': 'box'
       }).call(bindTooltip(text));
 
       $t.append('line').attr({
-        x1: s(stats.mean),
-        x2: s(stats.mean),
+        x1: s(stats.median),
+        x2: s(stats.median),
         y1: 0,
         y2: this.rawSize[1],
         'class': 'mean'

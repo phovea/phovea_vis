@@ -20,19 +20,23 @@ export interface IMosaicOptions extends IDistributionOptions {
    * @default 20
    */
   width?: number;
+
   /**
    * @default 200
    */
   duration?: number;
+
   /**
    * target height such that the mosaic will fit
    * @default null
    */
   heightTo?: number;
+
   /**
    * @default 10
    */
   initialScale?: number;
+
   /**
    * @default true
    */
@@ -55,7 +59,7 @@ export default class Mosaic extends AVisInstance implements IVisInstance {
 
   private hist: IHistogram;
   private histData: IHistData[];
-  private labels : d3.Selection<any>;
+  private $labels : d3.Selection<any>;
 
   constructor(public readonly data: IHistAbleDataType<ICategoricalValueTypeDesc|INumberValueTypeDesc>|IStratification, parent: Element, options: IMosaicOptions = {}) {
     super();
@@ -101,7 +105,7 @@ export default class Mosaic extends AVisInstance implements IVisInstance {
       const highlights = this.histData.map((entry, i) => {
         const s = entry.range.intersect(selected);
         return {
-          i: i,
+          i,
           acc: entry.acc,
           v: s.size()[0]
         };
@@ -138,6 +142,10 @@ export default class Mosaic extends AVisInstance implements IVisInstance {
         height: (d) => d.v,
         fill: (d) => d.color
       });
+
+      this.$labels = $svg.append('g');
+      this.drawLabels();
+
       this.fire('built');
       this.markReady();
       if (o.selectAble) {
@@ -145,9 +153,6 @@ export default class Mosaic extends AVisInstance implements IVisInstance {
           l(null, 'selected', selected);
         });
       }
-    }).then(()=>{
-      this.labels = $svg.append('g');
-      this.drawLabels();
     });
 
     return $svg;
@@ -199,15 +204,15 @@ export default class Mosaic extends AVisInstance implements IVisInstance {
 
   private drawLabels() {
     const rowHeight = this.size[1] / this.data.dim[0];
-    this.labels.attr({
+    this.$labels.attr({
       'display' : (rowHeight >= 10) ? 'inline' : 'none',
       'font-size' : (3/4 * rowHeight) + 'px'
     });
-    const $n = this.labels.selectAll('text').data(this.histData);
+    const $n = this.$labels.selectAll('text').data(this.histData);
     $n.enter().append('text');
     const xPadding = 3;
     $n.attr({
-       'alignment-baseline' : 'central',
+       'alignment-baseline': 'central',
        x: xPadding,
        y: (d,i) => (d.acc + d.v / 2) * this.options.scale[1],
     }).text((d) => (d.name));

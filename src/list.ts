@@ -120,6 +120,7 @@ export class List extends AVisInstance implements IVisInstance {
         .on('mouseup', () => {
           b = d3.select((<any>d3.event).target).datum();
           const elements = arr.slice(arr.indexOf(a), arr.indexOf(b) + 1);
+          console.log(elements,this.data)
           fire(List.EVENT_STRING_DRAG, elements, this.data);
         });
     });

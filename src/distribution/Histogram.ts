@@ -30,11 +30,13 @@ export interface IHistogramOptions extends IDistributionOptions {
    * @default 200
    */
   duration?: number;
-   /**
+
+  /**
    * width
    * @default 200
    */
   width?: number;
+
   /**
    * scale such that the height matches the argument
    * @default 100
@@ -59,7 +61,7 @@ export default class Histogram extends AVisInstance implements IVisInstance {
   private xscale: d3.scale.Ordinal<number, number>;
   private yscale: d3.scale.Linear<number, number>;
 
-  private labels : d3.Selection<any>;
+  private $labels : d3.Selection<any>;
   private hist: IHistogram;
   private histData: IHistData[];
 
@@ -153,13 +155,14 @@ export default class Histogram extends AVisInstance implements IVisInstance {
         y: (d) => yscale(yscale.domain()[1] - d.v),
         height: (d) => yscale(d.v)
       });
+
+      this.$labels = $svg.append('g');
+      this.drawLabels();
+
       this.markReady();
       data.selections().then((selected) => {
         l(null, 'selected', selected);
       });
-    }).then(()=>{
-      this.labels = $svg.append('g');
-      this.drawLabels();
     });
 
     return $svg;
@@ -211,18 +214,18 @@ export default class Histogram extends AVisInstance implements IVisInstance {
     const columnWidth = xscale.rangeBand();
     const lettersToFit = 5;
     const fontSize = (columnWidth / lettersToFit  > 12) ? (columnWidth / lettersToFit) : 12 ;
-    this.labels.attr({
+    this.$labels.attr({
       'display' : (columnWidth > 25) ? 'inline' : 'none',
       'font-size' : fontSize + 'px'
     });
-    const $m = this.labels.selectAll('text').data(this.histData);
+    const $m = this.$labels.selectAll('text').data(this.histData);
     $m.enter().append('text');
     const yPadding = 3;
     $m.attr({
-        'text-anchor':"middle",
+        'text-anchor': 'middle',
         x: (d, i) =>  xscale.rangeBand() / 2 + xscale(i),
         y: this.size[1] - yPadding,
-    }).text((d) => ((d.name).length > lettersToFit) ? ((d.name).substring(0, (lettersToFit - 1)) + "...") : (d.name));
+    }).text((d) => ((d.name).length > lettersToFit) ? ((d.name).substring(0, (lettersToFit - 1)) + '...') : (d.name));
 
   }
 }

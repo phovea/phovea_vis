@@ -10,6 +10,7 @@ import {rect} from 'phovea_core/src/geom';
 import {INumericalVector} from 'phovea_core/src/vector';
 import {toSelectOperation} from 'phovea_core/src/idtype';
 import {Range} from 'phovea_core/src/range';
+import {SelectOperation} from "phovea_core/src/idtype/IIDType";
 
 
 export interface IBarPlotOptions extends IVisInstanceOptions {
@@ -118,12 +119,11 @@ export class BarPlot extends AVisInstance implements IVisInstance {
     const xscale = this.xscale = d3.scale.linear().range([0, this.rawSize[0]]);
     const yscale = this.yscale = d3.scale.linear().range([0, this.rawSize[1]]);
 
-    const onClick = function (d, i) {
-      data.select(0, [i], toSelectOperation(<MouseEvent>d3.event));
+    const onClick = function (d, i, selectOperation) {
+      data.select(0, [i - 1], toSelectOperation(<MouseEvent>d3.event) || selectOperation);
     };
 
     const l = function (event, type: string, selected: Range) {
-      console.log(selected,type)
       $g.selectAll('rect').classed('phovea-select-' + type, false);
       if (selected.isNone) {
         return;
@@ -152,26 +152,31 @@ export class BarPlot extends AVisInstance implements IVisInstance {
       xscale.domain([o.min, o.max]);
 
       const $m = $g.selectAll('rect').data(_data);
+      let select = false;
+      let a, b;
       $m.enter().append('rect')
-        .on('click', onClick);
+        .on('click', onClick)
+        .on('mousedown', (d, i) => {
+          a = d3.select((<any>d3.event).target).datum();
+          return select = true;
+        })
+        .on('mouseover', (d, i) => {
+          if (select === true) {
+            onClick(d, i, SelectOperation.ADD);
+          }
+        })
+        .on('mouseup', (d, i) => {
+          b = d3.select((<any>d3.event).target).datum();
+          const elements = _data.slice(_data.indexOf(a), _data.indexOf(b) + 1);
+          //fire(List.EVENT_STRING_DRAG, elements, this.data);
+          console.log(elements)
+          return select = false;
+        });
       $m.attr({
         y: (d, i) => yscale(i),
         height: (d) => yscale(1),
         width: xscale
       });
-       let a, b;
-       $parent.select('.phovea-barplot')
-          .on('mousedown', () => {
-          a = d3.select((<any>d3.event).target).datum();
-         console.log(a)
-        })
-        .on('mouseup', () => {
-          b = d3.select((<any>d3.event).target).datum();
-          console.log(a,b)
-         const elements = _data.slice(_data.indexOf(a), _data.indexOf(b) + 1);
-          console.log(elements)
-          //fire(List.EVENT_STRING_DRAG, elements, this.data);
-        });
 
       this.labels = $svg.append('g');
       this.drawLabels();

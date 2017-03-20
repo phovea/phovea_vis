@@ -12,6 +12,7 @@ import {IAnyVector} from 'phovea_core/src/vector';
 import {rect} from 'phovea_core/src/geom';
 import {Range} from 'phovea_core/src/range';
 import {fire} from 'phovea_core/src/event';
+import {SelectOperation} from 'phovea_core/src/idtype/IIDType';
 
 export interface IListOptions extends IVisInstanceOptions {
   /**
@@ -104,24 +105,32 @@ export class List extends AVisInstance implements IVisInstance {
     $list.style('width', `${scale[0] * this.options.width}px`);
     $list.style('height', `${scale[1] * this.data.length * this.options.rowHeight}px`);
 
-    const onClick = selectionUtil(this.data, $list, 'div');
+    const onClick = selectionUtil(this.data, $list, 'div', SelectOperation.ADD);
     this.data.data().then((arr: any[]) => {
+      let select = false;
+      let a, b;
       const $rows = $list.selectAll('div').data(arr);
-      $rows.enter().append('div').on('click', onClick);
+      $rows.enter().append('div')
+        .on('click', onClick)
+        .on('mousedown', (d, i) => {
+          a = d3.select((<any>d3.event).target).datum();
+          return select = true;
+        })
+        .on('mouseover', (d, i) => {
+          if (select === true) {
+            onClick(d, i);
+          }
+        })
+        .on('mouseup', (d, i) => {
+          b = d3.select((<any>d3.event).target).datum();
+          const elements = arr.slice(arr.indexOf(a), arr.indexOf(b) + 1);
+          fire(List.EVENT_STRING_DRAG, elements, this.data);
+          return select = false;
+        });
       const formatter = this.options.format ? format(this.options.format) : String;
       $rows.text(formatter);
       $rows.exit().remove();
       this.markReady();
-      let a, b;
-      $parent.select('.phovea-list')
-        .on('mousedown', () => {
-          a = d3.select((<any>d3.event).target).datum();
-        })
-        .on('mouseup', () => {
-          b = d3.select((<any>d3.event).target).datum();
-          const elements = arr.slice(arr.indexOf(a), arr.indexOf(b) + 1);
-          fire(List.EVENT_STRING_DRAG, elements, this.data);
-        });
     });
     return $list;
   }

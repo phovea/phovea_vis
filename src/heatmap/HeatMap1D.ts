@@ -11,7 +11,9 @@ import {mixin} from 'phovea_core/src';
 import {selectionUtil} from 'phovea_d3/src/d3util';
 import {INumericalVector, ICategoricalVector} from 'phovea_core/src/vector';
 import {defaultColor, defaultDomain, toScale, IScale, ICommonHeatMapOptions} from './internal';
-import {SelectOperation} from "phovea_core/src/idtype/IIDType";
+import {SelectOperation} from 'phovea_core/src/idtype/IIDType';
+import {fire} from 'phovea_core/src/event';
+import List from '../list';
 
 export interface IHeatMap1DOptions extends ICommonHeatMapOptions {
   /**
@@ -139,11 +141,12 @@ export default class HeatMap1D extends AVisInstance implements IVisInstance {
       let select = false;
       let a, b;
       const $rows = $g.selectAll('rect').data(arr);
-      const onClick = selectionUtil(this.data, $g, 'rect',SelectOperation.ADD);
+      const onClick = selectionUtil(this.data, $g, 'rect', SelectOperation.ADD);
       $rows.enter().append('rect')
         .on('click', onClick)
         .on('mousedown', (d, i) => {
-          a = d3.select((<any>d3.event).target).datum();
+          console.log(d, i, this.data.data(), this.data);
+          a = i;
           return select = true;
         })
         .on('mouseover', (d, i) => {
@@ -152,10 +155,12 @@ export default class HeatMap1D extends AVisInstance implements IVisInstance {
           }
         })
         .on('mouseup', (d, i) => {
-          b = d3.select((<any>d3.event).target).datum();
-          const elements = arr.slice(arr.indexOf(a), arr.indexOf(b) + 1);
-          //fire(List.EVENT_STRING_DRAG, elements, this.data);
-          console.log(elements)
+          b = i;
+          //  const elements = arr.slice(arr.indexOf(a), arr.indexOf(b) + 1);
+          // const m = this.data.filter(filterCat.bind(this, a));
+          console.log(d, i, (<any>this.data).range.dim(0).asList())
+           fire(List.EVENT_BRUSHING, [a,b], this.data);
+          console.log([a, b])
           return select = false;
         })
         .attr({
@@ -200,4 +205,10 @@ export default class HeatMap1D extends AVisInstance implements IVisInstance {
 
 export function create(data: IHeatMapAbleVector, parent: HTMLElement, options?: IHeatMap1DOptions): AVisInstance {
   return new HeatMap1D(data, parent, options);
+}
+
+export function filterCat(aVal, bval) {
+  //if (aVal === bval) {
+  return aVal === bval; //Also include undefined empty strings and null values.
+  // }
 }

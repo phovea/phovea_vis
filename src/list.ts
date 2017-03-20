@@ -46,7 +46,7 @@ export class List extends AVisInstance implements IVisInstance {
     rowHeight: 20
   };
 
-  static readonly EVENT_STRING_DRAG = 'dragString';
+  static readonly EVENT_BRUSHING = 'brushing';
   private readonly $node: d3.Selection<List>;
 
   constructor(public readonly data: IAnyVector, parent: HTMLElement, options: IListOptions = {}) {
@@ -113,7 +113,7 @@ export class List extends AVisInstance implements IVisInstance {
       $rows.enter().append('div')
         .on('click', onClick)
         .on('mousedown', (d, i) => {
-          a = d3.select((<any>d3.event).target).datum();
+          a = i;
           return select = true;
         })
         .on('mouseover', (d, i) => {
@@ -122,9 +122,9 @@ export class List extends AVisInstance implements IVisInstance {
           }
         })
         .on('mouseup', (d, i) => {
-          b = d3.select((<any>d3.event).target).datum();
-          const elements = arr.slice(arr.indexOf(a), arr.indexOf(b) + 1);
-          fire(List.EVENT_STRING_DRAG, elements, this.data);
+          b = i;
+          // const elements = arr.slice(arr.indexOf(a), arr.indexOf(b) + 1);
+          fire(List.EVENT_BRUSHING, [a,b], this.data);
           return select = false;
         });
       const formatter = this.options.format ? format(this.options.format) : String;

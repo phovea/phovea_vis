@@ -10,7 +10,9 @@ import {rect} from 'phovea_core/src/geom';
 import {INumericalVector} from 'phovea_core/src/vector';
 import {toSelectOperation} from 'phovea_core/src/idtype';
 import {Range} from 'phovea_core/src/range';
-import {SelectOperation} from "phovea_core/src/idtype/IIDType";
+import {SelectOperation} from 'phovea_core/src/idtype/IIDType';
+import {fire} from 'phovea_core/src/event';
+import {List} from './list';
 
 
 export interface IBarPlotOptions extends IVisInstanceOptions {
@@ -168,7 +170,7 @@ export class BarPlot extends AVisInstance implements IVisInstance {
         .on('mouseup', (d, i) => {
           b = d3.select((<any>d3.event).target).datum();
           const elements = _data.slice(_data.indexOf(a), _data.indexOf(b) + 1);
-          //fire(List.EVENT_STRING_DRAG, elements, this.data);
+          fire(List.EVENT_BRUSHING, [a, b], this.data);
           console.log(elements)
           return select = false;
         });

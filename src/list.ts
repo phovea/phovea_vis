@@ -109,11 +109,13 @@ export class List extends AVisInstance implements IVisInstance {
     this.data.data().then((arr: any[]) => {
       let select = false;
       let a, b;
+      const c = [];
       const $rows = $list.selectAll('div').data(arr);
       $rows.enter().append('div')
         .on('click', onClick)
         .on('mousedown', (d, i) => {
           a = i;
+          c.push(i);
           return select = true;
         })
         .on('mouseover', (d, i) => {
@@ -124,7 +126,7 @@ export class List extends AVisInstance implements IVisInstance {
         .on('mouseup', (d, i) => {
           b = i;
           // const elements = arr.slice(arr.indexOf(a), arr.indexOf(b) + 1);
-          fire(List.EVENT_BRUSHING, [a,b], this.data);
+          fire(List.EVENT_BRUSHING, [a, b], this.data);
           return select = false;
         });
       const formatter = this.options.format ? format(this.options.format) : String;

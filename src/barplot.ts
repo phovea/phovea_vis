@@ -55,7 +55,7 @@ export class BarPlot extends AVisInstance implements IVisInstance {
 
   private readonly $node: d3.Selection<BarPlot>;
 
-  private labels : d3.Selection<any>;
+  private labels: d3.Selection<any>;
 
   private xscale: d3.scale.Linear<number, number>;
   private yscale: d3.scale.Linear<number, number>;
@@ -108,11 +108,11 @@ export class BarPlot extends AVisInstance implements IVisInstance {
       data = this.data;
     const width = this.rawSize[0], height = this.rawSize[1];
     const $svg = $parent.append('svg').attr({
-      width:  width * this.options.scale[0],
+      width: width * this.options.scale[0],
       height: height * this.options.scale[1],
       'class': 'phovea-barplot ' + o.cssClass
     });
-   const $g = $svg.append('g').attr('transform', 'scale('+ this.options.scale[0] + ', ' + this.options.scale[1] + ')');
+    const $g = $svg.append('g').attr('transform', 'scale(' + this.options.scale[0] + ', ' + this.options.scale[1] + ')');
 
     //using range bands with an ordinal scale for uniform distribution
     const xscale = this.xscale = d3.scale.linear().range([0, this.rawSize[0]]);
@@ -123,6 +123,7 @@ export class BarPlot extends AVisInstance implements IVisInstance {
     };
 
     const l = function (event, type: string, selected: Range) {
+      console.log(selected,type)
       $g.selectAll('rect').classed('phovea-select-' + type, false);
       if (selected.isNone) {
         return;
@@ -158,6 +159,19 @@ export class BarPlot extends AVisInstance implements IVisInstance {
         height: (d) => yscale(1),
         width: xscale
       });
+       let a, b;
+       $parent.select('.phovea-barplot')
+          .on('mousedown', () => {
+          a = d3.select((<any>d3.event).target).datum();
+         console.log(a)
+        })
+        .on('mouseup', () => {
+          b = d3.select((<any>d3.event).target).datum();
+          console.log(a,b)
+         const elements = _data.slice(_data.indexOf(a), _data.indexOf(b) + 1);
+          console.log(elements)
+          //fire(List.EVENT_STRING_DRAG, elements, this.data);
+        });
 
       this.labels = $svg.append('g');
       this.drawLabels();
@@ -171,8 +185,8 @@ export class BarPlot extends AVisInstance implements IVisInstance {
   private drawLabels() {
     const rowHeight = this.size[1] / this.data.dim[0];
     this.labels.attr({
-      'display' : (rowHeight >= 10) ? 'inline' : 'none',
-      'font-size' : (3/4 * rowHeight) + 'px'
+      'display': (rowHeight >= 10) ? 'inline' : 'none',
+      'font-size': (3 / 4 * rowHeight) + 'px'
     });
     this.data.data().then((_data) => {
       const $n = this.labels.selectAll('text').data(_data);
@@ -180,9 +194,9 @@ export class BarPlot extends AVisInstance implements IVisInstance {
       const yPadding = 2;
       const xPadding = 3;
       $n.attr({
-        'alignment-baseline' : 'central',
+        'alignment-baseline': 'central',
         x: xPadding,
-        y: (d,i) => (i+ 0.5) * rowHeight,
+        y: (d, i) => (i + 0.5) * rowHeight,
         height: (d) => rowHeight - yPadding
       }).text(String);
     });

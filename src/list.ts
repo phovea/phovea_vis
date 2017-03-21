@@ -115,7 +115,7 @@ export class List extends AVisInstance implements IVisInstance {
         .on('click', onClick)
         .on('mousedown', (d, i) => {
           a = i;
-          c.push(i);
+          onClick(d, i);
           return select = true;
         })
         .on('mouseover', (d, i) => {

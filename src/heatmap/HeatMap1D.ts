@@ -145,7 +145,6 @@ export default class HeatMap1D extends AVisInstance implements IVisInstance {
       $rows.enter().append('rect')
         .on('click', onClick)
         .on('mousedown', (d, i) => {
-          console.log(d, i, this.data.data(), this.data);
           a = i;
           return select = true;
         })
@@ -156,11 +155,7 @@ export default class HeatMap1D extends AVisInstance implements IVisInstance {
         })
         .on('mouseup', (d, i) => {
           b = i;
-          //  const elements = arr.slice(arr.indexOf(a), arr.indexOf(b) + 1);
-          // const m = this.data.filter(filterCat.bind(this, a));
-          console.log(d, i, (<any>this.data).range.dim(0).asList())
-           fire(List.EVENT_BRUSHING, [a,b], this.data);
-          console.log([a, b])
+          fire(List.EVENT_BRUSHING, [a, b], this.data);
           return select = false;
         })
         .attr({

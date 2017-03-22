@@ -143,6 +143,10 @@ export default class HeatMap1D extends AVisInstance implements IVisInstance {
       const onClick = selectionUtil(this.data, $g, 'rect', SelectOperation.ADD);
       $rows.enter().append('rect')
         .on('mousedown', (d, i) => {
+          if(start !== null) {
+            return;
+          }
+
           start = {d, i, applied: false};
         })
         .on('mouseenter', (d, i) => {
@@ -159,6 +163,10 @@ export default class HeatMap1D extends AVisInstance implements IVisInstance {
           }
         })
         .on('mouseup', (d, i) => {
+          if (start === null) {
+            return;
+          }
+
           // select as click
           if(start.applied === false) {
             onClick(start.d, start.i);

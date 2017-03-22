@@ -111,6 +111,10 @@ export class List extends AVisInstance implements IVisInstance {
       const $rows = $list.selectAll('div').data(arr);
       $rows.enter().append('div')
         .on('mousedown', (d, i) => {
+          if(start !== null) {
+            return;
+          }
+
           start = {d, i, applied: false};
         })
         .on('mouseenter', (d, i) => {
@@ -127,6 +131,10 @@ export class List extends AVisInstance implements IVisInstance {
           }
         })
         .on('mouseup', (d, i) => {
+          if (start === null) {
+            return;
+          }
+
           // select as click
           if(start.applied === false) {
             onClick(start.d, start.i);

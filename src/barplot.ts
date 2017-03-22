@@ -157,6 +157,10 @@ export class BarPlot extends AVisInstance implements IVisInstance {
       let start = null;
       $m.enter().append('rect')
         .on('mousedown', (d, i) => {
+          if(start !== null) {
+            return;
+          }
+
           start = {d, i, applied: false};
         })
         .on('mouseenter', (d, i) => {
@@ -173,6 +177,10 @@ export class BarPlot extends AVisInstance implements IVisInstance {
           }
         })
         .on('mouseup', (d, i) => {
+          if (start === null) {
+            return;
+          }
+
           // select as click
           if(start.applied === false) {
             onClick(start.d, start.i, SelectOperation.ADD);

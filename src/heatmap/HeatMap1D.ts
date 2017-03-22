@@ -47,7 +47,7 @@ export default class HeatMap1D extends AVisInstance implements IVisInstance {
     this.options.heightTo = data.dim[0];
     mixin(this.options, {
       color: defaultColor(value),
-      domain: defaultDomain(value),
+      domain: defaultDomain(value)
     }, options);
     this.options.scale = [1, (this.options.heightTo / (data.dim[0])) || 10];
     this.colorer = toScale(value).domain(this.options.domain).range(this.options.color);
@@ -115,11 +115,7 @@ export default class HeatMap1D extends AVisInstance implements IVisInstance {
     this.fire('transform', act, bak);
     this.options.scale = scale;
     this.options.rotate = rotate;
-    console.log(this.options)
-    //this.drawLabels();
-    this.$node.selectAll('g').remove();
-    this.build(this.$node);
-
+    this.drawLabels();
     return act;
   }
 
@@ -139,63 +135,59 @@ export default class HeatMap1D extends AVisInstance implements IVisInstance {
     const $g = $svg.append('g').attr('transform', 'scale(1,' + this.options.scale[1] + ')');
 
     const c = this.colorer;
-    const indexes = (<any>this.options).brushedItems;
-    console.log(this.options.scale[1], this.options.scale, this.options, indexes)
+
     const t = <Promise<string|number[]>>this.data.data();
     t.then((arr: any[]) => {
-      let select = false;
-      let a, b;
-      let h = 0, f = 0;
+      let start = null;
       const $rows = $g.selectAll('rect').data(arr);
       const onClick = selectionUtil(this.data, $g, 'rect', SelectOperation.ADD);
       $rows.enter().append('rect')
-        .on('click', onClick)
         .on('mousedown', (d, i) => {
-          a = i;
-          return select = true;
+          if(start !== null) {
+            return;
+          }
+
+          start = {d, i, applied: false};
         })
-        .on('mouseover', (d, i) => {
-          if (select === true) {
-            onClick(d, i);
+        .on('mouseenter', (d, i) => {
+          if (start === null) {
+            return;
+          }
+
+          onClick(d, i); // select current entered element
+
+          // select first element, when started brushing
+          if(start.applied === false) {
+            onClick(start.d, start.i);
+            start.applied = true;
           }
         })
         .on('mouseup', (d, i) => {
-          b = i;
-          fire(List.EVENT_BRUSHING, [a, b], this.data);
-          return select = false;
-        })
+          if (start === null) {
+            return;
+          }
 
+          // select as click
+          if(start.applied === false) {
+            onClick(start.d, start.i);
+          }
+
+          fire(List.EVENT_BRUSHING, [start.i, i], this.data);
+
+          start = null;
+        })
         .attr({
           width: this.options.width,
-          height: (d, i) => {
-            if (indexes.length <= 1) {
-              return 1;
-            } else {
-              const f = (<any>indexes).includes(i) ? 1.5 : 1;
-              return f;
-            }
-
-          },
-          y: (d, i) => {
-            if (indexes.length <= 1) {
-              return i;
-            } else {
-              h = h + f;
-              f = (<any>indexes).includes(i) ? 1.5 : 1;
-
-              return (i === 0) ? 0 : h;
-            }
-
-          },
-        })//.append('title').text(String);
-      // .attr('class', (d) => 'phovea-select-selected')
+          height: 1
+        }).append('title').text(String);
       $rows.attr({
         fill: (d) => c(d),
-        class: (d) => 'test'
+        y: (d, i) => i
       });
       $rows.exit().remove();
+
       this.labels = $svg.append('g');
-      //  this.drawLabels();
+      this.drawLabels();
       this.markReady();
     });
     return $svg;

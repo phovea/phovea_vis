@@ -122,7 +122,7 @@ export class BarPlot extends AVisInstance implements IVisInstance {
     const yscale = this.yscale = d3.scale.linear().range([0, this.rawSize[1]]);
 
     const onClick = function (d, i, selectOperation) {
-      data.select(0, [i - 1], toSelectOperation(<MouseEvent>d3.event) || selectOperation);
+      data.select(0, [i], toSelectOperation(<MouseEvent>d3.event) || selectOperation);
     };
 
     const l = function (event, type: string, selected: Range) {
@@ -154,25 +154,41 @@ export class BarPlot extends AVisInstance implements IVisInstance {
       xscale.domain([o.min, o.max]);
 
       const $m = $g.selectAll('rect').data(_data);
-      let select = false;
-      let a, b;
+      let start = null;
       $m.enter().append('rect')
-        .on('click', onClick)
         .on('mousedown', (d, i) => {
-          a = d3.select((<any>d3.event).target).datum();
-          return select = true;
+          if(start !== null) {
+            return;
+          }
+
+          start = {d, i, applied: false};
         })
-        .on('mouseover', (d, i) => {
-          if (select === true) {
-            onClick(d, i, SelectOperation.ADD);
+        .on('mouseenter', (d, i) => {
+          if (start === null) {
+            return;
+          }
+
+          onClick(d, i, SelectOperation.ADD); // select current entered element
+
+          // select first element, when started brushing
+          if(start.applied === false) {
+            onClick(start.d, start.i, SelectOperation.ADD);
+            start.applied = true;
           }
         })
         .on('mouseup', (d, i) => {
-          b = d3.select((<any>d3.event).target).datum();
-          const elements = _data.slice(_data.indexOf(a), _data.indexOf(b) + 1);
-          fire(List.EVENT_BRUSHING, [a, b], this.data);
-          console.log(elements)
-          return select = false;
+          if (start === null) {
+            return;
+          }
+
+          // select as click
+          if(start.applied === false) {
+            onClick(start.d, start.i, SelectOperation.ADD);
+          }
+
+          fire(List.EVENT_BRUSHING, [start.i, i], this.data);
+
+          start = null;
         });
       $m.attr({
         y: (d, i) => yscale(i),

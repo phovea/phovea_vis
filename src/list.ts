@@ -107,28 +107,42 @@ export class List extends AVisInstance implements IVisInstance {
 
     const onClick = selectionUtil(this.data, $list, 'div', SelectOperation.ADD);
     this.data.data().then((arr: any[]) => {
-      let select = false;
-      let a, b;
-      const c = [];
+      let start = null;
       const $rows = $list.selectAll('div').data(arr);
       $rows.enter().append('div')
-        .on('click', onClick)
         .on('mousedown', (d, i) => {
-          a = i;
-          onClick(d, i);
-          return select = true;
+          if(start !== null) {
+            return;
+          }
+
+          start = {d, i, applied: false};
         })
-        .on('mouseover', (d, i) => {
-          if (select === true) {
-            onClick(d, i);
+        .on('mouseenter', (d, i) => {
+          if (start === null) {
+            return;
+          }
+
+          onClick(d, i); // select current entered element
+
+          // select first element, when started brushing
+          if(start.applied === false) {
+            onClick(start.d, start.i);
+            start.applied = true;
           }
         })
         .on('mouseup', (d, i) => {
-          b = i;
-          //  const elements = arr.slice(arr.indexOf(a), arr.indexOf(b) + 1);
+          if (start === null) {
+            return;
+          }
 
-          fire(List.EVENT_BRUSHING, [a, b], this.data);
-          return select = false;
+          // select as click
+          if(start.applied === false) {
+            onClick(start.d, start.i);
+          }
+
+          fire(List.EVENT_BRUSHING, [start.i, i], this.data);
+
+          start = null;
         });
       const formatter = this.options.format ? format(this.options.format) : String;
       $rows.text(formatter);

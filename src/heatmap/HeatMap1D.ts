@@ -158,13 +158,13 @@ export default class HeatMap1D extends AVisInstance implements IVisInstance {
             start.applied = true;
           }
         })
-        .on('mouseup', (d) => {
+        .on('mouseup', (d, i) => {
           // select as click
           if(start.applied === false) {
             onClick(start.d, start.i);
           }
 
-          fire(List.EVENT_BRUSHING, [start, d], this.data);
+          fire(List.EVENT_BRUSHING, [start.i, i], this.data);
 
           start = null;
         })

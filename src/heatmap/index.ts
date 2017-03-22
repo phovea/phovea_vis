@@ -6,6 +6,7 @@ import {AVisInstance} from 'phovea_core/src/vis';
 import {IHeatMapOptions, create as create2D, IHeatMapAbleMatrix} from './HeatMap';
 import {IHeatMap1DOptions, create as create1D, IHeatMapAbleVector} from './HeatMap1D';
 
+
 export {default as HeatMap, IHeatMapAbleMatrix} from './HeatMap';
 export {default as HeatMap1D, IHeatMapAbleVector} from './HeatMap1D';
 

@@ -125,8 +125,9 @@ export class List extends AVisInstance implements IVisInstance {
         })
         .on('mouseup', (d, i) => {
           b = i;
-          // const elements = arr.slice(arr.indexOf(a), arr.indexOf(b) + 1);
-          fire(List.EVENT_BRUSHING, [a, b], this.data);
+         //  const elements = arr.slice(arr.indexOf(a), arr.indexOf(b) + 1);
+
+           fire(List.EVENT_BRUSHING, [a, b], this.data);
           return select = false;
         });
       const formatter = this.options.format ? format(this.options.format) : String;

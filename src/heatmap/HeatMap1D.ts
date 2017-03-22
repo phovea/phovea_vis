@@ -138,25 +138,35 @@ export default class HeatMap1D extends AVisInstance implements IVisInstance {
 
     const t = <Promise<string|number[]>>this.data.data();
     t.then((arr: any[]) => {
-      let select = false;
-      let a, b;
+      let start = null;
       const $rows = $g.selectAll('rect').data(arr);
       const onClick = selectionUtil(this.data, $g, 'rect', SelectOperation.ADD);
       $rows.enter().append('rect')
-        .on('click', onClick)
         .on('mousedown', (d, i) => {
-          a = i;
-          return select = true;
+          start = {d, i, applied: false};
         })
-        .on('mouseover', (d, i) => {
-          if (select === true) {
-            onClick(d, i);
+        .on('mouseenter', (d, i) => {
+          if (start === null) {
+            return;
+          }
+
+          onClick(d, i); // select current entered element
+
+          // select first element, when started brushing
+          if(start.applied === false) {
+            onClick(start.d, start.i);
+            start.applied = true;
           }
         })
-        .on('mouseup', (d, i) => {
-          b = i;
-          fire(List.EVENT_BRUSHING, [a, b], this.data);
-          return select = false;
+        .on('mouseup', (d) => {
+          // select as click
+          if(start.applied === false) {
+            onClick(start.d, start.i);
+          }
+
+          fire(List.EVENT_BRUSHING, [start, d], this.data);
+
+          start = null;
         })
         .attr({
           width: this.options.width,

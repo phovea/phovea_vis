@@ -5,7 +5,7 @@
 
 import '../style.scss';
 import * as d3 from 'd3';
-import {Range} from 'phovea_core/src/range';
+import Range from 'phovea_core/src/range/Range';
 import {AVisInstance, IVisInstance, assignVis} from 'phovea_core/src/vis';
 import {rect} from 'phovea_core/src/geom';
 import {mixin} from 'phovea_core/src';
@@ -51,6 +51,12 @@ export interface IHeatMapOptions extends ICommonHeatMapOptions {
    * @default false
    */
   forceThumbnails?: boolean;
+
+  /**
+   * render optional labels,
+   * @default NONE
+   */
+  labels?: ESelectOption;
 }
 
 export default class HeatMap extends AVisInstance implements IVisInstance {
@@ -65,7 +71,8 @@ export default class HeatMap extends AVisInstance implements IVisInstance {
     selectAble: true,
     forceThumbnails: false,
     scale: [1, 1],
-    rotate: 0
+    rotate: 0,
+    labels: ESelectOption.NONE
   };
 
   constructor(public data: IHeatMapAbleMatrix, public parent: Element, options: IHeatMapOptions = {}) {
@@ -83,7 +90,12 @@ export default class HeatMap extends AVisInstance implements IVisInstance {
     this.options.rotate = 0;
     this.colorer = toScale(value).domain(this.options.domain).range(this.options.color);
 
-    this.renderer = createRenderer(data, typeof this.options.selectAble === 'boolean' ? (this.options.selectAble ? ESelectOption.CELL : ESelectOption.NONE) : ESelectOption[<string>this.options.selectAble], this.options.forceThumbnails);
+    // handle string case
+    this.options.labels = typeof this.options.labels === 'string' ? ESelectOption[<string>this.options.labels]: this.options.labels;
+
+    const selection = typeof this.options.selectAble === 'boolean' ? (this.options.selectAble ? ESelectOption.CELL : ESelectOption.NONE) : ESelectOption[<string>this.options.selectAble];
+
+    this.renderer = createRenderer(data, selection, this.options.forceThumbnails);
 
     this.$node = this.build(d3.select(parent));
     this.$node.datum(data);
@@ -144,6 +156,17 @@ export default class HeatMap extends AVisInstance implements IVisInstance {
     this.$node.style('transform', 'rotate(' + rotate + 'deg)');
     if (bak.scale[0] !== scale[0] || bak.scale[1] !== scale[1]) {
       this.renderer.rescale(this.$node, dims, scale);
+
+
+      if (this.options.labels === ESelectOption.CELL || this.options.labels === ESelectOption.ROW) {
+        this.$node.select('div.row-labels')
+          .style('height', dims[0] * scale[1] + 'px')
+          .style('right', dims[1] * scale[0] + 'px');
+      }
+      if (this.options.labels === ESelectOption.CELL || this.options.labels === ESelectOption.COLUMN) {
+        this.$node.select('div.column-labels')
+          .style('height', dims[1] * scale[0] + 'px');
+      }
     }
     const act = {scale, rotate};
     this.fire('transform', act, bak);
@@ -159,10 +182,33 @@ export default class HeatMap extends AVisInstance implements IVisInstance {
   }
 
   private build($parent: d3.Selection<any>) {
-    return this.renderer.build(this.data, $parent, this.options.scale, this.colorer, () => {
+    const $node = this.renderer.build(this.data, $parent, this.options.scale, this.colorer, () => {
       this.renderer.redraw(this.$node, this.options.scale);
       this.markReady();
     });
+
+    if (this.options.labels === ESelectOption.CELL || this.options.labels === ESelectOption.ROW) {
+      this.renderLabels($node, ESelectOption.ROW, this.data.rows())
+        .style('height', this.size[1] + 'px')
+        .style('right', this.size[0] + 'px');
+    }
+    if (this.options.labels === ESelectOption.CELL || this.options.labels === ESelectOption.COLUMN) {
+      this.renderLabels($node, ESelectOption.COLUMN, this.data.cols())
+        .style('height', this.size[1] + 'px');
+    }
+
+    return $node;
+  }
+
+  private renderLabels($node: d3.Selection<any>, mode: ESelectOption, names: Promise<string[]>) {
+    const $group = $node.append('div').attr('class', 'phovea-heatmap-labels ' + (mode === ESelectOption.ROW ? 'row-labels' : 'column-labels'));
+    names.then((data) => {
+      const $names = $group.selectAll('div').data(data);
+      $names.enter().append('div');
+      $names.text(String);
+      $names.exit().remove();
+    });
+    return $group;
   }
 
   update() {

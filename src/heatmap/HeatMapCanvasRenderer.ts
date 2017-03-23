@@ -70,7 +70,7 @@ export default class HeatMapCanvasRenderer extends AHeatMapCanvasRenderer implem
       //don't nee
       context.putImageData(imageData, 0, 0);
     } else {
-      const tmp = document.createElement('canvas');
+      const tmp = $root.node().ownerDocument.createElement('canvas');
       tmp.width = imageData.width;
       tmp.height = imageData.height;
 

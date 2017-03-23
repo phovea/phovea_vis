@@ -155,6 +155,26 @@ div.phovea-heatmap {
 
   > div {
     white-space: nowrap;
+
+    &.small {
+      font-size: 50%;
+    }
+  }
+
+  &.phovea-proportional-symbol {
+    > div {
+      border-radius: 50%;
+      background-color: black;
+    }
+  }
+
+  &.phovea-barplot {
+    align-items: stretch;
+
+    > div {
+      flex: 1 1 auto;
+      background-color: black;
+    }
   }
 }
 

@@ -11,6 +11,9 @@ import {mixin} from 'phovea_core/src';
 import {selectionUtil} from 'phovea_d3/src/d3util';
 import {INumericalVector, ICategoricalVector} from 'phovea_core/src/vector';
 import {defaultColor, defaultDomain, toScale, IScale, ICommonHeatMapOptions} from './internal';
+import {SelectOperation} from 'phovea_core/src/idtype/IIDType';
+import {fire} from 'phovea_core/src/event';
+import List from '../list';
 
 export interface IHeatMap1DOptions extends ICommonHeatMapOptions {
   /**
@@ -29,7 +32,7 @@ export declare type IHeatMapAbleVector = INumericalVector|ICategoricalVector;
 
 export default class HeatMap1D extends AVisInstance implements IVisInstance {
   private readonly $node: d3.Selection<any>;
-  private labels : d3.Selection<any>;
+  private labels: d3.Selection<any>;
   private readonly colorer: IScale;
 
   private readonly options: IHeatMap1DOptions = {
@@ -135,12 +138,48 @@ export default class HeatMap1D extends AVisInstance implements IVisInstance {
 
     const t = <Promise<string|number[]>>this.data.data();
     t.then((arr: any[]) => {
+      let start = null;
       const $rows = $g.selectAll('rect').data(arr);
-      const onClick = selectionUtil(this.data, $g, 'rect');
-      $rows.enter().append('rect').on('click', onClick).attr({
-        width: this.options.width,
-        height: 1
-      }).append('title').text(String);
+      const onClick = selectionUtil(this.data, $g, 'rect', SelectOperation.ADD);
+      $rows.enter().append('rect')
+        .on('mousedown', (d, i) => {
+          if(start !== null) {
+            return;
+          }
+
+          start = {d, i, applied: false};
+        })
+        .on('mouseenter', (d, i) => {
+          if (start === null) {
+            return;
+          }
+
+          onClick(d, i); // select current entered element
+
+          // select first element, when started brushing
+          if(start.applied === false) {
+            onClick(start.d, start.i);
+            start.applied = true;
+          }
+        })
+        .on('mouseup', (d, i) => {
+          if (start === null) {
+            return;
+          }
+
+          // select as click
+          if(start.applied === false) {
+            onClick(start.d, start.i);
+          }
+
+          fire(List.EVENT_BRUSHING, [start.i, i], this.data);
+
+          start = null;
+        })
+        .attr({
+          width: this.options.width,
+          height: 1
+        }).append('title').text(String);
       $rows.attr({
         fill: (d) => c(d),
         y: (d, i) => i
@@ -157,21 +196,21 @@ export default class HeatMap1D extends AVisInstance implements IVisInstance {
   private drawLabels() {
     const rowHeight = this.size[1] / this.data.dim[0];
     this.labels.attr({
-      'display' : (rowHeight >= 10) ? 'inline' : 'none',
-      'font-size' : (3/4 * rowHeight) + 'px'
+      'display': (rowHeight >= 10) ? 'inline' : 'none',
+      'font-size': (3 / 4 * rowHeight) + 'px'
     });
     const t = <Promise<string|number[]>>this.data.data();
     t.then((arr: any[]) => {
       const $n = this.labels.selectAll('text').data(arr);
       $n.enter().append('text');
       const yPadding = 2;
-        const xPadding = 3;
-        $n.attr({
-          'alignment-baseline' : 'central',
-          x: xPadding,
-          y: (d,i) => (i + 0.5) * rowHeight,
-          height: (d) => rowHeight - yPadding
-        }).text(String);
+      const xPadding = 3;
+      $n.attr({
+        'alignment-baseline': 'central',
+        x: xPadding,
+        y: (d, i) => (i + 0.5) * rowHeight,
+        height: (d) => rowHeight - yPadding
+      }).text(String);
     });
   }
 }
@@ -179,4 +218,10 @@ export default class HeatMap1D extends AVisInstance implements IVisInstance {
 
 export function create(data: IHeatMapAbleVector, parent: HTMLElement, options?: IHeatMap1DOptions): AVisInstance {
   return new HeatMap1D(data, parent, options);
+}
+
+export function filterCat(aVal, bval) {
+  //if (aVal === bval) {
+  return aVal === bval; //Also include undefined empty strings and null values.
+  // }
 }

@@ -62,7 +62,7 @@ module.exports = function(registry) {
 
   });
   registry.push('vis', 'list', function () {
-    return System.import('./src/list/list');
+    return System.import('./src/list');
   }, {
     name: 'List',
     filter: 'vector',

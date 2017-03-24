@@ -14,6 +14,7 @@ import {defaultColor, defaultDomain, toScale, IScale, ICommonHeatMapOptions} fro
 import {SelectOperation} from 'phovea_core/src/idtype/IIDType';
 import {fire} from 'phovea_core/src/event';
 import List from '../list';
+import {toSelectOperation} from 'phovea_core/src/idtype';
 
 export interface IHeatMap1DOptions extends ICommonHeatMapOptions {
   /**
@@ -143,11 +144,18 @@ export default class HeatMap1D extends AVisInstance implements IVisInstance {
       const onClick = selectionUtil(this.data, $g, 'rect', SelectOperation.ADD);
       $rows.enter().append('rect')
         .on('mousedown', (d, i) => {
-          if(start !== null) {
+          if (start !== null) {
             return;
           }
 
           start = {d, i, applied: false};
+
+          if (toSelectOperation(<MouseEvent>d3.event) === SelectOperation.SET) {
+            fire(List.EVENT_BRUSH_CLEAR, this.data);
+           this.data.clear();
+          }
+
+
         })
         .on('mouseenter', (d, i) => {
           if (start === null) {
@@ -157,7 +165,7 @@ export default class HeatMap1D extends AVisInstance implements IVisInstance {
           onClick(d, i); // select current entered element
 
           // select first element, when started brushing
-          if(start.applied === false) {
+          if (start.applied === false) {
             onClick(start.d, start.i);
             start.applied = true;
           }
@@ -168,7 +176,7 @@ export default class HeatMap1D extends AVisInstance implements IVisInstance {
           }
 
           // select as click
-          if(start.applied === false) {
+          if (start.applied === false) {
             onClick(start.d, start.i);
           }
 

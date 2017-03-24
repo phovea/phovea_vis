@@ -13,6 +13,7 @@ import {rect} from 'phovea_core/src/geom';
 import {Range} from 'phovea_core/src/range';
 import {fire} from 'phovea_core/src/event';
 import {SelectOperation} from 'phovea_core/src/idtype/IIDType';
+import {toSelectOperation} from 'phovea_core/src/idtype';
 
 export interface IListOptions extends IVisInstanceOptions {
   /**
@@ -47,6 +48,7 @@ export class List extends AVisInstance implements IVisInstance {
   };
 
   static readonly EVENT_BRUSHING = 'brushing';
+  static readonly EVENT_BRUSH_CLEAR = 'clearbrushing';
   private readonly $node: d3.Selection<List>;
 
   constructor(public readonly data: IAnyVector, parent: HTMLElement, options: IListOptions = {}) {
@@ -111,11 +113,17 @@ export class List extends AVisInstance implements IVisInstance {
       const $rows = $list.selectAll('div').data(arr);
       $rows.enter().append('div')
         .on('mousedown', (d, i) => {
-          if(start !== null) {
+          if (start !== null) {
             return;
           }
 
           start = {d, i, applied: false};
+
+          if (toSelectOperation(<MouseEvent>d3.event) === SelectOperation.SET) {
+            fire(List.EVENT_BRUSH_CLEAR, this.data);
+            this.data.clear();
+          }
+
         })
         .on('mouseenter', (d, i) => {
           if (start === null) {
@@ -125,7 +133,7 @@ export class List extends AVisInstance implements IVisInstance {
           onClick(d, i); // select current entered element
 
           // select first element, when started brushing
-          if(start.applied === false) {
+          if (start.applied === false) {
             onClick(start.d, start.i);
             start.applied = true;
           }
@@ -136,7 +144,7 @@ export class List extends AVisInstance implements IVisInstance {
           }
 
           // select as click
-          if(start.applied === false) {
+          if (start.applied === false) {
             onClick(start.d, start.i);
           }
 

@@ -32,7 +32,6 @@ export interface IHistogramOptions extends IDistributionOptions {
   duration?: number;
 
   /**
-<<<<<<< HEAD
    * width
    * @default 200
    */
@@ -43,12 +42,12 @@ export interface IHistogramOptions extends IDistributionOptions {
    * @default 100
    */
   heightTo?: number;
-=======
+
+  /**
    * one color used for all the bins
    * @default the color of the bin that is provided by the histogram
    */
   color?: number;
->>>>>>> develop
 }
 
 export default class Histogram extends AVisInstance implements IVisInstance {

@@ -157,11 +157,15 @@ export class BarPlot extends AVisInstance implements IVisInstance {
       let start = null;
       $m.enter().append('rect')
         .on('mousedown', (d, i) => {
-          if(start !== null) {
+          if (start !== null) {
             return;
           }
 
           start = {d, i, applied: false};
+          if (toSelectOperation(<MouseEvent>d3.event) === SelectOperation.SET) {
+            fire(List.EVENT_BRUSH_CLEAR, this.data);
+            data.clear();
+          }
         })
         .on('mouseenter', (d, i) => {
           if (start === null) {
@@ -171,7 +175,7 @@ export class BarPlot extends AVisInstance implements IVisInstance {
           onClick(d, i, SelectOperation.ADD); // select current entered element
 
           // select first element, when started brushing
-          if(start.applied === false) {
+          if (start.applied === false) {
             onClick(start.d, start.i, SelectOperation.ADD);
             start.applied = true;
           }
@@ -182,7 +186,7 @@ export class BarPlot extends AVisInstance implements IVisInstance {
           }
 
           // select as click
-          if(start.applied === false) {
+          if (start.applied === false) {
             onClick(start.d, start.i, SelectOperation.ADD);
           }
 

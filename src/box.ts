@@ -102,7 +102,7 @@ export class BoxPlot extends AVisInstance implements IVisInstance {
     const s = this.scale = d3.scale.linear().domain((<any>this.data.desc).value.range).range([edgeOffset, this.rawSize[0] - edgeOffset]).clamp(true);
 
     $t.append('path').attr({
-      d: 'M&,0 L&,$ M&,ง L%,ง M%,0 L%,$'.replace(/\&/g,String(edgeOffset)).replace(/\%/g, String(this.rawSize[0] - edgeOffset)).replace(/\$/g, String(this.rawSize[1])).replace(/\ง/g, String(this.rawSize[1] / 2)),
+      d: 'M&,0 L&,$ M&,ยง L%,ยง M%,0 L%,$'.replace(/\&/g,String(edgeOffset)).replace(/\%/g, String(this.rawSize[0] - edgeOffset)).replace(/\$/g, String(this.rawSize[1])).replace(/\ยง/g, String(this.rawSize[1] / 2)),
       'class': 'axis'
     });
     data.statsAdvanced().then((stats) => {

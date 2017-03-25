@@ -49,7 +49,7 @@ $hover-color: #ffc46b;
   }
 
   rect.box {
-    fill: steelblue;
+    fill: grey;
   }
 }
 
@@ -67,7 +67,6 @@ div.phovea-heatmap {
     }
   }
 }
-
 
 .phovea-scatterplot {
   circle {
@@ -114,7 +113,6 @@ div.phovea-heatmap {
     stroke: black;
   }
 }
-
 
 .phovea-heatmap {
   // highlight selection for svg heatmap
@@ -179,6 +177,16 @@ div.phovea-heatmap {
 }
 
 .phovea-mosaic{
+  text {
+    user-select: none;
+    pointer-events: none;
+  }
+  .phovea-select-selected rect {
+    fill: $select-color;
+  }
+}
+
+.phovea-mosaic {
   text {
     user-select: none;
     pointer-events: none;

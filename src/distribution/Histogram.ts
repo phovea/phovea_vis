@@ -12,7 +12,14 @@ import {IStratification} from 'phovea_core/src/stratification';
 import {IHistogram} from 'phovea_core/src/math';
 import {toSelectOperation} from 'phovea_core/src/idtype';
 import bindTooltip from 'phovea_d3/src/tooltip';
-import {createHistData, IDistributionOptions, IHistData, ITotalHeight, resolveHistMax} from './internal';
+import {
+  createHistData,
+  IDistributionOptions,
+  IHistData,
+  ITotalHeight,
+  resolveHistMax,
+  sortObjectByName
+} from './internal';
 
 export interface IHistogramOptions extends IDistributionOptions {
   /**
@@ -67,7 +74,7 @@ export default class Histogram extends AVisInstance implements IVisInstance {
   private xscale: d3.scale.Ordinal<number, number>;
   private yscale: d3.scale.Linear<number, number>;
 
-  private $labels : d3.Selection<any>;
+  private $labels: d3.Selection<any>;
   private hist: IHistogram;
   private histData: IHistData[];
 
@@ -115,7 +122,8 @@ export default class Histogram extends AVisInstance implements IVisInstance {
       if (!this.histData) {
         return;
       }
-      const highlights = this.histData.map((entry, i) => {
+      const sortedByName = this.histData.slice().sort(sortObjectByName.bind(this, this.options.sort));
+      const highlights = sortedByName.map((entry, i) => {
         const s = entry.range.intersect(selected);
         return {
           i,
@@ -140,7 +148,6 @@ export default class Histogram extends AVisInstance implements IVisInstance {
     });
 
     const onClick = (d) => data.select(0, d.range, toSelectOperation(<MouseEvent>d3.event));
-
     this.data.hist(Math.floor(o.nbins)).then((hist) => {
       this.hist = hist;
       xscale.domain(d3.range(hist.bins));
@@ -148,9 +155,11 @@ export default class Histogram extends AVisInstance implements IVisInstance {
     }).then((histmax) => {
       const hist = this.hist;
       yscale.domain([0, histmax]);
+
       const histData = this.histData = createHistData(hist, this.data, this.options.sort);
 
-      const $m = $data.selectAll('rect').data(histData);
+      const sortedByName = histData.slice().sort(sortObjectByName.bind(this, this.options.sort));
+      const $m = $data.selectAll('rect').data(sortedByName);
       $m.enter().append('rect')
         .attr('width', xscale.rangeBand())
         .call(bindTooltip<IHistData>((d) => `${d.name} ${d.v} entries (${Math.round(d.ratio * 100)}%)`))
@@ -219,18 +228,20 @@ export default class Histogram extends AVisInstance implements IVisInstance {
     xscale.domain(d3.range(this.hist.bins));
     const columnWidth = xscale.rangeBand();
     const lettersToFit = 5;
-    const fontSize = (columnWidth / lettersToFit  > 12) ? (columnWidth / lettersToFit) : 12 ;
+    const fontSize = (columnWidth / lettersToFit > 12) ? (columnWidth / lettersToFit) : 12;
     this.$labels.attr({
-      'display' : (columnWidth > 25) ? 'inline' : 'none',
-      'font-size' : fontSize + 'px'
+      'display': (columnWidth > 25) ? 'inline' : 'none',
+      'font-size': fontSize + 'px'
     });
-    const $m = this.$labels.selectAll('text').data(this.histData);
+
+    const sortedByName = this.histData.slice().sort(sortObjectByName.bind(this, this.options.sort));
+    const $m = this.$labels.selectAll('text').data(sortedByName);
     $m.enter().append('text');
     const yPadding = 3;
     $m.attr({
-        'text-anchor': 'middle',
-        x: (d, i) =>  xscale.rangeBand() / 2 + xscale(i),
-        y: this.size[1] - yPadding,
+      'text-anchor': 'middle',
+      x: (d, i) => xscale.rangeBand() / 2 + xscale(i),
+      y: this.size[1] - yPadding,
     }).text((d) => ((d.name).length > lettersToFit) ? ((d.name).substring(0, (lettersToFit - 1)) + '...') : (d.name));
 
   }

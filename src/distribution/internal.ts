@@ -12,6 +12,12 @@ import {
 import {IStratification} from 'phovea_core/src/stratification';
 import {ICatHistogram, IHistogram} from 'phovea_core/src/math';
 
+export const SORT = {
+  asc: 'asc',
+  desc: 'desc'
+
+};
+
 
 export interface IHistData {
   readonly v: number;
@@ -22,7 +28,7 @@ export interface IHistData {
   readonly color: string;
 }
 
-function createCategoricalHistData(hist: ICatHistogram, sort? : string): IHistData[] {
+function createCategoricalHistData(hist: ICatHistogram, sort?: string): IHistData[] {
   const categories: any[] = hist.categories,
     cols = hist.colors || d3.scale.category10().range(),
     total = hist.validCount;
@@ -71,7 +77,7 @@ function createNumericalHistData(hist: IHistogram, range: number[]): IHistData[]
   return data;
 }
 
-export function createHistData(hist: IHistogram, data: IHistAbleDataType<ICategoricalValueTypeDesc|INumberValueTypeDesc>|IStratification, sort? : string) {
+export function createHistData(hist: IHistogram, data: IHistAbleDataType<ICategoricalValueTypeDesc|INumberValueTypeDesc>|IStratification, sort?: string) {
   if (data.desc.type === 'stratification') {
     return createCategoricalHistData(<ICatHistogram>hist, sort);
   }
@@ -95,6 +101,24 @@ export function resolveHistMax(hist: IHistogram, totalHeight: ITotalHeight): Pro
     return <number>r;
   });
 }
+
+//Sort by alphabetical order of the object
+
+export function sortObjectByName(sortCriteria, a, b) {
+  const aVal = a.name.toUpperCase();
+  const bVal = b.name.toUpperCase();
+
+  if (sortCriteria === SORT.asc) {
+
+    return (aVal.localeCompare(bVal));
+  }
+  if (sortCriteria === SORT.desc) {
+
+
+    return (bVal.localeCompare(aVal));
+  }
+}
+
 
 export declare type ITotalHeight = number|boolean|((hist: IHistogram) => number|boolean|Promise<number|boolean>);
 

@@ -55,18 +55,6 @@ export interface IHistogramOptions extends IDistributionOptions {
    * @default the color of the bin that is provided by the histogram
    */
   color?: number;
-
-  /**
-   * width
-   * @default 200
-   */
-  width?: number;
-
-  /**
-   * scale such that the height matches the argument
-   * @default 100
-   */
-  heightTo?: number;
 }
 
 export default class Histogram extends AVisInstance implements IVisInstance {

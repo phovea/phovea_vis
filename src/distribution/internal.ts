@@ -77,6 +77,7 @@ function createNumericalHistData(hist: IHistogram, range: number[]): IHistData[]
   return data;
 }
 
+
 export function createHistData(hist: IHistogram, data: IHistAbleDataType<ICategoricalValueTypeDesc|INumberValueTypeDesc>|IStratification, sort?: string) {
   if (data.desc.type === 'stratification') {
     return createCategoricalHistData(<ICatHistogram>hist, sort);
@@ -102,19 +103,20 @@ export function resolveHistMax(hist: IHistogram, totalHeight: ITotalHeight): Pro
   });
 }
 
-//Sort by alphabetical order of the object
-
+/**
+ * Sort by alphabetical order of the object
+ * @param sortCriteria
+ * @param a
+ * @param b
+ */
 export function sortObjectByName(sortCriteria, a, b) {
   const aVal = a.name.toUpperCase();
   const bVal = b.name.toUpperCase();
 
   if (sortCriteria === SORT.asc) {
-
     return (aVal.localeCompare(bVal));
-  }
-  if (sortCriteria === SORT.desc) {
-
-
+                                
+  } else if (sortCriteria === SORT.desc) {
     return (bVal.localeCompare(aVal));
   }
 }

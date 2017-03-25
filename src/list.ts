@@ -49,6 +49,7 @@ export class List extends AVisInstance implements IVisInstance {
 
   static readonly EVENT_BRUSHING = 'brushing';
   static readonly EVENT_BRUSH_CLEAR = 'clearbrushing';
+
   private readonly $node: d3.Selection<List>;
 
   constructor(public readonly data: IAnyVector, parent: HTMLElement, options: IListOptions = {}) {
@@ -123,7 +124,6 @@ export class List extends AVisInstance implements IVisInstance {
             fire(List.EVENT_BRUSH_CLEAR, this.data);
             this.data.clear();
           }
-
         })
         .on('mouseenter', (d, i) => {
           if (start === null) {

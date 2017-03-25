@@ -39,6 +39,18 @@ export interface IHistogramOptions extends IDistributionOptions {
   duration?: number;
 
   /**
+   * width
+   * @default 200
+   */
+  width?: number;
+
+  /**
+   * scale such that the height matches the argument
+   * @default 100
+   */
+  heightTo?: number;
+
+  /**
    * one color used for all the bins
    * @default the color of the bin that is provided by the histogram
    */

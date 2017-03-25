@@ -154,8 +154,6 @@ export default class HeatMap1D extends AVisInstance implements IVisInstance {
             fire(List.EVENT_BRUSH_CLEAR, this.data);
            this.data.clear();
           }
-
-
         })
         .on('mouseenter', (d, i) => {
           if (start === null) {

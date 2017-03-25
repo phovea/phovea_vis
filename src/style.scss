@@ -150,8 +150,39 @@ div.phovea-heatmap {
   overflow: hidden;
   text-overflow: ellipsis;
 
+
   > div {
     white-space: nowrap;
+
+    &.small {
+      font-size: 50%;
+    }
+  }
+
+  &.phovea-proportional-symbol {
+    > div {
+      border-radius: 50%;
+      background-color: black;
+    }
+  }
+
+  &.phovea-barplot {
+    align-items: stretch;
+
+    > div {
+      flex: 1 1 auto;
+      background-color: black;
+    }
+  }
+}
+
+.phovea-mosaic{
+  text {
+    user-select: none;
+    pointer-events: none;
+  }
+  .phovea-select-selected rect {
+    fill: $select-color;
   }
 }
 

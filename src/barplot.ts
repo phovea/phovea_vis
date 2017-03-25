@@ -162,12 +162,10 @@ export class BarPlot extends AVisInstance implements IVisInstance {
           }
 
           start = {d, i, applied: false};
-
           if (toSelectOperation(<MouseEvent>d3.event) === SelectOperation.SET) {
             fire(List.EVENT_BRUSH_CLEAR, this.data);
             data.clear();
           }
-
         })
         .on('mouseenter', (d, i) => {
           if (start === null) {

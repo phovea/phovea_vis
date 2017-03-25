@@ -13,6 +13,9 @@ import {Range} from 'phovea_core/src/range';
 import {SelectOperation} from 'phovea_core/src/idtype/IIDType';
 import {fire} from 'phovea_core/src/event';
 import {List} from './list';
+import {IHeatMapAbleVector} from './heatmap/HeatMap1D';
+import {INumberValueTypeDesc, IDataType} from '../../phovea_core/src/datatype';
+import {AVector} from '../../phovea_core/src/vector/AVector';
 
 
 export interface IBarPlotOptions extends IVisInstanceOptions {
@@ -210,23 +213,7 @@ export class BarPlot extends AVisInstance implements IVisInstance {
   }
 
   private drawLabels() {
-    const rowHeight = this.size[1] / this.data.dim[0];
-    this.labels.attr({
-      'display': (rowHeight >= 10) ? 'inline' : 'none',
-      'font-size': (3 / 4 * rowHeight) + 'px'
-    });
-    this.data.data().then((_data) => {
-      const $n = this.labels.selectAll('text').data(_data);
-      $n.enter().append('text');
-      const yPadding = 2;
-      const xPadding = 3;
-      $n.attr({
-        'alignment-baseline': 'central',
-        x: xPadding,
-        y: (d, i) => (i + 0.5) * rowHeight,
-        height: (d) => rowHeight - yPadding
-      }).text(String);
-    });
+    drawLabels(this.size, this.data, this.labels);
   }
 
   locateImpl(range: Range) {
@@ -248,4 +235,30 @@ export default BarPlot;
 
 export function create(data: INumericalVector, parent: Element, options?: IBarPlotOptions) {
   return new BarPlot(data, parent, options);
+}
+
+/**
+ * Draw labels for given data
+ * @param size array with [width, height]
+ * @param data loaded data set
+ * @param labels D3 Elements with all labels
+ */
+export function drawLabels(size:number[], data:INumericalVector, labels: d3.Selection<any>) {
+  const rowHeight = size[1] / data.dim[0];
+  labels.attr({
+    'display': (rowHeight >= 15) ? 'inline' : 'none',
+    'font-size': (3 / 4 * rowHeight) + 'px'
+  });
+  data.data().then((_data) => {
+    const $n = labels.selectAll('text').data(_data);
+    $n.enter().append('text');
+    const yPadding = 2;
+    const xPadding = 3;
+    $n.attr({
+      'alignment-baseline': 'central',
+      x: xPadding,
+      y: (d, i) => (i + 0.5) * rowHeight,
+      height: (d) => rowHeight - yPadding
+    }).text(String);
+  });
 }

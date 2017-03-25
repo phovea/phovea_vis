@@ -32,6 +32,12 @@ export interface IHistogramOptions extends IDistributionOptions {
   duration?: number;
 
   /**
+   * one color used for all the bins
+   * @default the color of the bin that is provided by the histogram
+   */
+  color?: number;
+
+  /**
    * width
    * @default 200
    */
@@ -151,7 +157,7 @@ export default class Histogram extends AVisInstance implements IVisInstance {
         .on('click', onClick);
       $m.attr({
         x: (d, i) => xscale(i),
-        fill: (d) => d.color,
+        fill: (d) => this.options.color || d.color,
         y: (d) => yscale(yscale.domain()[1] - d.v),
         height: (d) => yscale(d.v)
       });

@@ -14,6 +14,7 @@ import {defaultColor, defaultDomain, toScale, IScale, ICommonHeatMapOptions} fro
 import {SelectOperation} from 'phovea_core/src/idtype/IIDType';
 import {fire} from 'phovea_core/src/event';
 import List from '../list';
+import {drawLabels} from '../barplot';
 import {toSelectOperation} from 'phovea_core/src/idtype';
 
 export interface IHeatMap1DOptions extends ICommonHeatMapOptions {
@@ -29,9 +30,11 @@ export interface IHeatMap1DOptions extends ICommonHeatMapOptions {
   heightTo?: number;
 }
 
+
 export declare type IHeatMapAbleVector = INumericalVector|ICategoricalVector;
 
 export default class HeatMap1D extends AVisInstance implements IVisInstance {
+
   private readonly $node: d3.Selection<any>;
   private labels: d3.Selection<any>;
   private readonly colorer: IScale;
@@ -200,24 +203,7 @@ export default class HeatMap1D extends AVisInstance implements IVisInstance {
   }
 
   private drawLabels() {
-    const rowHeight = this.size[1] / this.data.dim[0];
-    this.labels.attr({
-      'display': (rowHeight >= 10) ? 'inline' : 'none',
-      'font-size': (3 / 4 * rowHeight) + 'px'
-    });
-    const t = <Promise<string|number[]>>this.data.data();
-    t.then((arr: any[]) => {
-      const $n = this.labels.selectAll('text').data(arr);
-      $n.enter().append('text');
-      const yPadding = 2;
-      const xPadding = 3;
-      $n.attr({
-        'alignment-baseline': 'central',
-        x: xPadding,
-        y: (d, i) => (i + 0.5) * rowHeight,
-        height: (d) => rowHeight - yPadding
-      }).text(String);
-    });
+    drawLabels(this.size, <INumericalVector>this.data, this.labels);
   }
 }
 

@@ -13,9 +13,6 @@ import {Range} from 'phovea_core/src/range';
 import {SelectOperation} from 'phovea_core/src/idtype/IIDType';
 import {fire} from 'phovea_core/src/event';
 import {List} from './list';
-import {IHeatMapAbleVector} from './heatmap/HeatMap1D';
-import {INumberValueTypeDesc, IDataType} from '../../phovea_core/src/datatype';
-import {AVector} from '../../phovea_core/src/vector/AVector';
 
 
 export interface IBarPlotOptions extends IVisInstanceOptions {

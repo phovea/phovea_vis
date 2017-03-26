@@ -154,7 +154,7 @@ export class BarPlot extends AVisInstance implements IVisInstance {
       xscale.domain([o.min, o.max]);
 
       const $m = $g.selectAll('rect').data(_data);
-      let start = null
+      let start = null;
       let topBottom = [Number.POSITIVE_INFINITY, Number.NEGATIVE_INFINITY];
       $m.enter().append('rect')
         .on('mousedown', (d, i) => {

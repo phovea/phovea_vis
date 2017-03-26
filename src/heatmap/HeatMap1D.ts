@@ -130,7 +130,6 @@ export default class HeatMap1D extends AVisInstance implements IVisInstance {
   }
 
   private build($parent: d3.Selection<any>) {
-    console.log(this.rawSize[1], this.options.scale[1], this.options.heightTo, this.options)
     const width = this.options.width, height = this.rawSize[1];
     const $svg = $parent.append('svg').attr({
       width,

@@ -108,11 +108,14 @@ export class List extends AVisInstance implements IVisInstance {
     $list.style('width', `${scale[0] * this.options.width}px`);
     $list.style('height', `${scale[1] * this.data.length * this.options.rowHeight}px`);
 
+
     const onClick = selectionUtil(this.data, $list, 'div', SelectOperation.ADD);
     this.data.data().then((arr: any[]) => {
       let start = null;
       const $rows = $list.selectAll('div').data(arr);
       $rows.enter().append('div')
+        .style('flex', '1')
+        .style('width', '100%')
         .on('mousedown', (d, i) => {
           if (start !== null) {
             return;

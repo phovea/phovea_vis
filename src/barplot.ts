@@ -155,11 +155,14 @@ export class BarPlot extends AVisInstance implements IVisInstance {
 
       const $m = $g.selectAll('rect').data(_data);
       let start = null;
+      let topBottom = [Number.POSITIVE_INFINITY, Number.NEGATIVE_INFINITY];
       $m.enter().append('rect')
         .on('mousedown', (d, i) => {
           if (start !== null) {
             return;
           }
+
+          topBottom = this.updateTopBotom(i, topBottom);
 
           start = {d, i, applied: false};
           if (toSelectOperation(<MouseEvent>d3.event) === SelectOperation.SET) {
@@ -173,6 +176,8 @@ export class BarPlot extends AVisInstance implements IVisInstance {
           }
 
           onClick(d, i, SelectOperation.ADD); // select current entered element
+
+          topBottom = this.updateTopBotom(i, topBottom);
 
           // select first element, when started brushing
           if (start.applied === false) {
@@ -190,7 +195,9 @@ export class BarPlot extends AVisInstance implements IVisInstance {
             onClick(start.d, start.i, SelectOperation.ADD);
           }
 
-          fire(List.EVENT_BRUSHING, [start.i, i], this.data);
+          topBottom = this.updateTopBotom(i, topBottom);
+
+          fire(List.EVENT_BRUSHING, topBottom, this.data);
 
           start = null;
         });
@@ -207,6 +214,16 @@ export class BarPlot extends AVisInstance implements IVisInstance {
     });
 
     return $svg;
+  }
+
+  private updateTopBotom(i: number, topBottom: number[]) {
+    if (topBottom[0] > i) {
+      topBottom[0] = i;
+    }
+    if (topBottom[1] < i) {
+      topBottom[1] = i;
+    }
+    return topBottom;
   }
 
   private drawLabels() {

@@ -14,6 +14,7 @@ import {Range} from 'phovea_core/src/range';
 import {fire} from 'phovea_core/src/event';
 import {SelectOperation} from 'phovea_core/src/idtype/IIDType';
 import {toSelectOperation} from 'phovea_core/src/idtype';
+import {EOrientation} from './heatmap/internal';
 
 export interface IListOptions extends IVisInstanceOptions {
   /**
@@ -35,6 +36,10 @@ export interface IListOptions extends IVisInstanceOptions {
    * @default 20
    */
   rowHeight?: number;
+
+  heightTo?: number;
+
+  orientation?: number;
 }
 
 export class List extends AVisInstance implements IVisInstance {
@@ -94,7 +99,12 @@ export class List extends AVisInstance implements IVisInstance {
     }
     this.$node.style('transform', 'rotate(' + rotate + 'deg)');
     this.$node.style('width', `${scale[0] * this.options.width}px`);
-    this.$node.style('height', `${scale[1] * this.data.length * this.options.rowHeight}px`);
+    if (this.options.orientation === EOrientation.Vertical) {
+      this.$node.style('height', `${scale[1] * this.data.length * this.options.rowHeight}px`);
+    } else if (this.options.orientation === EOrientation.Horizontal) {
+
+      this.$node.style('height', `${this.options.heightTo}px`);
+    }
     const act = {scale, rotate};
     this.fire('transform', act, bak);
     this.options.scale = scale;
@@ -104,9 +114,15 @@ export class List extends AVisInstance implements IVisInstance {
 
   private build($parent: d3.Selection<any>) {
     const scale = this.options.scale;
-    const $list = $parent.append('div').attr('class', 'phovea-list ' + this.options.cssClass);
+    const $list = $parent.append('div').attr('class', 'phovea-list ' + (this.options.orientation === EOrientation.Vertical ? 'ver ' : 'hor ') + this.options.cssClass);
     $list.style('width', `${scale[0] * this.options.width}px`);
-    $list.style('height', `${scale[1] * this.data.length * this.options.rowHeight}px`);
+    if (this.options.orientation === EOrientation.Vertical) {
+      $list.style('height', `${scale[1] * this.data.length * this.options.rowHeight}px`);
+    } else if (this.options.orientation === EOrientation.Horizontal) {
+
+      $list.style('height', `${this.options.heightTo}px`);
+    }
+
 
     const onClick = selectionUtil(this.data, $list, 'div', SelectOperation.ADD);
     this.data.data().then((arr: any[]) => {
@@ -114,6 +130,7 @@ export class List extends AVisInstance implements IVisInstance {
       let topBottom = [Number.POSITIVE_INFINITY, Number.NEGATIVE_INFINITY];
       const $rows = $list.selectAll('div').data(arr);
       $rows.enter().append('div')
+        .attr('title', (d) => d)
         .on('mousedown', (d, i) => {
           if (start !== null) {
             return;

@@ -13,6 +13,7 @@ import {Range} from 'phovea_core/src/range';
 import {SelectOperation} from 'phovea_core/src/idtype/IIDType';
 import {fire} from 'phovea_core/src/event';
 import {List} from './list';
+import {EOrientation} from './heatmap/internal';
 
 
 export interface IBarPlotOptions extends IVisInstanceOptions {
@@ -43,6 +44,8 @@ export interface IBarPlotOptions extends IVisInstanceOptions {
    * @default null
    */
   heightTo?: number;
+
+  orientation?: number;
 }
 
 export class BarPlot extends AVisInstance implements IVisInstance {
@@ -118,9 +121,8 @@ export class BarPlot extends AVisInstance implements IVisInstance {
     const $g = $svg.append('g').attr('transform', 'scale(' + this.options.scale[0] + ', ' + this.options.scale[1] + ')');
 
     //using range bands with an ordinal scale for uniform distribution
-    const xscale = this.xscale = d3.scale.linear().range([0, this.rawSize[0]]);
-    const yscale = this.yscale = d3.scale.linear().range([0, this.rawSize[1]]);
-
+    const xscale = this.xscale = d3.scale.linear();
+    const yscale = this.yscale = d3.scale.linear();
     const onClick = function (d, i, selectOperation) {
       data.select(0, [i], toSelectOperation(<MouseEvent>d3.event) || selectOperation);
     };
@@ -155,6 +157,7 @@ export class BarPlot extends AVisInstance implements IVisInstance {
 
       const $m = $g.selectAll('rect').data(_data);
       let start = null;
+      const binSize = width / _data.length;
       let topBottom = [Number.POSITIVE_INFINITY, Number.NEGATIVE_INFINITY];
       $m.enter().append('rect')
         .on('mousedown', (d, i) => {
@@ -200,15 +203,30 @@ export class BarPlot extends AVisInstance implements IVisInstance {
           fire(List.EVENT_BRUSHING, topBottom, this.data);
 
           start = null;
+        })
+        .append('title').text(String);
+      if (this.options.orientation === EOrientation.Vertical) {
+        xscale.range([0, this.rawSize[0]]);
+        yscale.range([0, this.rawSize[1]]);
+        $m.attr({
+          y: (d, i) => yscale(i),
+          height: (d) => yscale(1),
+          width: xscale
         });
-      $m.attr({
-        y: (d, i) => yscale(i),
-        height: (d) => yscale(1),
-        width: xscale
-      });
+        this.labels = $svg.append('g');
+        this.drawLabels();
+      } else if (this.options.orientation === EOrientation.Horizontal) {
+        xscale.range([0, this.rawSize[1]]);
+        yscale.range([0, this.rawSize[0]]);
+        $m.attr({
+          x: (d, i) => binSize * i,
+          width: (d) => binSize,
+          y: (d, i) => this.rawSize[1] - xscale(d),
+          height: (d, i) => xscale(d)
+        });
 
-      this.labels = $svg.append('g');
-      this.drawLabels();
+      }
+
       this.markReady();
       data.selections().then((selected) => l(null, 'selected', selected));
     });

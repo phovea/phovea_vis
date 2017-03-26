@@ -9,6 +9,11 @@ import {
 } from 'phovea_core/src/datatype';
 import {IVisInstanceOptions} from 'phovea_core/src/vis';
 
+export enum EOrientation {
+  Vertical,
+  Horizontal
+}
+
 
 export function defaultColor(value: INumberValueTypeDesc|ICategoricalValueTypeDesc): string[] {
   if (value.type === VALUE_TYPE_CATEGORICAL) {

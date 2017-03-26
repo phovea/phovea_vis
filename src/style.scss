@@ -144,12 +144,16 @@ div.phovea-heatmap {
 }
 
 .phovea-list {
+  &.hor {
+    flex-direction: row;
+  }
+  &.ver {
+    flex-direction: column;
+  }
   display: flex;
-  flex-direction: column;
   justify-content: space-around;
   overflow: hidden;
   text-overflow: ellipsis;
-
 
   > div {
     white-space: nowrap;
@@ -176,7 +180,7 @@ div.phovea-heatmap {
   }
 }
 
-.phovea-mosaic{
+.phovea-mosaic {
   text {
     user-select: none;
     pointer-events: none;

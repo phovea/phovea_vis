@@ -10,7 +10,7 @@ import {rect} from 'phovea_core/src/geom';
 import {mixin} from 'phovea_core/src';
 import {selectionUtil} from 'phovea_d3/src/d3util';
 import {INumericalVector, ICategoricalVector} from 'phovea_core/src/vector';
-import {defaultColor, defaultDomain, toScale, IScale, ICommonHeatMapOptions} from './internal';
+import {defaultColor, defaultDomain, toScale, IScale, ICommonHeatMapOptions, EOrientation} from './internal';
 import {SelectOperation} from 'phovea_core/src/idtype/IIDType';
 import {fire} from 'phovea_core/src/event';
 import List from '../list';
@@ -27,6 +27,8 @@ export interface IHeatMap1DOptions extends ICommonHeatMapOptions {
    * @default null
    */
   heightTo?: number;
+
+  orientation?: number;
 }
 
 export declare type IHeatMapAbleVector = INumericalVector|ICategoricalVector;
@@ -46,6 +48,7 @@ export default class HeatMap1D extends AVisInstance implements IVisInstance {
     super();
     const value = this.data.valuetype;
     this.options.heightTo = data.dim[0];
+    this.options.orientation = options.orientation;
     mixin(this.options, {
       color: defaultColor(value),
       domain: defaultDomain(value)
@@ -127,6 +130,7 @@ export default class HeatMap1D extends AVisInstance implements IVisInstance {
   }
 
   private build($parent: d3.Selection<any>) {
+    console.log(this.rawSize[1], this.options.scale[1], this.options.heightTo, this.options)
     const width = this.options.width, height = this.rawSize[1];
     const $svg = $parent.append('svg').attr({
       width,
@@ -139,6 +143,7 @@ export default class HeatMap1D extends AVisInstance implements IVisInstance {
     const t = <Promise<string|number[]>>this.data.data();
     t.then((arr: any[]) => {
       let start = null;
+      const binSize = width / arr.length;
       const $rows = $g.selectAll('rect').data(arr);
       const onClick = selectionUtil(this.data, $g, 'rect', SelectOperation.ADD);
       $rows.enter().append('rect')
@@ -181,18 +186,26 @@ export default class HeatMap1D extends AVisInstance implements IVisInstance {
 
           start = null;
         })
-        .attr({
+        .append('title').text(String);
+      $rows.attr({
+        fill: (d) => c(d)
+      });
+      if (this.options.orientation === EOrientation.Vertical) {
+        $rows.attr({
+          y: (d, i) => i,
           width: this.options.width,
           height: 1
-        }).append('title').text(String);
-      $rows.attr({
-        fill: (d) => c(d),
-        y: (d, i) => i
-      });
+        });
+        this.labels = $svg.append('g');
+        this.drawLabels();
+      } else if (this.options.orientation === EOrientation.Horizontal) {
+        $rows.attr({
+          x: (d, i) => i * binSize,
+          width: binSize,
+          height: 1
+        });
+      }
       $rows.exit().remove();
-
-      this.labels = $svg.append('g');
-      this.drawLabels();
       this.markReady();
     });
     return $svg;

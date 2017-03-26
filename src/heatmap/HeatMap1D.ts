@@ -136,7 +136,6 @@ export default class HeatMap1D extends AVisInstance implements IVisInstance {
     const $g = $svg.append('g').attr('transform', 'scale(1,' + this.options.scale[1] + ')');
 
     const c = this.colorer;
-
     const t = <Promise<string|number[]>>this.data.data();
     t.then((arr: any[]) => {
       let start = null;
@@ -152,7 +151,7 @@ export default class HeatMap1D extends AVisInstance implements IVisInstance {
 
           if (toSelectOperation(<MouseEvent>d3.event) === SelectOperation.SET) {
             fire(List.EVENT_BRUSH_CLEAR, this.data);
-           this.data.clear();
+            this.data.clear();
           }
         })
         .on('mouseenter', (d, i) => {

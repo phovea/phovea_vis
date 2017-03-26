@@ -37,6 +37,8 @@ export interface IListOptions extends IVisInstanceOptions {
    */
   rowHeight?: number;
 
+  heightTo?: number;
+
   orientation?: number;
 }
 
@@ -97,7 +99,12 @@ export class List extends AVisInstance implements IVisInstance {
     }
     this.$node.style('transform', 'rotate(' + rotate + 'deg)');
     this.$node.style('width', `${scale[0] * this.options.width}px`);
-    this.$node.style('height', `${scale[1] * this.data.length * this.options.rowHeight}px`);
+    if (this.options.orientation === EOrientation.Vertical) {
+      this.$node.style('height', `${scale[1] * this.data.length * this.options.rowHeight}px`);
+    } else if (this.options.orientation === EOrientation.Horizontal) {
+
+      this.$node.style('height', `${this.options.heightTo}px`);
+    }
     const act = {scale, rotate};
     this.fire('transform', act, bak);
     this.options.scale = scale;
@@ -109,7 +116,12 @@ export class List extends AVisInstance implements IVisInstance {
     const scale = this.options.scale;
     const $list = $parent.append('div').attr('class', 'phovea-list ' + (this.options.orientation === EOrientation.Vertical ? 'ver ' : 'hor ') + this.options.cssClass);
     $list.style('width', `${scale[0] * this.options.width}px`);
-    $list.style('height', `${scale[1] * this.data.length * this.options.rowHeight}px`);
+    if (this.options.orientation === EOrientation.Vertical) {
+      $list.style('height', `${scale[1] * this.data.length * this.options.rowHeight}px`);
+    } else if (this.options.orientation === EOrientation.Horizontal) {
+
+      $list.style('height', `${this.options.heightTo}px`);
+    }
 
 
     const onClick = selectionUtil(this.data, $list, 'div', SelectOperation.ADD);

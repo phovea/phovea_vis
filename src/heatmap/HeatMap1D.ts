@@ -201,7 +201,7 @@ export default class HeatMap1D extends AVisInstance implements IVisInstance {
         $rows.attr({
           x: (d, i) => i * binSize,
           width: binSize,
-          height: 1
+          height: this.options.heightTo
         });
       }
       $rows.exit().remove();

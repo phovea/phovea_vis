@@ -129,6 +129,7 @@ export class List extends AVisInstance implements IVisInstance {
       let start = null;
       const $rows = $list.selectAll('div').data(arr);
       $rows.enter().append('div')
+        .attr('title', (d) => d)
         .on('mousedown', (d, i) => {
           if (start !== null) {
             return;

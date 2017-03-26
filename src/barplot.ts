@@ -196,7 +196,8 @@ export class BarPlot extends AVisInstance implements IVisInstance {
           fire(List.EVENT_BRUSHING, [start.i, i], this.data);
 
           start = null;
-        });
+        })
+        .append('title').text(String);
       if (this.options.orientation === EOrientation.Vertical) {
         xscale.range([0, this.rawSize[0]]);
         yscale.range([0, this.rawSize[1]]);

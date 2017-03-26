@@ -12,6 +12,8 @@ import {IStratification} from 'phovea_core/src/stratification';
 import {IHistogram} from 'phovea_core/src/math';
 import {toSelectOperation} from 'phovea_core/src/idtype';
 import bindTooltip from 'phovea_d3/src/tooltip';
+import List from '../list';
+import {fire} from 'phovea_core/src/event';
 import {
   createHistData,
   IDistributionOptions,
@@ -147,7 +149,11 @@ export default class Histogram extends AVisInstance implements IVisInstance {
       data.off('select', l);
     });
 
-    const onClick = (d) => data.select(0, d.range, toSelectOperation(<MouseEvent>d3.event));
+    const onClick = (d) => {
+      data.select(0, d.range, toSelectOperation(<MouseEvent>d3.event));
+      //dommu brush, [-1, -1] to be replaced by proper indices
+      fire(List.EVENT_BRUSHING, [-1, -1], this.data);
+    };
     this.data.hist(Math.floor(o.nbins)).then((hist) => {
       this.hist = hist;
       xscale.domain(d3.range(hist.bins));

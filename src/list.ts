@@ -14,7 +14,7 @@ import {Range} from 'phovea_core/src/range';
 import {fire} from 'phovea_core/src/event';
 import {SelectOperation} from 'phovea_core/src/idtype/IIDType';
 import {toSelectOperation} from 'phovea_core/src/idtype';
-import {EOrientation} from "phovea_vis/src/heatmap/internal";
+import {EOrientation} from './heatmap/internal';
 
 export interface IListOptions extends IVisInstanceOptions {
   /**

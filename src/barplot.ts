@@ -13,7 +13,7 @@ import {Range} from 'phovea_core/src/range';
 import {SelectOperation} from 'phovea_core/src/idtype/IIDType';
 import {fire} from 'phovea_core/src/event';
 import {List} from './list';
-import {EOrientation} from "phovea_vis/src/heatmap/internal";
+import {EOrientation} from './heatmap/internal';
 
 
 export interface IBarPlotOptions extends IVisInstanceOptions {

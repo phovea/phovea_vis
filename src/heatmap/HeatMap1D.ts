@@ -143,6 +143,7 @@ export default class HeatMap1D extends AVisInstance implements IVisInstance {
     const t = <Promise<string|number[]>>this.data.data();
     t.then((arr: any[]) => {
       let start = null;
+      let topBottom = [Number.POSITIVE_INFINITY, Number.NEGATIVE_INFINITY];
       const $rows = $g.selectAll('rect').data(arr);
       const onClick = selectionUtil(this.data, $g, 'rect', SelectOperation.ADD);
       $rows.enter().append('rect')
@@ -152,6 +153,8 @@ export default class HeatMap1D extends AVisInstance implements IVisInstance {
           }
 
           start = {d, i, applied: false};
+
+          topBottom = this.updateTopBotom(i, topBottom);
 
           if (toSelectOperation(<MouseEvent>d3.event) === SelectOperation.SET) {
             fire(List.EVENT_BRUSH_CLEAR, this.data);
@@ -164,6 +167,7 @@ export default class HeatMap1D extends AVisInstance implements IVisInstance {
           }
 
           onClick(d, i); // select current entered element
+          topBottom = this.updateTopBotom(i, topBottom);
 
           // select first element, when started brushing
           if (start.applied === false) {
@@ -181,7 +185,9 @@ export default class HeatMap1D extends AVisInstance implements IVisInstance {
             onClick(start.d, start.i);
           }
 
-          fire(List.EVENT_BRUSHING, [start.i, i], this.data);
+          topBottom = this.updateTopBotom(i, topBottom);
+
+          fire(List.EVENT_BRUSHING, topBottom, this.data);
 
           start = null;
         })
@@ -200,6 +206,16 @@ export default class HeatMap1D extends AVisInstance implements IVisInstance {
       this.markReady();
     });
     return $svg;
+  }
+
+  private updateTopBotom(i: number, topBottom: number[]) {
+    if (topBottom[0] > i) {
+      topBottom[0] = i;
+    }
+    if (topBottom[1] < i) {
+      topBottom[1] = i;
+    }
+    return topBottom;
   }
 
   private drawLabels() {

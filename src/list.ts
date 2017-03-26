@@ -111,12 +111,15 @@ export class List extends AVisInstance implements IVisInstance {
     const onClick = selectionUtil(this.data, $list, 'div', SelectOperation.ADD);
     this.data.data().then((arr: any[]) => {
       let start = null;
+      let topBottom = [Number.POSITIVE_INFINITY, Number.NEGATIVE_INFINITY];
       const $rows = $list.selectAll('div').data(arr);
       $rows.enter().append('div')
         .on('mousedown', (d, i) => {
           if (start !== null) {
             return;
           }
+
+          topBottom = this.updateTopBotom(i, topBottom);
 
           start = {d, i, applied: false};
 
@@ -132,6 +135,8 @@ export class List extends AVisInstance implements IVisInstance {
 
           onClick(d, i); // select current entered element
 
+          topBottom = this.updateTopBotom(i, topBottom);
+
           // select first element, when started brushing
           if (start.applied === false) {
             onClick(start.d, start.i);
@@ -146,9 +151,11 @@ export class List extends AVisInstance implements IVisInstance {
           // select as click
           if (start.applied === false) {
             onClick(start.d, start.i);
-          }
 
-          fire(List.EVENT_BRUSHING, [start.i, i], this.data);
+          }
+          topBottom = this.updateTopBotom(i, topBottom);
+
+          fire(List.EVENT_BRUSHING, topBottom, this.data);
 
           start = null;
         });
@@ -158,6 +165,16 @@ export class List extends AVisInstance implements IVisInstance {
       this.markReady();
     });
     return $list;
+  }
+
+  private updateTopBotom(i: number, topBottom: number[]) {
+    if (topBottom[0] > i) {
+      topBottom[0] = i;
+    }
+    if (topBottom[1] < i) {
+      topBottom[1] = i;
+    }
+    return topBottom;
   }
 
 }

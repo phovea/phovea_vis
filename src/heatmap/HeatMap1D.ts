@@ -14,6 +14,7 @@ import {defaultColor, defaultDomain, toScale, IScale, ICommonHeatMapOptions, EOr
 import {SelectOperation} from 'phovea_core/src/idtype/IIDType';
 import {fire} from 'phovea_core/src/event';
 import List from '../list';
+import {drawLabels} from '../barplot';
 import {toSelectOperation} from 'phovea_core/src/idtype';
 
 export interface IHeatMap1DOptions extends ICommonHeatMapOptions {
@@ -31,9 +32,11 @@ export interface IHeatMap1DOptions extends ICommonHeatMapOptions {
   orientation?: number;
 }
 
+
 export declare type IHeatMapAbleVector = INumericalVector|ICategoricalVector;
 
 export default class HeatMap1D extends AVisInstance implements IVisInstance {
+
   private readonly $node: d3.Selection<any>;
   private labels: d3.Selection<any>;
   private readonly colorer: IScale;
@@ -142,6 +145,7 @@ export default class HeatMap1D extends AVisInstance implements IVisInstance {
     const t = <Promise<string|number[]>>this.data.data();
     t.then((arr: any[]) => {
       let start = null;
+      let topBottom = [Number.POSITIVE_INFINITY, Number.NEGATIVE_INFINITY];
       const binSize = width / arr.length;
       const $rows = $g.selectAll('rect').data(arr);
       const onClick = selectionUtil(this.data, $g, 'rect', SelectOperation.ADD);
@@ -152,6 +156,8 @@ export default class HeatMap1D extends AVisInstance implements IVisInstance {
           }
 
           start = {d, i, applied: false};
+
+          topBottom = this.updateTopBotom(i, topBottom);
 
           if (toSelectOperation(<MouseEvent>d3.event) === SelectOperation.SET) {
             fire(List.EVENT_BRUSH_CLEAR, this.data);
@@ -164,6 +170,7 @@ export default class HeatMap1D extends AVisInstance implements IVisInstance {
           }
 
           onClick(d, i); // select current entered element
+          topBottom = this.updateTopBotom(i, topBottom);
 
           // select first element, when started brushing
           if (start.applied === false) {
@@ -181,7 +188,9 @@ export default class HeatMap1D extends AVisInstance implements IVisInstance {
             onClick(start.d, start.i);
           }
 
-          fire(List.EVENT_BRUSHING, [start.i, i], this.data);
+          topBottom = this.updateTopBotom(i, topBottom);
+
+          fire(List.EVENT_BRUSHING, topBottom, this.data);
 
           start = null;
         })
@@ -210,25 +219,18 @@ export default class HeatMap1D extends AVisInstance implements IVisInstance {
     return $svg;
   }
 
+  private updateTopBotom(i: number, topBottom: number[]) {
+    if (topBottom[0] > i) {
+      topBottom[0] = i;
+    }
+    if (topBottom[1] < i) {
+      topBottom[1] = i;
+    }
+    return topBottom;
+  }
+
   private drawLabels() {
-    const rowHeight = this.size[1] / this.data.dim[0];
-    this.labels.attr({
-      'display': (rowHeight >= 10) ? 'inline' : 'none',
-      'font-size': (3 / 4 * rowHeight) + 'px'
-    });
-    const t = <Promise<string|number[]>>this.data.data();
-    t.then((arr: any[]) => {
-      const $n = this.labels.selectAll('text').data(arr);
-      $n.enter().append('text');
-      const yPadding = 2;
-      const xPadding = 3;
-      $n.attr({
-        'alignment-baseline': 'central',
-        x: xPadding,
-        y: (d, i) => (i + 0.5) * rowHeight,
-        height: (d) => rowHeight - yPadding
-      }).text(String);
-    });
+    drawLabels(this.size, <INumericalVector>this.data, this.labels);
   }
 }
 

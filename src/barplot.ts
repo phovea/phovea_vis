@@ -158,11 +158,14 @@ export class BarPlot extends AVisInstance implements IVisInstance {
       const $m = $g.selectAll('rect').data(_data);
       let start = null;
       const binSize = width / _data.length;
+      let topBottom = [Number.POSITIVE_INFINITY, Number.NEGATIVE_INFINITY];
       $m.enter().append('rect')
         .on('mousedown', (d, i) => {
           if (start !== null) {
             return;
           }
+
+          topBottom = this.updateTopBotom(i, topBottom);
 
           start = {d, i, applied: false};
           if (toSelectOperation(<MouseEvent>d3.event) === SelectOperation.SET) {
@@ -176,6 +179,8 @@ export class BarPlot extends AVisInstance implements IVisInstance {
           }
 
           onClick(d, i, SelectOperation.ADD); // select current entered element
+
+          topBottom = this.updateTopBotom(i, topBottom);
 
           // select first element, when started brushing
           if (start.applied === false) {
@@ -193,7 +198,9 @@ export class BarPlot extends AVisInstance implements IVisInstance {
             onClick(start.d, start.i, SelectOperation.ADD);
           }
 
-          fire(List.EVENT_BRUSHING, [start.i, i], this.data);
+          topBottom = this.updateTopBotom(i, topBottom);
+
+          fire(List.EVENT_BRUSHING, topBottom, this.data);
 
           start = null;
         })
@@ -227,24 +234,18 @@ export class BarPlot extends AVisInstance implements IVisInstance {
     return $svg;
   }
 
+  private updateTopBotom(i: number, topBottom: number[]) {
+    if (topBottom[0] > i) {
+      topBottom[0] = i;
+    }
+    if (topBottom[1] < i) {
+      topBottom[1] = i;
+    }
+    return topBottom;
+  }
+
   private drawLabels() {
-    const rowHeight = this.size[1] / this.data.dim[0];
-    this.labels.attr({
-      'display': (rowHeight >= 10) ? 'inline' : 'none',
-      'font-size': (3 / 4 * rowHeight) + 'px'
-    });
-    this.data.data().then((_data) => {
-      const $n = this.labels.selectAll('text').data(_data);
-      $n.enter().append('text');
-      const yPadding = 2;
-      const xPadding = 3;
-      $n.attr({
-        'alignment-baseline': 'central',
-        x: xPadding,
-        y: (d, i) => (i + 0.5) * rowHeight,
-        height: (d) => rowHeight - yPadding
-      }).text(String);
-    });
+    drawLabels(this.size, this.data, this.labels);
   }
 
   locateImpl(range: Range) {
@@ -266,4 +267,30 @@ export default BarPlot;
 
 export function create(data: INumericalVector, parent: Element, options?: IBarPlotOptions) {
   return new BarPlot(data, parent, options);
+}
+
+/**
+ * Draw labels for given data
+ * @param size array with [width, height]
+ * @param data loaded data set
+ * @param labels D3 Elements with all labels
+ */
+export function drawLabels(size:number[], data:INumericalVector, labels: d3.Selection<any>) {
+  const rowHeight = size[1] / data.dim[0];
+  labels.attr({
+    'display': (rowHeight >= 15) ? 'inline' : 'none',
+    'font-size': (3 / 4 * rowHeight) + 'px'
+  });
+  data.data().then((_data) => {
+    const $n = labels.selectAll('text').data(_data);
+    $n.enter().append('text');
+    const yPadding = 2;
+    const xPadding = 3;
+    $n.attr({
+      'alignment-baseline': 'central',
+      x: xPadding,
+      y: (d, i) => (i + 0.5) * rowHeight,
+      height: (d) => rowHeight - yPadding
+    }).text(String);
+  });
 }

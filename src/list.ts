@@ -14,6 +14,7 @@ import {Range} from 'phovea_core/src/range';
 import {fire} from 'phovea_core/src/event';
 import {SelectOperation} from 'phovea_core/src/idtype/IIDType';
 import {toSelectOperation} from 'phovea_core/src/idtype';
+import {EOrientation} from "phovea_vis/src/heatmap/internal";
 
 export interface IListOptions extends IVisInstanceOptions {
   /**
@@ -35,6 +36,8 @@ export interface IListOptions extends IVisInstanceOptions {
    * @default 20
    */
   rowHeight?: number;
+
+  orientation?: number;
 }
 
 export class List extends AVisInstance implements IVisInstance {
@@ -104,7 +107,7 @@ export class List extends AVisInstance implements IVisInstance {
 
   private build($parent: d3.Selection<any>) {
     const scale = this.options.scale;
-    const $list = $parent.append('div').attr('class', 'phovea-list ' + this.options.cssClass);
+    const $list = $parent.append('div').attr('class', 'phovea-list ' + (this.options.orientation === EOrientation.Vertical ? 'ver ' : 'hor ') + this.options.cssClass);
     $list.style('width', `${scale[0] * this.options.width}px`);
     $list.style('height', `${scale[1] * this.data.length * this.options.rowHeight}px`);
 
@@ -114,8 +117,6 @@ export class List extends AVisInstance implements IVisInstance {
       let start = null;
       const $rows = $list.selectAll('div').data(arr);
       $rows.enter().append('div')
-        .style('flex', '1')
-        .style('width', '100%')
         .on('mousedown', (d, i) => {
           if (start !== null) {
             return;

@@ -118,6 +118,8 @@ export default class HeatMap1D extends AVisInstance implements IVisInstance {
       height: height * scale[1]
     }).style('transform', 'rotate(' + rotate + 'deg)');
     this.$node.select('g').attr('transform', 'scale(' + scale[0] + ',' + scale[1] + ')');
+    const strokeWidth = (height * scale[1] / this.data.dim[0] < 10) ? '0' : '0.1';
+    this.$node.selectAll('rect').style('stroke-width', strokeWidth);
     const act = {scale, rotate};
     this.fire('transform', act, bak);
     this.options.scale = scale;

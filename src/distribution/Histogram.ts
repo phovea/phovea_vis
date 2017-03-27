@@ -178,7 +178,7 @@ export default class Histogram extends AVisInstance implements IVisInstance {
       });
 
       this.$labels = $svg.append('g');
-      this.drawLabels();
+      //this.drawLabels();
 
       this.markReady();
       data.selections().then((selected) => {
@@ -225,7 +225,7 @@ export default class Histogram extends AVisInstance implements IVisInstance {
     this.fire('transform', act, bak);
     this.options.scale = scale;
     this.options.rotate = rotate;
-    this.drawLabels();
+    // this.drawLabels();
     return act;
   }
 

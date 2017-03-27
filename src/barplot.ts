@@ -279,7 +279,7 @@ export function drawLabels(size:number[], data:INumericalVector, labels: d3.Sele
   const rowHeight = size[1] / data.dim[0];
   labels.attr({
     'display': (rowHeight >= 15) ? 'inline' : 'none',
-    'font-size': (3 / 4 * rowHeight) + 'px'
+    'font-size': '14px'
   });
   data.data().then((_data) => {
     const $n = labels.selectAll('text').data(_data);

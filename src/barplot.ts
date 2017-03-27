@@ -101,6 +101,8 @@ export class BarPlot extends AVisInstance implements IVisInstance {
       height: height * scale[1]
     }).style('transform', 'rotate(' + rotate + 'deg)');
     this.$node.select('g').attr('transform', 'scale(' + scale[0] + ',' + scale[1] + ')');
+    const color = (this.options.rowHeight* scale[1] < 10) ? '#aaa' : 'white';
+    this.$node.selectAll('rect').style('stroke', color);
     const act = {scale, rotate};
     this.fire('transform', act, bak);
     this.options.scale = scale;

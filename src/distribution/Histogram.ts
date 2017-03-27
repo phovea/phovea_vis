@@ -7,7 +7,10 @@ import * as d3 from 'd3';
 import {onDOMNodeRemoved, mixin} from 'phovea_core/src';
 import {Range} from 'phovea_core/src/range';
 import {AVisInstance, IVisInstance, assignVis, ITransform} from 'phovea_core/src/vis';
-import {IHistAbleDataType, ICategoricalValueTypeDesc, INumberValueTypeDesc} from 'phovea_core/src/datatype';
+import {
+  IHistAbleDataType, ICategoricalValueTypeDesc, INumberValueTypeDesc,
+  VALUE_TYPE_CATEGORICAL
+} from 'phovea_core/src/datatype';
 import {IStratification} from 'phovea_core/src/stratification';
 import {IHistogram} from 'phovea_core/src/math';
 import {toSelectOperation} from 'phovea_core/src/idtype';
@@ -60,7 +63,7 @@ export interface IHistogramOptions extends IDistributionOptions {
 }
 
 export default class Histogram extends AVisInstance implements IVisInstance {
-  private options: IHistogramOptions = {
+  protected options: IHistogramOptions = {
     nbins: 5,
     total: true,
     width: 200,
@@ -102,6 +105,11 @@ export default class Histogram extends AVisInstance implements IVisInstance {
     return <SVGSVGElement>this.$node.node();
   }
 
+  protected sortHistData(histData:IHistData[]):IHistData[] {
+    // hook
+    return histData;
+  }
+
   private build($parent: d3.Selection<any>) {
     const size = this.size,
       data = this.data,
@@ -124,8 +132,7 @@ export default class Histogram extends AVisInstance implements IVisInstance {
       if (!this.histData) {
         return;
       }
-      const sortedByName = this.histData.slice().sort(sortObjectByName.bind(this, this.options.sort));
-      const highlights = sortedByName.map((entry, i) => {
+      const highlights = this.sortHistData(this.histData).map((entry, i) => {
         const s = entry.range.intersect(selected);
         return {
           i,
@@ -162,10 +169,10 @@ export default class Histogram extends AVisInstance implements IVisInstance {
       const hist = this.hist;
       yscale.domain([0, histmax]);
 
-      const histData = this.histData = createHistData(hist, this.data, this.options.sort);
+      this.histData = createHistData(hist, this.data, this.options.sort);
+      const histData = this.sortHistData(this.histData);
 
-      const sortedByName = histData.slice().sort(sortObjectByName.bind(this, this.options.sort));
-      const $m = $data.selectAll('rect').data(sortedByName);
+      const $m = $data.selectAll('rect').data(histData);
       $m.enter().append('rect')
         .attr('width', xscale.rangeBand())
         .call(bindTooltip<IHistData>((d) => `${d.name} ${d.v} entries (${Math.round(d.ratio * 100)}%)`))
@@ -253,7 +260,21 @@ export default class Histogram extends AVisInstance implements IVisInstance {
   }
 }
 
+export class CategoricalHistogram extends Histogram implements IVisInstance {
+
+  constructor(public readonly data: IHistAbleDataType<ICategoricalValueTypeDesc|INumberValueTypeDesc>|IStratification, parent: Element, options: IHistogramOptions = {}) {
+    super(data, parent, options);
+  }
+
+  protected sortHistData(histData:IHistData[]):IHistData[] {
+    return histData.slice().sort(sortObjectByName.bind(this, this.options.sort));
+  }
+}
 
 export function create(data: IHistAbleDataType<ICategoricalValueTypeDesc|INumberValueTypeDesc>, parent: Element, options?: IHistogramOptions) {
+  if(data.valuetype.type === VALUE_TYPE_CATEGORICAL) {
+    return new CategoricalHistogram(data, parent, options);
+  }
+
   return new Histogram(data, parent, options);
 }

@@ -60,6 +60,15 @@ export interface IHistogramOptions extends IDistributionOptions {
    * @default the color of the bin that is provided by the histogram
    */
   color?: number;
+
+  /**
+   * Define a positive number as maximum value for the y-scale.
+   * If no value or negative value is given, it will take the maximum from the histogram data.
+   * Set this options, if you want to apply a maximum value across multiple histograms.
+   *
+   * @default -1
+   */
+  maxValue?: number;
 }
 
 export default class Histogram extends AVisInstance implements IVisInstance {
@@ -70,6 +79,7 @@ export default class Histogram extends AVisInstance implements IVisInstance {
     heightTo: 100,
     duration: 200,
     scale: [1, 1],
+    maxValue: -1,
     rotate: 0,
     sort: 'asc'
   };
@@ -167,6 +177,7 @@ export default class Histogram extends AVisInstance implements IVisInstance {
       return resolveHistMax(hist, this.options.total);
     }).then((histmax) => {
       const hist = this.hist;
+      histmax = (this.options.maxValue >= 0) ? this.options.maxValue : histmax;
       yscale.domain([0, histmax]);
 
       this.histData = createHistData(hist, this.data, this.options.sort);

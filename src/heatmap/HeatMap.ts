@@ -8,8 +8,9 @@ import * as d3 from 'd3';
 import Range from 'phovea_core/src/range/Range';
 import {AVisInstance, IVisInstance, assignVis} from 'phovea_core/src/vis';
 import {rect} from 'phovea_core/src/geom';
-import {mixin} from 'phovea_core/src';
-import {INumericalMatrix, ICategoricalMatrix} from 'phovea_core/src/matrix';
+import {mixin, onDOMNodeRemoved} from 'phovea_core/src';
+import {toSelectOperation} from 'phovea_core/src/idtype';
+import {INumericalMatrix, ICategoricalMatrix, DIM_ROW, DIM_COL} from 'phovea_core/src/matrix/IMatrix';
 import {defaultColor, defaultDomain, toScale, IScale, ICommonHeatMapOptions} from './internal';
 import {IHeatMapRenderer, ESelectOption} from './IHeatMapRenderer';
 import HeatMapDOMRenderer from './HeatMapDOMRenderer';
@@ -201,13 +202,33 @@ export default class HeatMap extends AVisInstance implements IVisInstance {
   }
 
   private renderLabels($node: d3.Selection<any>, mode: ESelectOption, names: Promise<string[]>) {
+    const dim = mode === ESelectOption.ROW ? DIM_ROW : DIM_COL;
     const $group = $node.append('div').attr('class', 'phovea-heatmap-labels ' + (mode === ESelectOption.ROW ? 'row-labels' : 'column-labels'));
     names.then((data) => {
       const $names = $group.selectAll('div').data(data);
-      $names.enter().append('div');
+      $names.enter().append('div').on('click', (d, i) => {
+        this.data.select(dim, [i], toSelectOperation(<MouseEvent>d3.event));
+      });
       $names.text(String);
       $names.exit().remove();
     });
+
+    const l = function (event: any, type: string, selected: Range) {
+      const all = $group.selectAll('div');
+      all.classed('phovea-select-' + type, false);
+      const sub = selected.dim(dim).filter(all[0]);
+      if (sub.length > 0) {
+        d3.selectAll(sub).classed('phovea-select-' + type, true);
+      }
+    };
+    this.data.on('select', l);
+    onDOMNodeRemoved(<Element>$group.node(), function () {
+      this.data.off('select', l);
+    });
+    this.data.selections().then(function (selected) {
+      l(null, 'selected', selected);
+    });
+
     return $group;
   }
 

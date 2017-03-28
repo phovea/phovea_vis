@@ -155,7 +155,7 @@ export class BarPlot extends AVisInstance implements IVisInstance {
           o.max = minmax[1];
         }
       }
-      xscale.domain([o.min, o.max]);
+      xscale.domain([o.min, o.max]).clamp(true);
 
       const $m = $g.selectAll('rect').data(_data);
       let start = null;

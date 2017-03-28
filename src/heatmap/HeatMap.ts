@@ -194,7 +194,7 @@ export default class HeatMap extends AVisInstance implements IVisInstance {
     }
     if (this.options.labels === ESelectOption.CELL || this.options.labels === ESelectOption.COLUMN) {
       this.renderLabels($node, ESelectOption.COLUMN, this.data.cols())
-        .style('height', this.size[1] + 'px');
+        .style('height', this.size[0] + 'px');
     }
 
     return $node;

@@ -125,7 +125,8 @@ export function drawLabels(size:number[], data:INumericalMatrix, labels: d3.Sele
           width: 1,
           height: 1,
           x: (d, j) => j * 1,
-          y: i - 1}).text((d) => d === null ? '.' : '');
+          y: i - 1
+        }).text((d) => d === null ? '.' : '');
     });
   });
 }

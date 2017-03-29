@@ -83,7 +83,11 @@ export default class HeatMap extends AVisInstance implements IVisInstance {
       color: defaultColor(value),
       domain: defaultDomain(value)
     }, options);
-    this.options.scale = [this.options.initialScale, this.options.initialScale];
+
+    // if direct scale not given use initial scale
+    if (!options.scale) {
+      this.options.scale = [this.options.initialScale, this.options.initialScale];
+    }
     if (this.options.scaleTo) {
       const raw = this.data.dim;
       this.options.scale = <[number, number]>this.options.scaleTo.map((d, i) => d / raw[i]);

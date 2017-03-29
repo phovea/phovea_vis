@@ -10,7 +10,7 @@ import {toSelectOperation, defaultSelectionType} from 'phovea_core/src/idtype';
 import {IScale} from './internal';
 import {IHeatMapRenderer, ESelectOption} from './IHeatMapRenderer';
 import {IHeatMapAbleMatrix} from './HeatMap';
-import {INumericalMatrix} from '../../../phovea_core/src/matrix/IMatrix';
+import {INumericalMatrix} from 'phovea_core/src/matrix/IMatrix';
 
 export default class HeatMapDOMRenderer implements IHeatMapRenderer {
   private color: IScale;
@@ -94,7 +94,6 @@ export default class HeatMapDOMRenderer implements IHeatMapRenderer {
         l(null, defaultSelectionType, selected);
       });
     }
-
     return $svg;
   }
 

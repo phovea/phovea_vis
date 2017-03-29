@@ -226,10 +226,10 @@ export default class HeatMap extends AVisInstance implements IVisInstance {
       }
     };
     this.data.on('select', l);
-    onDOMNodeRemoved(<Element>$group.node(), function () {
+    onDOMNodeRemoved(<Element>$group.node(), () => {
       this.data.off('select', l);
     });
-    this.data.selections().then(function (selected) {
+    this.data.selections().then((selected) => {
       l(null, 'selected', selected);
     });
 

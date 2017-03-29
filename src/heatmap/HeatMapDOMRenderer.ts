@@ -10,7 +10,6 @@ import {toSelectOperation, defaultSelectionType} from 'phovea_core/src/idtype';
 import {IScale} from './internal';
 import {IHeatMapRenderer, ESelectOption} from './IHeatMapRenderer';
 import {IHeatMapAbleMatrix} from './HeatMap';
-import {INumericalMatrix} from '../../../phovea_core/src/matrix/IMatrix';
 
 export default class HeatMapDOMRenderer implements IHeatMapRenderer {
   private color: IScale;
@@ -121,9 +120,6 @@ export function drawLabels(size:number[], data:INumericalMatrix, labels: d3.Sele
     const $rows = labels.selectAll('g').data(arr);
     $rows.enter().append('g').each(function (row, i) {
         const $cols = d3.select(this).selectAll('text').data(row);
-        const yPadding = 2;
-        const xPadding = 3;
-        let n = String;
         const $nEnter = $cols.enter().append('text').attr({
           'alignment-baseline': 'central',
           width: 1,

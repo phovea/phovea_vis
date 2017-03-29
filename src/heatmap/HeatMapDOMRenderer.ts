@@ -15,7 +15,6 @@ import {INumericalMatrix} from '../../../phovea_core/src/matrix/IMatrix';
 export default class HeatMapDOMRenderer implements IHeatMapRenderer {
   private color: IScale;
   private labels;
-  private data;
 
   constructor(private readonly selectAble: ESelectOption = ESelectOption.CELL) {
 
@@ -40,7 +39,6 @@ export default class HeatMapDOMRenderer implements IHeatMapRenderer {
   }
 
   build(data: IHeatMapAbleMatrix, $parent: d3.Selection<any>, scale: [number, number], c: IScale, onReady: () => void) {
-    this.data = data;
     const dims = data.dim, that = this;
     const width = dims[1], height = dims[0];
 
@@ -103,10 +101,7 @@ export default class HeatMapDOMRenderer implements IHeatMapRenderer {
   private drawLabels(size, data) {
     drawLabels(size, data, this.labels);
   }
-
-
 }
-
 
 /**
  * Draw labels for given data
@@ -134,9 +129,7 @@ export function drawLabels(size:number[], data:INumericalMatrix, labels: d3.Sele
           width: 1,
           height: 1,
           x: (d, j) => j * 1,
-          y: i - 1
-        }).text((d) => d === null ? '.' : '');
-      });
+          y: i - 1}).text((d) => d === null ? '.' : '');
     });
-
+  });
 }

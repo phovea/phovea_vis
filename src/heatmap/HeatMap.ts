@@ -208,6 +208,20 @@ export default class HeatMap extends AVisInstance implements IVisInstance {
   private renderLabels($node: d3.Selection<any>, mode: ESelectOption, names: Promise<string[]>) {
     const dim = mode === ESelectOption.ROW ? DIM_ROW : DIM_COL;
     const $group = $node.append('div').attr('class', 'phovea-heatmap-labels ' + (mode === ESelectOption.ROW ? 'row-labels' : 'column-labels'));
+
+    const l = function (event: any, type: string, selected: Range) {
+      const all = $group.selectAll('div');
+      all.classed('phovea-select-' + type, false);
+      const dimSelections = selected.dim(dim);
+      if (dimSelections.isAll && !selected.dim(1 - dim).isAll) {
+        return;
+      }
+      const sub = dimSelections.filter(all[0]);
+      if (sub.length > 0) {
+        d3.selectAll(sub).classed('phovea-select-' + type, true);
+      }
+    };
+
     names.then((data) => {
       const $names = $group.selectAll('div').data(data);
       $names.enter().append('div').on('click', (d, i) => {
@@ -215,22 +229,14 @@ export default class HeatMap extends AVisInstance implements IVisInstance {
       });
       $names.text(String);
       $names.exit().remove();
-    });
 
-    const l = function (event: any, type: string, selected: Range) {
-      const all = $group.selectAll('div');
-      all.classed('phovea-select-' + type, false);
-      const sub = selected.dim(dim).filter(all[0]);
-      if (sub.length > 0) {
-        d3.selectAll(sub).classed('phovea-select-' + type, true);
-      }
-    };
+      this.data.selections().then((selected) => {
+        l(null, 'selected', selected);
+      });
+    });
     this.data.on('select', l);
     onDOMNodeRemoved(<Element>$group.node(), () => {
       this.data.off('select', l);
-    });
-    this.data.selections().then((selected) => {
-      l(null, 'selected', selected);
     });
 
     return $group;

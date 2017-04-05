@@ -6,37 +6,53 @@
 import './style.scss';
 import * as d3 from 'd3';
 import {Range} from 'phovea_core/src/range';
-import {AVisInstance, IVisInstance, assignVis} from 'phovea_core/src/vis';
+import {AVisInstance, IVisInstance, assignVis, IVisInstanceOptions} from 'phovea_core/src/vis';
 import {mixin} from 'phovea_core/src';
-import {IVector} from 'phovea_core/src/vector';
+import {INumericalVector} from 'phovea_core/src/vector';
 import {} from 'phovea_core/src/vis';
 import {} from 'phovea_core/src/range';
 import {} from 'phovea_core/src';
 
+export interface IKaplanMaierOptions extends IVisInstanceOptions {
+  /**
+   * @default 300
+   */
+  width?: number;
+  /**
+   * @default 300
+   */
+  height?: number;
+  /**
+   * maxtime in total given
+   * @param died the current one
+   * @default last one
+   */
+  maxTime?(died: number[]): number|Promise<number>;
+}
 
 export class KaplanMeierPlot extends AVisInstance implements IVisInstance {
-  private $node:d3.Selection<any>;
+  private readonly $node: d3.Selection<any>;
 
-  private options = {
+  private readonly options: IKaplanMaierOptions = {
     scale: [1, 1],
     rotate: 0,
     width: 300,
     height: 300,
-    maxTime: (died: number[]) => died[died.length-1]
+    maxTime: (died: number[]) => died[died.length - 1]
   };
 
-  private line = d3.svg.line().interpolate('step');
+  private readonly line = d3.svg.line().interpolate('step');
 
-  constructor(public data:IVector, public parent:Element, options:any = {}) {
+  constructor(public readonly data: INumericalVector, public parent: Element, options: IKaplanMaierOptions = {}) {
     super();
     //var value = (<any>this.data.desc).value;
     mixin(this.options, options);
     this.$node = this.build(d3.select(parent));
     this.$node.datum(data);
-    assignVis(<Element>this.$node.node(), this);
+    assignVis(this.node, this);
   }
 
-  get rawSize():[number, number] {
+  get rawSize(): [number, number] {
     return [this.options.width, this.options.height];
   }
 
@@ -44,39 +60,36 @@ export class KaplanMeierPlot extends AVisInstance implements IVisInstance {
     return <Element>this.$node.node();
   }
 
-  locateImpl(range:Range) {
+  locateImpl(range: Range) {
     //TODO
     return Promise.resolve(null);
   }
 
-  transform(scale?:number[], rotate:number = 0) {
-    var bak = {
+  transform(scale?: [number, number], rotate: number = 0) {
+    const bak = {
       scale: this.options.scale || [1, 1],
       rotate: this.options.rotate || 0
     };
     if (arguments.length === 0) {
       return bak;
     }
-    var width = this.options.width, height = this.options.height;
+    const width = this.options.width, height = this.options.height;
     this.$node.attr({
       width: width * scale[0],
       height: height * scale[1]
     }).style('transform', 'rotate(' + rotate + 'deg)');
     this.$node.select('g').attr('transform', 'scale(' + scale[0] + ',' + scale[1] + ')');
-    var new_ = {
-      scale: scale,
-      rotate: rotate
-    };
-    this.fire('transform', new_, bak);
+    const act = {scale, rotate};
+    this.fire('transform', act, bak);
     this.options.scale = scale;
     this.options.rotate = rotate;
-    return new_;
+    return act;
   }
 
-  private build($parent:d3.Selection<any>) {
+  private build($parent: d3.Selection<any>) {
     const width = this.options.width,
       height = this.options.height,
-      scale = this.options.scale || [1,1];
+      scale = this.options.scale || [1, 1];
 
     const $svg = $parent.append('svg').attr({
       width: width * scale[0],
@@ -101,21 +114,21 @@ export class KaplanMeierPlot extends AVisInstance implements IVisInstance {
 
       yscale.domain([0, arr.length]);
 
-      Promise.resolve(d3.functor(this.options.maxTime)(died)).then((maxAxisTime) => {
+      Promise.resolve(this.options.maxTime(died)).then((maxAxisTime) => {
         xscale.domain([0, maxAxisTime]);
 
         //0 ... 100%
-        var points = [[0, 0]],
-          prev_i = 0;
+        const points = [[0, 0]];
+        let prevI = 0;
         for (let i = 1; i < died.length; ++i) {
-          while(died[i] === died[i-1] && i < died.length) {
+          while (died[i] === died[i - 1] && i < died.length) {
             ++i;
           }
-          points.push([died[prev_i], prev_i + 1]);
-          prev_i = i;
+          points.push([died[prevI], prevI + 1]);
+          prevI = i;
         }
         if (died.length > 0) {
-          points.push([died[prev_i], prev_i + 1]);
+          points.push([died[prevI], prevI + 1]);
         }
         points.push([maxAxisTime, died.length]);
         $g.append('path').datum(points).attr('d', this.line);
@@ -126,6 +139,6 @@ export class KaplanMeierPlot extends AVisInstance implements IVisInstance {
   }
 }
 
-export function create(data:IVector, parent:Element, options) {
+export function create(data: INumericalVector, parent: Element, options?: IKaplanMaierOptions) {
   return new KaplanMeierPlot(data, parent, options);
 }

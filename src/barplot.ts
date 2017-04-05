@@ -5,13 +5,39 @@
 import './style.scss';
 import * as d3 from 'd3';
 import {onDOMNodeRemoved, mixin} from 'phovea_core/src';
-import {AVisInstance, IVisInstance, assignVis} from 'phovea_core/src/vis';
+import {AVisInstance, IVisInstance, assignVis, IVisInstanceOptions} from 'phovea_core/src/vis';
 import {rect} from 'phovea_core/src/geom';
-import {IVector} from 'phovea_core/src/vector';
+import {INumericalVector} from 'phovea_core/src/vector';
 import {toSelectOperation} from 'phovea_core/src/idtype';
+import {Range} from 'phovea_core/src/range';
+
+
+export interface IBarPlotOptions extends IVisInstanceOptions {
+  /**
+   * @default ''
+   */
+  cssClass?: string;
+  /**
+   * @default 100
+   */
+  width?: number;
+  /**
+   * @default 10
+   */
+  heighti?: number;
+
+  /**
+   * @default 0
+   */
+  min?: number;
+  /**
+   * @default NaN
+   */
+  max?: number;
+}
 
 export class BarPlot extends AVisInstance implements IVisInstance {
-  private options = {
+  private readonly options: IBarPlotOptions = {
     cssClass: '',
     width: 100,
     heighti: 10,
@@ -21,21 +47,21 @@ export class BarPlot extends AVisInstance implements IVisInstance {
     rotate: 0
   };
 
-  private $node:d3.Selection<BarPlot>;
+  private readonly $node: d3.Selection<BarPlot>;
 
-  private xscale:d3.scale.Linear<number, number>;
-  private yscale:d3.scale.Linear<number, number>;
+  private xscale: d3.scale.Linear<number, number>;
+  private yscale: d3.scale.Linear<number, number>;
 
-  constructor(public data:IVector, parent:Element, options:any = {}) {
+  constructor(public readonly data: INumericalVector, parent: Element, options: IBarPlotOptions = {}) {
     super();
     mixin(this.options, options);
 
     this.$node = this.build(d3.select(parent));
     this.$node.datum(this);
-    assignVis(<Element>this.$node.node(), this);
+    assignVis(this.node, this);
   }
 
-  get rawSize():[number, number] {
+  get rawSize(): [number, number] {
     return [this.options.width, this.data.dim[0] * this.options.heighti];
   }
 
@@ -43,7 +69,7 @@ export class BarPlot extends AVisInstance implements IVisInstance {
     return <Element>this.$node.node();
   }
 
-  private build($parent:d3.Selection<any>) {
+  private build($parent: d3.Selection<any>) {
     const o = this.options,
       size = this.size,
       data = this.data;
@@ -58,15 +84,15 @@ export class BarPlot extends AVisInstance implements IVisInstance {
     const yscale = this.yscale = d3.scale.linear().range([0, 100]);
 
     const onClick = function (d, i) {
-      data.select(0, [i], toSelectOperation(d3.event));
+      data.select(0, [i], toSelectOperation(<MouseEvent>d3.event));
     };
 
-    const l = function (event, type, selected) {
+    const l = function (event, type: string, selected: Range) {
       $svg.selectAll('rect').classed('phovea-select-' + type, false);
       if (selected.isNone) {
         return;
       }
-      var dim0 = selected.dim(0);
+      const dim0 = selected.dim(0);
       if (selected.isAll) {
         $svg.selectAll('rect').classed('phovea-select-' + type, true);
       } else {
@@ -79,7 +105,7 @@ export class BarPlot extends AVisInstance implements IVisInstance {
     data.data().then((_data) => {
       yscale.domain([0, data.length]);
       if (isNaN(o.min) || isNaN(o.max)) {
-        var minmax = d3.extent(_data);
+        const minmax = d3.extent(_data);
         if (isNaN(o.min)) {
           o.min = minmax[0];
         }
@@ -89,7 +115,7 @@ export class BarPlot extends AVisInstance implements IVisInstance {
       }
       xscale.domain([o.min, o.max]);
 
-      var $m = $svg.selectAll('rect').data(_data);
+      const $m = $svg.selectAll('rect').data(_data);
       $m.enter().append('rect')
         .on('click', onClick);
       $m.attr({
@@ -104,22 +130,23 @@ export class BarPlot extends AVisInstance implements IVisInstance {
     return $svg;
   }
 
-  locateImpl(range) {
+  locateImpl(range: Range) {
     const o = this.options;
-    var ex_i = d3.extent(range.dim(0).iter().asList());
+    const exI = d3.extent(range.dim(0).iter().asList());
 
     return this.data.data(range).then((data) => {
-      var ex_v = d3.extent(data);
+      const exV = d3.extent(data);
       return rect(
-        this.xscale(ex_v[0]) / 100.0 * o.width,
-        ex_i[0] * o.heighti,
-        this.xscale(ex_v[1]) / 100.0 * o.width,
-        (ex_i[1] + 1) * o.heighti
+        this.xscale(exV[0]) / 100.0 * o.width,
+        exI[0] * o.heighti,
+        this.xscale(exV[1]) / 100.0 * o.width,
+        (exI[1] + 1) * o.heighti
       );
     });
   }
 }
+export default BarPlot;
 
-export function create(data:IVector, parent:Element, options) {
+export function create(data: INumericalVector, parent: Element, options?: IBarPlotOptions) {
   return new BarPlot(data, parent, options);
 }

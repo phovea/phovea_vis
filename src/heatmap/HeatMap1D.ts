@@ -159,7 +159,7 @@ export default class HeatMap1D extends AVisInstance implements IVisInstance {
 
           start = {d, i, applied: false};
 
-          topBottom = this.updateTopBotom(i, topBottom);
+          topBottom = this.updateTopBottom(i, topBottom);
 
           if (toSelectOperation(<MouseEvent>d3.event) === SelectOperation.SET) {
             fire(List.EVENT_BRUSH_CLEAR, this.data);
@@ -172,7 +172,7 @@ export default class HeatMap1D extends AVisInstance implements IVisInstance {
           }
 
           onClick(d, i); // select current entered element
-          topBottom = this.updateTopBotom(i, topBottom);
+          topBottom = this.updateTopBottom(i, topBottom);
 
           // select first element, when started brushing
           if (start.applied === false) {
@@ -190,7 +190,7 @@ export default class HeatMap1D extends AVisInstance implements IVisInstance {
             onClick(start.d, start.i);
           }
 
-          topBottom = this.updateTopBotom(i, topBottom);
+          topBottom = this.updateTopBottom(i, topBottom);
 
           fire(List.EVENT_BRUSHING, topBottom, this.data);
 
@@ -221,7 +221,7 @@ export default class HeatMap1D extends AVisInstance implements IVisInstance {
     return $svg;
   }
 
-  private updateTopBotom(i: number, topBottom: number[]) {
+  private updateTopBottom(i: number, topBottom: number[]) {
     if (topBottom[0] > i) {
       topBottom[0] = i;
     }

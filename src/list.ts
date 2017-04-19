@@ -132,12 +132,13 @@ export class List extends AVisInstance implements IVisInstance {
         .attr('title', (d) => d);
 
         r.on('mousedown', (d, i) => {
+          fire(List.EVENT_BRUSH_CLEAR, this.data);
           this.data.clear();
           this.updateTopBottom(i, topBottom[1], topBottom);
         })
         .on('mouseenter', (d, i) => {
           if(topBottom[0] !== -1) {
-            this.data.clear();
+            //this.data.clear();
             this.updateTopBottom(topBottom[0], i, topBottom);
             console.log('topbottom in enter: ' + topBottom[0] + ' end: ' + topBottom[1]);
             this.selectTopBottom(topBottom, onClick);
@@ -146,8 +147,9 @@ export class List extends AVisInstance implements IVisInstance {
         .on('mouseup', (d, i) => {
           if(topBottom[0] !== -1) {
             this.updateTopBottom(topBottom[0], i, topBottom);
-            console.log('topbottom in up: ' + topBottom[0] + ' end: ' + topBottom[1]);
             this.selectTopBottom(topBottom, onClick);
+            console.log('topbottom in up: ' + topBottom[0] + ' end: ' + topBottom[1]);
+            fire(List.EVENT_BRUSHING, topBottom, this.data);
             this.updateTopBottom(-1, -1, topBottom);
           }
         });
@@ -160,15 +162,13 @@ export class List extends AVisInstance implements IVisInstance {
   }
 
   private selectTopBottom(topBottom: number[], onClick) {
-    let start, end;
-    if(topBottom[0] < topBottom[1]) {
-      start = topBottom[0];
-      end = topBottom[1];
-     } else  {
-      end = topBottom[0];
-      start = topBottom[1];
+    let tmp;
+    if(topBottom[0] > topBottom[1]) {
+      tmp = topBottom[0];
+      topBottom[0] = topBottom[1];
+      topBottom[1] = tmp;
     }
-    for(let i = start; i <= end; i++) {
+    for(let i = topBottom[0]; i <= topBottom[1]; i++) {
       onClick('', i);
     }
   }

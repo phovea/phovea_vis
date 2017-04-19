@@ -126,7 +126,7 @@ export class List extends AVisInstance implements IVisInstance {
 
     const onClick = selectionUtil(this.data, $list, 'div', SelectOperation.ADD);
     this.data.data().then((arr: any[]) => {
-      const topBottom = [Number.NEGATIVE_INFINITY, Number.POSITIVE_INFINITY];
+      const topBottom = [-1, -1];
       const $rows = $list.selectAll('div').data(arr);
       const r = $rows.enter().append('div')
         .attr('title', (d) => d);
@@ -136,7 +136,7 @@ export class List extends AVisInstance implements IVisInstance {
           this.updateTopBottom(i, topBottom[1], topBottom);
         })
         .on('mouseenter', (d, i) => {
-          if(topBottom[0] !== Number.NEGATIVE_INFINITY) {
+          if(topBottom[0] !== -1) {
             this.data.clear();
             this.updateTopBottom(topBottom[0], i, topBottom);
             console.log('topbottom in enter: ' + topBottom[0] + ' end: ' + topBottom[1]);
@@ -144,11 +144,11 @@ export class List extends AVisInstance implements IVisInstance {
           }
         })
         .on('mouseup', (d, i) => {
-          if(topBottom[0] !== Number.NEGATIVE_INFINITY) {
+          if(topBottom[0] !== -1) {
             this.updateTopBottom(topBottom[0], i, topBottom);
             console.log('topbottom in up: ' + topBottom[0] + ' end: ' + topBottom[1]);
             this.selectTopBottom(topBottom, onClick);
-            this.updateTopBottom(Number.NEGATIVE_INFINITY, Number.POSITIVE_INFINITY, topBottom);
+            this.updateTopBottom(-1, -1, topBottom);
           }
         });
       const formatter = this.options.format ? format(this.options.format) : String;

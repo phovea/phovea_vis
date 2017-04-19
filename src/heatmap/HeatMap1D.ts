@@ -196,7 +196,7 @@ export default class HeatMap1D extends AVisInstance implements IVisInstance {
     return $svg;
   }
 
-    private selectTopBottom(topBottom: number[], onClick) {
+  private selectTopBottom(topBottom: number[], onClick) {
     let start, end;
     if(topBottom[0] < topBottom[1]) {
       start = topBottom[0];

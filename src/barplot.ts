@@ -158,53 +158,28 @@ export class BarPlot extends AVisInstance implements IVisInstance {
       xscale.domain([o.min, o.max]).clamp(true);
 
       const $m = $g.selectAll('rect').data(_data);
-      let start = null;
       const binSize = width / _data.length;
-      let topBottom = [Number.POSITIVE_INFINITY, Number.NEGATIVE_INFINITY];
+      const topBottom = [-1, -1];
       $m.enter().append('rect')
         .on('mousedown', (d, i) => {
-          if (start !== null) {
-            return;
-          }
-
-          topBottom = this.updateTopBotom(i, topBottom);
-
-          start = {d, i, applied: false};
-          if (toSelectOperation(<MouseEvent>d3.event) === SelectOperation.SET) {
-            fire(List.EVENT_BRUSH_CLEAR, this.data);
-            data.clear();
-          }
+          this.data.clear();
+          this.updateTopBottom(i, topBottom[1], topBottom);
         })
         .on('mouseenter', (d, i) => {
-          if (start === null) {
-            return;
-          }
-
-          onClick(d, i, SelectOperation.ADD); // select current entered element
-
-          topBottom = this.updateTopBotom(i, topBottom);
-
-          // select first element, when started brushing
-          if (start.applied === false) {
-            onClick(start.d, start.i, SelectOperation.ADD);
-            start.applied = true;
+          if(topBottom[0] !== -1) {
+            this.data.clear();
+            this.updateTopBottom(topBottom[0], i, topBottom);
+            console.log('topbottom in enter: ' + topBottom[0] + ' end: ' + topBottom[1]);
+            this.selectTopBottom(topBottom, onClick);
           }
         })
         .on('mouseup', (d, i) => {
-          if (start === null) {
-            return;
+          if(topBottom[0] !== -1) {
+            this.updateTopBottom(topBottom[0], i, topBottom);
+            console.log('topbottom in up: ' + topBottom[0] + ' end: ' + topBottom[1]);
+            this.selectTopBottom(topBottom, onClick);
+            this.updateTopBottom(-1, -1, topBottom);
           }
-
-          // select as click
-          if (start.applied === false) {
-            onClick(start.d, start.i, SelectOperation.ADD);
-          }
-
-          topBottom = this.updateTopBotom(i, topBottom);
-
-          fire(List.EVENT_BRUSHING, topBottom, this.data);
-
-          start = null;
         })
         .append('title').text(String);
       if (this.options.orientation === EOrientation.Vertical) {
@@ -236,14 +211,22 @@ export class BarPlot extends AVisInstance implements IVisInstance {
     return $svg;
   }
 
-  private updateTopBotom(i: number, topBottom: number[]) {
-    if (topBottom[0] > i) {
-      topBottom[0] = i;
+  private selectTopBottom(topBottom: number[], onClick) {
+    let start, end;
+    if(topBottom[0] < topBottom[1]) {
+      start = topBottom[0];
+      end = topBottom[1];
+     } else  {
+      end = topBottom[0];
+      start = topBottom[1];
     }
-    if (topBottom[1] < i) {
-      topBottom[1] = i;
+    for(let i = start; i <= end; i++) {
+      onClick('', i);
     }
-    return topBottom;
+  }
+  private updateTopBottom(top: number, bottom: number, topBottom: number[]) {
+    topBottom[0] = top;
+    topBottom[1] = bottom;
   }
 
   private drawLabels() {

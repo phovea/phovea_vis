@@ -127,12 +127,12 @@ export class List extends AVisInstance implements IVisInstance {
     const onClick = selectionUtil(this.data, $list, 'div', SelectOperation.ADD);
     this.data.data().then((arr: any[]) => {
       let start = null;
-      let topBottom = [Number.POSITIVE_INFINITY, Number.NEGATIVE_INFINITY];
+      let topBottom = [Number.NEGATIVE_INFINITY, Number.POSITIVE_INFINITY];
       const $rows = $list.selectAll('div').data(arr);
       $rows.enter().append('div')
         .attr('title', (d) => d)
         .on('mousedown', (d, i) => {
-          if (start !== null) {
+         /* if (start !== null) {
             return;
           }
 
@@ -143,10 +143,13 @@ export class List extends AVisInstance implements IVisInstance {
           if (toSelectOperation(<MouseEvent>d3.event) === SelectOperation.SET) {
             fire(List.EVENT_BRUSH_CLEAR, this.data);
             this.data.clear();
-          }
+          }*/
+          //fire(List.EVENT_BRUSH_CLEAR, this.data);
+          //this.data.clear();
+          topBottom = this.updateTopBottom(i, topBottom[1], topBottom);
         })
         .on('mouseenter', (d, i) => {
-          if (start === null) {
+          /*if (start === null) {
             return;
           }
 
@@ -158,10 +161,24 @@ export class List extends AVisInstance implements IVisInstance {
           if (start.applied === false) {
             onClick(start.d, start.i);
             start.applied = true;
-          }
+          }*/
+          //myEnd = i;
+          /*
+          // clear selection and select everything from start to end
+          if(myStart != null) {
+            onClick(d, i);
+          }*/
         })
         .on('mouseup', (d, i) => {
-          if (start === null) {
+          if(topBottom[0] !== Number.NEGATIVE_INFINITY) {
+            topBottom = this.updateTopBottom(topBottom[0], i, topBottom);
+            console.log('topbottom: ' + topBottom[0] + ' end: ' + topBottom[1]);
+            topBottom = [Number.NEGATIVE_INFINITY, Number.POSITIVE_INFINITY];
+            //fire(List.EVENT_BRUSHING, topBottom, this.data);
+            //onClick(3, 5);
+          }
+          //fire(List.EVENT_BRUSHING, topBottom, this.data);
+          /*if (start === null) {
             return;
           }
 
@@ -174,7 +191,7 @@ export class List extends AVisInstance implements IVisInstance {
 
           fire(List.EVENT_BRUSHING, topBottom, this.data);
 
-          start = null;
+          start = null;*/
         });
       const formatter = this.options.format ? format(this.options.format) : String;
       $rows.text(formatter);
@@ -184,13 +201,14 @@ export class List extends AVisInstance implements IVisInstance {
     return $list;
   }
 
-  private updateTopBotom(i: number, topBottom: number[]) {
-    if (topBottom[0] > i) {
-      topBottom[0] = i;
+  private updateTopBottom(top: number, bottom: number, topBottom: number[]) {
+    if(top > bottom) {
+      const tmp = top;
+      top = bottom;
+      bottom = tmp;
     }
-    if (topBottom[1] < i) {
-      topBottom[1] = i;
-    }
+    topBottom[0] = top;
+    topBottom[1] = bottom;
     return topBottom;
   }
 
@@ -201,3 +219,4 @@ export default List;
 export function create(data: IAnyVector, parent: HTMLElement, options: IListOptions) {
   return new List(data, parent, options);
 }
+

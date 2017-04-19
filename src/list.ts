@@ -126,72 +126,30 @@ export class List extends AVisInstance implements IVisInstance {
 
     const onClick = selectionUtil(this.data, $list, 'div', SelectOperation.ADD);
     this.data.data().then((arr: any[]) => {
-      let start = null;
-      let topBottom = [Number.NEGATIVE_INFINITY, Number.POSITIVE_INFINITY];
+      const topBottom = [Number.NEGATIVE_INFINITY, Number.POSITIVE_INFINITY];
       const $rows = $list.selectAll('div').data(arr);
-      $rows.enter().append('div')
-        .attr('title', (d) => d)
-        .on('mousedown', (d, i) => {
-         /* if (start !== null) {
-            return;
-          }
+      const r = $rows.enter().append('div')
+        .attr('title', (d) => d);
 
-          topBottom = this.updateTopBotom(i, topBottom);
-
-          start = {d, i, applied: false};
-
-          if (toSelectOperation(<MouseEvent>d3.event) === SelectOperation.SET) {
-            fire(List.EVENT_BRUSH_CLEAR, this.data);
-            this.data.clear();
-          }*/
-          //fire(List.EVENT_BRUSH_CLEAR, this.data);
-          //this.data.clear();
-          topBottom = this.updateTopBottom(i, topBottom[1], topBottom);
+        r.on('mousedown', (d, i) => {
+          this.data.clear();
+          this.updateTopBottom(i, topBottom[1], topBottom);
         })
         .on('mouseenter', (d, i) => {
-          /*if (start === null) {
-            return;
+          if(topBottom[0] !== Number.NEGATIVE_INFINITY) {
+            this.data.clear();
+            this.updateTopBottom(topBottom[0], i, topBottom);
+            console.log('topbottom in enter: ' + topBottom[0] + ' end: ' + topBottom[1]);
+            this.selectTopBottom(topBottom, onClick);
           }
-
-          onClick(d, i); // select current entered element
-
-          topBottom = this.updateTopBotom(i, topBottom);
-
-          // select first element, when started brushing
-          if (start.applied === false) {
-            onClick(start.d, start.i);
-            start.applied = true;
-          }*/
-          //myEnd = i;
-          /*
-          // clear selection and select everything from start to end
-          if(myStart != null) {
-            onClick(d, i);
-          }*/
         })
         .on('mouseup', (d, i) => {
           if(topBottom[0] !== Number.NEGATIVE_INFINITY) {
-            topBottom = this.updateTopBottom(topBottom[0], i, topBottom);
-            console.log('topbottom: ' + topBottom[0] + ' end: ' + topBottom[1]);
-            topBottom = [Number.NEGATIVE_INFINITY, Number.POSITIVE_INFINITY];
-            //fire(List.EVENT_BRUSHING, topBottom, this.data);
-            //onClick(3, 5);
+            this.updateTopBottom(topBottom[0], i, topBottom);
+            console.log('topbottom in up: ' + topBottom[0] + ' end: ' + topBottom[1]);
+            this.selectTopBottom(topBottom, onClick);
+            this.updateTopBottom(Number.NEGATIVE_INFINITY, Number.POSITIVE_INFINITY, topBottom);
           }
-          //fire(List.EVENT_BRUSHING, topBottom, this.data);
-          /*if (start === null) {
-            return;
-          }
-
-          // select as click
-          if (start.applied === false) {
-            onClick(start.d, start.i);
-
-          }
-          topBottom = this.updateTopBotom(i, topBottom);
-
-          fire(List.EVENT_BRUSHING, topBottom, this.data);
-
-          start = null;*/
         });
       const formatter = this.options.format ? format(this.options.format) : String;
       $rows.text(formatter);
@@ -201,15 +159,22 @@ export class List extends AVisInstance implements IVisInstance {
     return $list;
   }
 
-  private updateTopBottom(top: number, bottom: number, topBottom: number[]) {
-    if(top > bottom) {
-      const tmp = top;
-      top = bottom;
-      bottom = tmp;
+  private selectTopBottom(topBottom: number[], onClick) {
+    let start, end;
+    if(topBottom[0] < topBottom[1]) {
+      start = topBottom[0];
+      end = topBottom[1];
+     } else  {
+      end = topBottom[0];
+      start = topBottom[1];
     }
+    for(let i = start; i <= end; i++) {
+      onClick('', i);
+    }
+  }
+  private updateTopBottom(top: number, bottom: number, topBottom: number[]) {
     topBottom[0] = top;
     topBottom[1] = bottom;
-    return topBottom;
   }
 
 }

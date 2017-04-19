@@ -146,55 +146,30 @@ export default class HeatMap1D extends AVisInstance implements IVisInstance {
     const c = this.colorer;
     const t = <Promise<string|number[]>>this.data.data();
     t.then((arr: any[]) => {
-      let start = null;
-      let topBottom = [Number.POSITIVE_INFINITY, Number.NEGATIVE_INFINITY];
+      const topBottom = [-1, -1];
       const binSize = width / arr.length;
       const $rows = $g.selectAll('rect').data(arr);
       const onClick = selectionUtil(this.data, $g, 'rect', SelectOperation.ADD);
-      $rows.enter().append('rect')
-        .on('mousedown', (d, i) => {
-          if (start !== null) {
-            return;
-          }
-
-          start = {d, i, applied: false};
-
-          topBottom = this.updateTopBottom(i, topBottom);
-
-          if (toSelectOperation(<MouseEvent>d3.event) === SelectOperation.SET) {
-            fire(List.EVENT_BRUSH_CLEAR, this.data);
-            this.data.clear();
-          }
+      const r = $rows.enter().append('rect');
+        r.on('mousedown', (d, i) => {
+          this.data.clear();
+          this.updateTopBottom(i, topBottom[1], topBottom);
         })
         .on('mouseenter', (d, i) => {
-          if (start === null) {
-            return;
-          }
-
-          onClick(d, i); // select current entered element
-          topBottom = this.updateTopBottom(i, topBottom);
-
-          // select first element, when started brushing
-          if (start.applied === false) {
-            onClick(start.d, start.i);
-            start.applied = true;
+          if(topBottom[0] !== -1) {
+            this.data.clear();
+            this.updateTopBottom(topBottom[0], i, topBottom);
+            console.log('topbottom in enter: ' + topBottom[0] + ' end: ' + topBottom[1]);
+            this.selectTopBottom(topBottom, onClick);
           }
         })
         .on('mouseup', (d, i) => {
-          if (start === null) {
-            return;
+          if(topBottom[0] !== -1) {
+            this.updateTopBottom(topBottom[0], i, topBottom);
+            console.log('topbottom in up: ' + topBottom[0] + ' end: ' + topBottom[1]);
+            this.selectTopBottom(topBottom, onClick);
+            this.updateTopBottom(-1, -1, topBottom);
           }
-
-          // select as click
-          if (start.applied === false) {
-            onClick(start.d, start.i);
-          }
-
-          topBottom = this.updateTopBottom(i, topBottom);
-
-          fire(List.EVENT_BRUSHING, topBottom, this.data);
-
-          start = null;
         })
         .append('title').text(String);
       $rows.attr({
@@ -221,14 +196,22 @@ export default class HeatMap1D extends AVisInstance implements IVisInstance {
     return $svg;
   }
 
-  private updateTopBottom(i: number, topBottom: number[]) {
-    if (topBottom[0] > i) {
-      topBottom[0] = i;
+    private selectTopBottom(topBottom: number[], onClick) {
+    let start, end;
+    if(topBottom[0] < topBottom[1]) {
+      start = topBottom[0];
+      end = topBottom[1];
+     } else  {
+      end = topBottom[0];
+      start = topBottom[1];
     }
-    if (topBottom[1] < i) {
-      topBottom[1] = i;
+    for(let i = start; i <= end; i++) {
+      onClick('', i);
     }
-    return topBottom;
+  }
+  private updateTopBottom(top: number, bottom: number, topBottom: number[]) {
+    topBottom[0] = top;
+    topBottom[1] = bottom;
   }
 
   private drawLabels() {

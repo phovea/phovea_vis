@@ -37,7 +37,7 @@ export declare type IHeatMapAbleVector = INumericalVector|ICategoricalVector;
 
 export default class HeatMap1D extends AVisInstance implements IVisInstance {
 
-  private readonly $node: d3.Selection<any>;
+  private $node: d3.Selection<any>;
   private labels: d3.Selection<any>;
   private readonly colorer: IScale;
 
@@ -58,9 +58,12 @@ export default class HeatMap1D extends AVisInstance implements IVisInstance {
     }, options);
     this.options.scale = [1, (this.options.heightTo / (data.dim[0])) || 10];
     this.colorer = toScale(value).domain(this.options.domain).range(this.options.color);
-    this.$node = this.build(d3.select(parent));
-    this.$node.datum(data);
-    assignVis(this.node, this);
+    const pr = this.build(d3.select(parent));
+    pr.then((node) => {
+      this.$node = node;
+      this.$node.datum(data);
+      assignVis(this.node, this);
+    });
   }
 
   get rawSize(): [number, number] {
@@ -134,8 +137,10 @@ export default class HeatMap1D extends AVisInstance implements IVisInstance {
     this.$node.selectAll('rect').attr('fill', (d) => c(d));
   }
 
-  private build($parent: d3.Selection<any>) {
+  private async build($parent: d3.Selection<any>) {
     const width = this.options.width, height = this.rawSize[1];
+    const selection = new Selection();
+
     const $svg = $parent.append('svg').attr({
       width,
       height: height * this.options.scale[1],
@@ -151,32 +156,35 @@ export default class HeatMap1D extends AVisInstance implements IVisInstance {
       const $rows = $g.selectAll('rect').data(arr);
       const onClick = selectionUtil(this.data, $g, 'rect', SelectOperation.ADD);
       const r = $rows.enter().append('rect');
+      this.data.selections().then((sel) => {
         r.on('mousedown', (d, i) => {
-          this.data.clear();
-          fire(List.EVENT_BRUSH_CLEAR, this.data);
-          this.updateTopBottom(-1, -1, topBottom);
-          this.updateTopBottom(i, topBottom[1], topBottom);
-          console.log('topbottom in down: ' + topBottom[0] + ' end: ' + topBottom[1]);
+          if (toSelectOperation(<MouseEvent>d3.event) === SelectOperation.SET) {
+            this.data.clear();
+            fire(List.EVENT_BRUSH_CLEAR, this.data);
+            selection.createArea();
+            selection.updateLatestArea(i, null);
+          }
         })
         .on('mouseenter', (d, i) => {
-          if(topBottom[0] !== -1) {
+          if(selection.selectionStarted()) {
             this.data.clear();
-            this.updateTopBottom(topBottom[0], i, topBottom);
-            console.log('topbottom in enter: ' + topBottom[0] + ' end: ' + topBottom[1]);
-            this.selectTopBottom(topBottom, onClick);
+            selection.updateLatestArea(null, i);
+            selection.selectLatestArea(onClick);
           }
         })
         .on('mouseup', (d, i) => {
-          if(topBottom[0] !== -1) {
-            this.updateTopBottom(topBottom[0], i, topBottom);
-            this.selectTopBottom(topBottom, onClick);
-            console.log('topbottom in up: ' + topBottom[0] + ' end: ' + topBottom[1]);
-            topBottom.sort((a, b) => a - b);
-            fire(List.EVENT_BRUSHING, topBottom, this.data);
-            //this.updateTopBottom(-1, -1, topBottom);
+          if(selection.selectionStarted()) {
+            selection.updateLatestArea(null, i);
+            selection.selectLatestArea(onClick);
+            const area = selection.latestArea().toArray();
+            area.sort((a, b) => a - b);
+            fire(List.EVENT_BRUSHING, area, this.data);
+            //remove old areas
+            selection.deleteOldAreas();
           }
         })
         .append('title').text(String);
+      });
       $rows.attr({
         fill: (d) => c(d)
       });
@@ -207,16 +215,67 @@ export default class HeatMap1D extends AVisInstance implements IVisInstance {
       onClick('', i);
     }
   }
-  private updateTopBottom(top: number, bottom: number, topBottom: number[]) {
-    topBottom[0] = top;
-    topBottom[1] = bottom;
-  }
-
   private drawLabels() {
     drawLabels(this.size, <INumericalVector>this.data, this.labels);
   }
 }
 
+class Selection {
+  selectionAreas : SelectionArea[];
+  constructor() {
+    this.selectionAreas = [];
+  }
+  initialize(x) {
+    console.log(x);
+    }
+  createArea() {
+    const s = new SelectionArea();
+    this.selectionAreas.push(s);
+    this.resetLatestArea();
+  }
+  resetLatestArea() {
+    this.updateLatestArea(-1, -1);
+  }
+  latestArea() {
+    if(this.selectionAreas.length === 0)
+      return null;
+    return this.selectionAreas[this.selectionAreas.length - 1];
+  }
+  updateLatestArea(start: number, end : number) {
+    if(this.selectionAreas.length === 0) {
+      return;
+      }
+    const lastArea = this.latestArea();
+    if(start != null) {
+      lastArea.start = start;
+    }
+    if(end != null) {
+      lastArea.end = end;
+    }
+    console.log('Area has new value: ' + lastArea.start + ' ' + lastArea.end);
+  }
+  selectLatestArea(onClick) {
+    const copy = this.latestArea().toArray();
+    copy.sort((a, b) => a - b);
+    for(let i = copy[0]; i <= copy[1]; i++) {
+      onClick('', i);
+    }
+  }
+  deleteOldAreas() {
+    this.selectionAreas = this.selectionAreas.slice(-1);
+  }
+  selectionStarted() {
+    return this.selectionAreas.length !== 0 && this.latestArea().start !== -1;
+  }
+}
+
+class SelectionArea {
+  start: number;
+  end: number;
+  toArray() {
+    return [this.start, this.end];
+  }
+}
 
 export function create(data: IHeatMapAbleVector, parent: HTMLElement, options?: IHeatMap1DOptions): AVisInstance {
   return new HeatMap1D(data, parent, options);

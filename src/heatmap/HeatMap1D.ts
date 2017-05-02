@@ -183,6 +183,8 @@ export default class HeatMap1D extends AVisInstance implements IVisInstance {
         })
         .append('title').text(String);
         $g.on('mouseleave', (d, i) => {
+          this.selectTopBottom(topBottom, onClickRemove);
+          this.updateTopBottom(-1, -1, topBottom);
         //  console.log('mouseleave');
         //  this.updateTopBottom(-1, -1, topBottom);
         //  this.data.clear();
@@ -231,12 +233,14 @@ export default class HeatMap1D extends AVisInstance implements IVisInstance {
     // when turning mouse from down to up
     if(topBottom[0] < topBottom[1]) {
       for (let j = removeIndices[1] + 1; j <= removeIndices[0]; j++) {
+        console.log("removing element ", j);
         onClickRemove('', j);
       }
     }
     // when turning mouse from up to down
     else if(topBottom[0] > topBottom[1]) {
       for (let j = removeIndices[0]; j < removeIndices[1]; j++) {
+        console.log("removing element ", j);
         onClickRemove('', j);
       }
     }

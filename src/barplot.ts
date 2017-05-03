@@ -11,8 +11,6 @@ import {INumericalVector} from 'phovea_core/src/vector';
 import {toSelectOperation} from 'phovea_core/src/idtype';
 import {Range} from 'phovea_core/src/range';
 import {SelectOperation} from 'phovea_core/src/idtype/IIDType';
-import {fire} from 'phovea_core/src/event';
-import {List} from './list';
 import {EOrientation} from './heatmap/internal';
 import {selectionUtil} from 'phovea_d3/src/d3util';
 import {MouseSelectionHelper} from './selection/mouseselectionhelper'

@@ -13,8 +13,8 @@ import {rect} from 'phovea_core/src/geom';
 import {Range} from 'phovea_core/src/range';
 import {fire} from 'phovea_core/src/event';
 import {SelectOperation} from 'phovea_core/src/idtype/IIDType';
-import {toSelectOperation} from 'phovea_core/src/idtype';
 import {EOrientation} from './heatmap/internal';
+import {MouseSelectionHelper} from './selection/mouseselectionhelper'
 
 export interface IListOptions extends IVisInstanceOptions {
   /**
@@ -123,36 +123,17 @@ export class List extends AVisInstance implements IVisInstance {
       $list.style('height', `${this.options.heightTo}px`);
     }
 
+    const onClickAdd = selectionUtil(this.data, $list, 'div', SelectOperation.ADD);
+    const onClickRemove = selectionUtil(this.data, $list, 'div', SelectOperation.REMOVE);
 
-    const onClick = selectionUtil(this.data, $list, 'div', SelectOperation.ADD);
     this.data.data().then((arr: any[]) => {
       const topBottom = [-1, -1];
       const $rows = $list.selectAll('div').data(arr);
       const r = $rows.enter().append('div')
         .attr('title', (d) => d);
+      let mouseSelectionHelper = new MouseSelectionHelper(r, r, r, $list, this.data);
+      mouseSelectionHelper.installListeners(onClickAdd, onClickRemove);
 
-        r.on('mousedown', (d, i) => {
-          fire(List.EVENT_BRUSH_CLEAR, this.data);
-          this.data.clear();
-          this.updateTopBottom(i, topBottom[1], topBottom);
-        })
-        .on('mouseenter', (d, i) => {
-          if(topBottom[0] !== -1) {
-            //this.data.clear();
-            this.updateTopBottom(topBottom[0], i, topBottom);
-            console.log('topbottom in enter: ' + topBottom[0] + ' end: ' + topBottom[1]);
-            this.selectTopBottom(topBottom, onClick);
-          }
-        })
-        .on('mouseup', (d, i) => {
-          if(topBottom[0] !== -1) {
-            this.updateTopBottom(topBottom[0], i, topBottom);
-            this.selectTopBottom(topBottom, onClick);
-            console.log('topbottom in up: ' + topBottom[0] + ' end: ' + topBottom[1]);
-            fire(List.EVENT_BRUSHING, topBottom, this.data);
-            this.updateTopBottom(-1, -1, topBottom);
-          }
-        });
       const formatter = this.options.format ? format(this.options.format) : String;
       $rows.text(formatter);
       $rows.exit().remove();

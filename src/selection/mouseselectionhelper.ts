@@ -13,40 +13,35 @@ export class MouseSelectionHelper {
 
   installListeners(onClickAdd, onClickRemove) {
     this.mouseDownObject.on('mousedown', (d, i) => {
-          this.updateTopBottom(-1, -1, this.topBottom);
-          this.updateTopBottom(i, this.topBottom[1], this.topBottom);
-          if (toSelectOperation(<MouseEvent>d3.event) === SelectOperation.SET) {
-            console.log('new selection');
-            this.data.clear();
-            fire(List.EVENT_BRUSH_CLEAR, this.data);
-            console.log('selection operation: ' + toSelectOperation(<MouseEvent>d3.event));
-            console.log('topbottom in down: ' + this.topBottom[0] + ' end: ' + this.topBottom[1]);
-          }
-        });
+      this.updateTopBottom(-1, -1, this.topBottom);
+      this.updateTopBottom(i, this.topBottom[1], this.topBottom);
+      if (toSelectOperation(<MouseEvent>d3.event) === SelectOperation.SET) {
+        this.data.clear();
+        fire(List.EVENT_BRUSH_CLEAR, this.data);
+      }
+    });
 
     this.mouseEnterObject.on('mouseenter', (d, i) => {
-          if(this.topBottom[0] !== -1) {
-            this.removeOldSelectedElements(this.topBottom, i, onClickRemove);
-            this.updateTopBottom(this.topBottom[0], i, this.topBottom);
-            console.log('topbottom in enter: ' + this.topBottom[0] + ' end: ' + this.topBottom[1]);
-            this.selectTopBottom(this.topBottom, onClickAdd);
-          }
-        })
+        if(this.topBottom[0] !== -1) {
+          this.removeOldSelectedElements(this.topBottom, i, onClickRemove);
+          this.updateTopBottom(this.topBottom[0], i, this.topBottom);
+          this.selectTopBottom(this.topBottom, onClickAdd);
+        }
+      })
 
     this.mouseUpObject.on('mouseup', (d, i) => {
-          if(this.topBottom[0] !== -1) {
-            this.updateTopBottom(this.topBottom[0], i, this.topBottom);
-            this.selectTopBottom(this.topBottom, onClickAdd);
-            console.log('topbottom in up: ' + this.topBottom[0] + ' end: ' + this.topBottom[1]);
-            this.topBottom.sort((a, b) => a - b);
-            fire(List.EVENT_BRUSHING, this.topBottom, this.data);
-          }
-        }).append('title').text((d) => d.toString());
+      if(this.topBottom[0] !== -1) {
+        this.updateTopBottom(this.topBottom[0], i, this.topBottom);
+        this.selectTopBottom(this.topBottom, onClickAdd);
+        this.topBottom.sort((a, b) => a - b);
+        fire(List.EVENT_BRUSHING, this.topBottom, this.data);
+      }
+    }).append('title').text((d) => String(d));
 
     this.mouseLeaveObject.on('mouseleave', (d, i) => {
-          this.selectTopBottom(this.topBottom, onClickRemove);
-          this.updateTopBottom(-1, -1, this.topBottom);
-        });
+      this.selectTopBottom(this.topBottom, onClickRemove);
+      this.updateTopBottom(-1, -1, this.topBottom);
+    });
   }
 
   private selectTopBottom(topBottom: number[], onClick) {
@@ -69,14 +64,12 @@ export class MouseSelectionHelper {
     // when turning mouse from down to up
     if(topBottom[0] < topBottom[1]) {
       for (let j = removeIndices[1] + 1; j <= removeIndices[0]; j++) {
-        console.log("removing element ", j);
         onClickRemove('', j);
       }
     }
     // when turning mouse from up to down
     else if(topBottom[0] > topBottom[1]) {
       for (let j = removeIndices[0]; j < removeIndices[1]; j++) {
-        console.log("removing element ", j);
         onClickRemove('', j);
       }
     }

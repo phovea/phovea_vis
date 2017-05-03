@@ -14,7 +14,8 @@ import {SelectOperation} from 'phovea_core/src/idtype/IIDType';
 import {fire} from 'phovea_core/src/event';
 import {List} from './list';
 import {EOrientation} from './heatmap/internal';
-
+import {selectionUtil} from 'phovea_d3/src/d3util';
+import {MouseSelectionHelper} from './selection/mouseselectionhelper'
 
 export interface IBarPlotOptions extends IVisInstanceOptions {
   /**
@@ -125,9 +126,8 @@ export class BarPlot extends AVisInstance implements IVisInstance {
     //using range bands with an ordinal scale for uniform distribution
     const xscale = this.xscale = d3.scale.linear();
     const yscale = this.yscale = d3.scale.linear();
-    const onClick = function (d, i, selectOperation) {
-      data.select(0, [i], toSelectOperation(<MouseEvent>d3.event) || selectOperation);
-    };
+    const onClickAdd = selectionUtil(this.data, $g, 'rect', SelectOperation.ADD);
+    const onClickRemove = selectionUtil(this.data, $g, 'rect', SelectOperation.REMOVE);
 
     const l = function (event, type: string, selected: Range) {
       $g.selectAll('rect').classed('phovea-select-' + type, false);
@@ -160,28 +160,9 @@ export class BarPlot extends AVisInstance implements IVisInstance {
       const $m = $g.selectAll('rect').data(_data);
       const binSize = width / _data.length;
       const topBottom = [-1, -1];
-      $m.enter().append('rect')
-        .on('mousedown', (d, i) => {
-          this.data.clear();
-          this.updateTopBottom(i, topBottom[1], topBottom);
-        })
-        .on('mouseenter', (d, i) => {
-          if(topBottom[0] !== -1) {
-            this.data.clear();
-            this.updateTopBottom(topBottom[0], i, topBottom);
-            console.log('topbottom in enter: ' + topBottom[0] + ' end: ' + topBottom[1]);
-            this.selectTopBottom(topBottom, onClick);
-          }
-        })
-        .on('mouseup', (d, i) => {
-          if(topBottom[0] !== -1) {
-            this.updateTopBottom(topBottom[0], i, topBottom);
-            console.log('topbottom in up: ' + topBottom[0] + ' end: ' + topBottom[1]);
-            this.selectTopBottom(topBottom, onClick);
-            this.updateTopBottom(-1, -1, topBottom);
-          }
-        })
-        .append('title').text(String);
+      const r = $m.enter().append('rect');
+      let mouseSelectionHelper = new MouseSelectionHelper(r, r, r, $g, this.data);
+      mouseSelectionHelper.installListeners(onClickAdd, onClickRemove);
       if (this.options.orientation === EOrientation.Vertical) {
         xscale.range([0, this.rawSize[0]]);
         yscale.range([0, this.rawSize[1]]);

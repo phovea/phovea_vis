@@ -14,7 +14,7 @@ import {Range} from 'phovea_core/src/range';
 import {fire} from 'phovea_core/src/event';
 import {SelectOperation} from 'phovea_core/src/idtype/IIDType';
 import {EOrientation} from './heatmap/internal';
-import {MouseSelectionHelper} from './selection/mouseselectionhelper'
+import {MouseSelectionHelper} from './selection/mouseselectionhelper';
 
 export interface IListOptions extends IVisInstanceOptions {
   /**
@@ -131,7 +131,7 @@ export class List extends AVisInstance implements IVisInstance {
       const $rows = $list.selectAll('div').data(arr);
       const r = $rows.enter().append('div')
         .attr('title', (d) => d);
-      let mouseSelectionHelper = new MouseSelectionHelper(r, r, r, $list, this.data);
+      const mouseSelectionHelper = new MouseSelectionHelper(r, r, r, $list, this.data);
       mouseSelectionHelper.installListeners(onClickAdd, onClickRemove);
 
       const formatter = this.options.format ? format(this.options.format) : String;

@@ -178,17 +178,12 @@ export default class HeatMap1D extends AVisInstance implements IVisInstance {
             console.log('topbottom in up: ' + topBottom[0] + ' end: ' + topBottom[1]);
             topBottom.sort((a, b) => a - b);
             fire(List.EVENT_BRUSHING, topBottom, this.data);
-            //this.updateTopBottom(-1, -1, topBottom);
           }
         })
         .append('title').text(String);
         $g.on('mouseleave', (d, i) => {
           this.selectTopBottom(topBottom, onClickRemove);
           this.updateTopBottom(-1, -1, topBottom);
-        //  console.log('mouseleave');
-        //  this.updateTopBottom(-1, -1, topBottom);
-        //  this.data.clear();
-        //  fire(List.EVENT_BRUSH_CLEAR, this.data);
         });
       $rows.attr({
         fill: (d) => c(d)

@@ -10,9 +10,11 @@ import {toSelectOperation, defaultSelectionType} from 'phovea_core/src/idtype';
 import {IScale} from './internal';
 import {IHeatMapRenderer, ESelectOption} from './IHeatMapRenderer';
 import {IHeatMapAbleMatrix} from './HeatMap';
+import {INumericalMatrix} from 'phovea_core/src/matrix/IMatrix';
 
 export default class HeatMapDOMRenderer implements IHeatMapRenderer {
   private color: IScale;
+  private labels;
 
   constructor(private readonly selectAble: ESelectOption = ESelectOption.CELL) {
 
@@ -24,6 +26,7 @@ export default class HeatMapDOMRenderer implements IHeatMapRenderer {
       height: dim[0] * scale[1]
     });
     $node.select('g').attr('transform', 'scale(' + scale[0] + ',' + scale[1] + ')');
+    this.labels.attr('transform', 'scale(' + scale[0] + ',' + scale[1] + ')');
   }
 
   recolor($node: d3.Selection<any>, data: IHeatMapAbleMatrix, color: IScale, scale: number[]) {
@@ -68,6 +71,9 @@ export default class HeatMapDOMRenderer implements IHeatMapRenderer {
       });
       onReady();
     });
+    this.labels = $svg.append('g');
+    this.drawLabels([width * scale[0],height * scale[1]], data);
+
     const l = function (event, type, selected: Range[]) {
       $g.selectAll('rect').classed('phovea-select-' + type, false);
       if (selected.length === 0) {
@@ -88,7 +94,39 @@ export default class HeatMapDOMRenderer implements IHeatMapRenderer {
         l(null, defaultSelectionType, selected);
       });
     }
-
     return $svg;
   }
+
+  private drawLabels(size, data) {
+    drawLabels(size, data, this.labels);
+  }
+}
+
+/**
+ * Draw labels for given data
+ * @param size array with [width, height]
+ * @param data loaded data set
+ * @param labels D3 Elements with all labels
+ */
+export function drawLabels(size:number[], data:INumericalMatrix, labels: d3.Selection<any>) {
+  const rowHeight = size[1] / data.dim[0];
+  const columnWidth = size[0] / data.dim[1];
+  labels.attr({
+    'display':'inline',
+    'font-size': 5 + 'px',
+    'fill': '#f2f2f2'
+  });
+  data.data().then((arr) => {
+    const $rows = labels.selectAll('g').data(arr);
+    $rows.enter().append('g').each(function (row, i) {
+        const $cols = d3.select(this).selectAll('text').data(row);
+        const $nEnter = $cols.enter().append('text').attr({
+          'alignment-baseline': 'central',
+          width: 1,
+          height: 1,
+          x: (d, j) => j * 1,
+          y: i - 1
+        }).text((d) => d === null ? '.' : '');
+    });
+  });
 }

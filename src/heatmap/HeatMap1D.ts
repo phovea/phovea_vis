@@ -150,7 +150,8 @@ export default class HeatMap1D extends AVisInstance implements IVisInstance {
       const onClickAdd = selectionUtil(this.data, $g, 'rect', SelectOperation.ADD);
       const onClickRemove = selectionUtil(this.data, $g, 'rect', SelectOperation.REMOVE);
       const r = $rows.enter().append('rect');
-      let mouseSelectionHelper = new MouseSelectionHelper(r, r, r, $g, this.data);
+      r.append('title').text((d) => String(d));
+      const mouseSelectionHelper = new MouseSelectionHelper(r, $g, this.data);
       mouseSelectionHelper.installListeners(onClickAdd, onClickRemove);
       $rows.attr({
         fill: (d) => c(d)

@@ -159,7 +159,8 @@ export class BarPlot extends AVisInstance implements IVisInstance {
       const binSize = width / _data.length;
       const topBottom = [-1, -1];
       const r = $m.enter().append('rect');
-      const mouseSelectionHelper = new MouseSelectionHelper(r, r, r, $g, this.data);
+      r.append('title').text((d) => String(d));
+      const mouseSelectionHelper = new MouseSelectionHelper(r, $g, this.data);
       mouseSelectionHelper.installListeners(onClickAdd, onClickRemove);
       if (this.options.orientation === EOrientation.Vertical) {
         xscale.range([0, this.rawSize[0]]);

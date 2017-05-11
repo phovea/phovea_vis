@@ -131,7 +131,7 @@ export class List extends AVisInstance implements IVisInstance {
       const $rows = $list.selectAll('div').data(arr);
       const r = $rows.enter().append('div')
         .attr('title', (d) => d);
-      const mouseSelectionHelper = new MouseSelectionHelper(r, r, r, $list, this.data);
+      const mouseSelectionHelper = new MouseSelectionHelper(r, $list, this.data);
       mouseSelectionHelper.installListeners(onClickAdd, onClickRemove);
 
       const formatter = this.options.format ? format(this.options.format) : String;

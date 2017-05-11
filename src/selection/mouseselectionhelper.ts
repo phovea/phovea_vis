@@ -6,12 +6,11 @@ import List from '../list';
 
 export class MouseSelectionHelper {
   topBottom : number[];
-  mouseLeft : boolean = false;
   constructor(private mouseListener : d3.Selection<any>, private mouseLeaveObject : d3.Selection<any>, private data: any) {
     this.topBottom = [-1, -1];
   }
 
-  installListeners(onClickAdd, onClickRemove) {
+  installListeners(onClickAdd:(d:any, i:number) => void, onClickRemove:(d:any, i:number) => void) {
     this.mouseListener.on('mousedown', (d, i) => {
       this.resetTopbottom();
       this.updateTopBottom(i, this.topBottom[1], this.topBottom);
@@ -44,10 +43,6 @@ export class MouseSelectionHelper {
         fire(List.EVENT_BRUSHING, this.topBottom, this.data);
         this.resetTopbottom();
       }
-    });
-
-    document.documentElement.addEventListener('mouseup', function(e){
-      console.log(e);
     });
   }
 

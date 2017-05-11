@@ -13,8 +13,8 @@ import {rect} from 'phovea_core/src/geom';
 import {Range} from 'phovea_core/src/range';
 import {fire} from 'phovea_core/src/event';
 import {SelectOperation} from 'phovea_core/src/idtype/IIDType';
-import {toSelectOperation} from 'phovea_core/src/idtype';
 import {EOrientation} from './heatmap/internal';
+import {MouseSelectionHelper} from './selection/mouseselectionhelper';
 
 export interface IListOptions extends IVisInstanceOptions {
   /**
@@ -123,59 +123,17 @@ export class List extends AVisInstance implements IVisInstance {
       $list.style('height', `${this.options.heightTo}px`);
     }
 
+    const onClickAdd = selectionUtil(this.data, $list, 'div', SelectOperation.ADD);
+    const onClickRemove = selectionUtil(this.data, $list, 'div', SelectOperation.REMOVE);
 
-    const onClick = selectionUtil(this.data, $list, 'div', SelectOperation.ADD);
     this.data.data().then((arr: any[]) => {
-      let start = null;
-      let topBottom = [Number.POSITIVE_INFINITY, Number.NEGATIVE_INFINITY];
+      const topBottom = [-1, -1];
       const $rows = $list.selectAll('div').data(arr);
-      $rows.enter().append('div')
-        .attr('title', (d) => d)
-        .on('mousedown', (d, i) => {
-          if (start !== null) {
-            return;
-          }
+      const r = $rows.enter().append('div')
+        .attr('title', (d) => d);
+      const mouseSelectionHelper = new MouseSelectionHelper(r, $list, this.data);
+      mouseSelectionHelper.installListeners(onClickAdd, onClickRemove);
 
-          topBottom = this.updateTopBotom(i, topBottom);
-
-          start = {d, i, applied: false};
-
-          if (toSelectOperation(<MouseEvent>d3.event) === SelectOperation.SET) {
-            fire(List.EVENT_BRUSH_CLEAR, this.data);
-            this.data.clear();
-          }
-        })
-        .on('mouseenter', (d, i) => {
-          if (start === null) {
-            return;
-          }
-
-          onClick(d, i); // select current entered element
-
-          topBottom = this.updateTopBotom(i, topBottom);
-
-          // select first element, when started brushing
-          if (start.applied === false) {
-            onClick(start.d, start.i);
-            start.applied = true;
-          }
-        })
-        .on('mouseup', (d, i) => {
-          if (start === null) {
-            return;
-          }
-
-          // select as click
-          if (start.applied === false) {
-            onClick(start.d, start.i);
-
-          }
-          topBottom = this.updateTopBotom(i, topBottom);
-
-          fire(List.EVENT_BRUSHING, topBottom, this.data);
-
-          start = null;
-        });
       const formatter = this.options.format ? format(this.options.format) : String;
       $rows.text(formatter);
       $rows.exit().remove();
@@ -184,14 +142,20 @@ export class List extends AVisInstance implements IVisInstance {
     return $list;
   }
 
-  private updateTopBotom(i: number, topBottom: number[]) {
-    if (topBottom[0] > i) {
-      topBottom[0] = i;
+  private selectTopBottom(topBottom: number[], onClick) {
+    let tmp;
+    if(topBottom[0] > topBottom[1]) {
+      tmp = topBottom[0];
+      topBottom[0] = topBottom[1];
+      topBottom[1] = tmp;
     }
-    if (topBottom[1] < i) {
-      topBottom[1] = i;
+    for(let i = topBottom[0]; i <= topBottom[1]; i++) {
+      onClick('', i);
     }
-    return topBottom;
+  }
+  private updateTopBottom(top: number, bottom: number, topBottom: number[]) {
+    topBottom[0] = top;
+    topBottom[1] = bottom;
   }
 
 }
@@ -201,3 +165,4 @@ export default List;
 export function create(data: IAnyVector, parent: HTMLElement, options: IListOptions) {
   return new List(data, parent, options);
 }
+

@@ -12,10 +12,8 @@ import {selectionUtil} from 'phovea_d3/src/d3util';
 import {INumericalVector, ICategoricalVector} from 'phovea_core/src/vector';
 import {defaultColor, defaultDomain, toScale, IScale, ICommonHeatMapOptions, EOrientation} from './internal';
 import {SelectOperation} from 'phovea_core/src/idtype/IIDType';
-import {fire} from 'phovea_core/src/event';
-import List from '../list';
 import {drawLabels} from '../barplot';
-import {toSelectOperation} from 'phovea_core/src/idtype';
+import {MouseSelectionHelper} from '../selection/mouseselectionhelper'
 
 export interface IHeatMap1DOptions extends ICommonHeatMapOptions {
   /**
@@ -146,57 +144,15 @@ export default class HeatMap1D extends AVisInstance implements IVisInstance {
     const c = this.colorer;
     const t = <Promise<string|number[]>>this.data.data();
     t.then((arr: any[]) => {
-      let start = null;
-      let topBottom = [Number.POSITIVE_INFINITY, Number.NEGATIVE_INFINITY];
+
       const binSize = width / arr.length;
       const $rows = $g.selectAll('rect').data(arr);
-      const onClick = selectionUtil(this.data, $g, 'rect', SelectOperation.ADD);
-      $rows.enter().append('rect')
-        .on('mousedown', (d, i) => {
-          if (start !== null) {
-            return;
-          }
-
-          start = {d, i, applied: false};
-
-          topBottom = this.updateTopBottom(i, topBottom);
-
-          if (toSelectOperation(<MouseEvent>d3.event) === SelectOperation.SET) {
-            fire(List.EVENT_BRUSH_CLEAR, this.data);
-            this.data.clear();
-          }
-        })
-        .on('mouseenter', (d, i) => {
-          if (start === null) {
-            return;
-          }
-
-          onClick(d, i); // select current entered element
-          topBottom = this.updateTopBottom(i, topBottom);
-
-          // select first element, when started brushing
-          if (start.applied === false) {
-            onClick(start.d, start.i);
-            start.applied = true;
-          }
-        })
-        .on('mouseup', (d, i) => {
-          if (start === null) {
-            return;
-          }
-
-          // select as click
-          if (start.applied === false) {
-            onClick(start.d, start.i);
-          }
-
-          topBottom = this.updateTopBottom(i, topBottom);
-
-          fire(List.EVENT_BRUSHING, topBottom, this.data);
-
-          start = null;
-        })
-        .append('title').text(String);
+      const onClickAdd = selectionUtil(this.data, $g, 'rect', SelectOperation.ADD);
+      const onClickRemove = selectionUtil(this.data, $g, 'rect', SelectOperation.REMOVE);
+      const r = $rows.enter().append('rect');
+      r.append('title').text((d) => String(d));
+      const mouseSelectionHelper = new MouseSelectionHelper(r, $g, this.data);
+      mouseSelectionHelper.installListeners(onClickAdd, onClickRemove);
       $rows.attr({
         fill: (d) => c(d)
       });
@@ -221,15 +177,6 @@ export default class HeatMap1D extends AVisInstance implements IVisInstance {
     return $svg;
   }
 
-  private updateTopBottom(i: number, topBottom: number[]) {
-    if (topBottom[0] > i) {
-      topBottom[0] = i;
-    }
-    if (topBottom[1] < i) {
-      topBottom[1] = i;
-    }
-    return topBottom;
-  }
 
   private drawLabels() {
     drawLabels(this.size, <INumericalVector>this.data, this.labels);

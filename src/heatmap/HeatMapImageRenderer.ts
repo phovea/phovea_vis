@@ -12,6 +12,12 @@ import AHeatMapCanvasRenderer from './AHeatMapCanvasRenderer';
 import {IHeatMapAbleMatrix} from './HeatMap';
 
 
+function ensureHex(color: string) {
+  const rgb = d3.rgb(color);
+  const toHex = (d: number) => ('00' + d.toString(16)).slice(-2);
+  return `#${toHex(rgb.r)}${toHex(rgb.g)}${toHex(rgb.b)}`;
+}
+
 export default class HeatMapImageRenderer extends AHeatMapCanvasRenderer implements IHeatMapRenderer {
   private image: HTMLImageElement;
   private ready = false;
@@ -103,7 +109,7 @@ export default class HeatMapImageRenderer extends AHeatMapCanvasRenderer impleme
     };
     const args: IHeatMapUrlOptions = {
       range: <[number, number]>c.domain(),
-      missing: this.options.missingColor
+      missing: ensureHex(this.options.missingColor)
     };
 
     function arrEqual(a: any[], b: any[]) {
@@ -120,6 +126,8 @@ export default class HeatMapImageRenderer extends AHeatMapCanvasRenderer impleme
       args.palette = 'white_red';
     } else if (arrEqual(colors, ['blue', 'white', 'red'])) {
       args.palette = 'blue_white_red';
+    } else if (colors.length === 2 || colors.length === 3) {
+      args.palette = colors.map(ensureHex).join('-');
     }
     this.image.src = data.heatmapUrl(all(), args);
 

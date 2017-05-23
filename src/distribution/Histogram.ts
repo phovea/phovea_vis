@@ -120,7 +120,7 @@ export default class Histogram extends AVisInstance implements IVisInstance {
     return histData;
   }
 
-  private build($parent: d3.Selection<any>) {
+  protected build($parent: d3.Selection<any>) {
     const size = this.size,
       data = this.data,
       o = this.options;

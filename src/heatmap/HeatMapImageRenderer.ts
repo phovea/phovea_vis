@@ -6,7 +6,7 @@
 import * as d3 from 'd3';
 import {all} from 'phovea_core/src/range';
 import {IHeatMapUrlOptions} from 'phovea_core/src/matrix';
-import {IScale} from './internal';
+import {IScale, ICommonHeatMapOptions} from './internal';
 import {IHeatMapRenderer, ESelectOption} from './IHeatMapRenderer';
 import AHeatMapCanvasRenderer from './AHeatMapCanvasRenderer';
 import {IHeatMapAbleMatrix} from './HeatMap';
@@ -17,8 +17,8 @@ export default class HeatMapImageRenderer extends AHeatMapCanvasRenderer impleme
   private ready = false;
   private color: IScale;
 
-  constructor(selectAble = ESelectOption.CELL) {
-    super(selectAble);
+  constructor(selectAble = ESelectOption.CELL, options: ICommonHeatMapOptions) {
+    super(selectAble, options);
   }
 
   rescale($node: d3.Selection<any>, dim: number[], scale: number[]) {
@@ -43,7 +43,7 @@ export default class HeatMapImageRenderer extends AHeatMapCanvasRenderer impleme
     const canvas = <HTMLCanvasElement>$root.select('canvas').node();
     const ctx = <CanvasRenderingContext2D>canvas.getContext('2d');
 
-    ctx.msImageSmoothingEnabled = false;
+    (<any>ctx).msImageSmoothingEnabled = false;
     //if (context.hasOwnProperty('imageSmoothingEnabled')) {
     (<any>ctx).imageSmoothingEnabled = false;
     //}
@@ -102,7 +102,8 @@ export default class HeatMapImageRenderer extends AHeatMapCanvasRenderer impleme
       onReady();
     };
     const args: IHeatMapUrlOptions = {
-      range: <[number, number]>c.domain()
+      range: <[number, number]>c.domain(),
+      missing: this.options.missingColor
     };
 
     function arrEqual(a: any[], b: any[]) {

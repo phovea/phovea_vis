@@ -10,7 +10,7 @@ import {rect} from 'phovea_core/src/geom';
 import {mixin} from 'phovea_core/src';
 import {selectionUtil} from 'phovea_d3/src/d3util';
 import {INumericalVector, ICategoricalVector} from 'phovea_core/src/vector';
-import {defaultColor, defaultDomain, toScale, IScale, ICommonHeatMapOptions} from './internal';
+import {defaultColor, defaultDomain, toScale, IScale, ICommonHeatMapOptions, isMissing} from './internal';
 
 export interface IHeatMap1DOptions extends ICommonHeatMapOptions {
   /**
@@ -36,7 +36,8 @@ export default class HeatMap1D extends AVisInstance implements IVisInstance {
     width: 20,
     heightTo: null,
     scale: [1, 1],
-    rotate: 0
+    rotate: 0,
+    missingColor: '#d400c2'
   };
 
   constructor(public readonly data: IHeatMapAbleVector, public parent: Element, options: IHeatMap1DOptions = {}) {
@@ -122,7 +123,7 @@ export default class HeatMap1D extends AVisInstance implements IVisInstance {
   private recolor() {
     const c = this.colorer;
     c.domain(this.options.domain).range(this.options.color);
-    this.$node.selectAll('rect').attr('fill', (d) => c(d));
+    this.$node.selectAll('rect').attr('fill', (d) => isMissing(d) ? this.options.missingColor : c(d));
   }
 
   private build($parent: d3.Selection<any>) {
@@ -146,7 +147,7 @@ export default class HeatMap1D extends AVisInstance implements IVisInstance {
         height: 1
       }).append('title').text(String);
       $rows.attr({
-        fill: (d) => c(d),
+        fill: (d) => isMissing(d) ? this.options.missingColor : c(d),
         y: (d, i) => i
       });
       $rows.exit().remove();

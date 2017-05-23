@@ -7,14 +7,14 @@ import * as d3 from 'd3';
 import {Range, cell} from 'phovea_core/src/range';
 import {onDOMNodeRemoved} from 'phovea_core/src';
 import {toSelectOperation, defaultSelectionType} from 'phovea_core/src/idtype';
-import {IScale} from './internal';
+import {IScale, isMissing, ICommonHeatMapOptions} from './internal';
 import {IHeatMapRenderer, ESelectOption} from './IHeatMapRenderer';
 import {IHeatMapAbleMatrix} from './HeatMap';
 
 export default class HeatMapDOMRenderer implements IHeatMapRenderer {
   private color: IScale;
 
-  constructor(private readonly selectAble: ESelectOption = ESelectOption.CELL) {
+  constructor(private readonly selectAble: ESelectOption = ESelectOption.CELL, private readonly options: ICommonHeatMapOptions) {
 
   }
 
@@ -56,7 +56,7 @@ export default class HeatMapDOMRenderer implements IHeatMapRenderer {
           height: 1,
           x: (d, j) => j,
           y: i,
-          fill: (d) => c(d)
+          fill: (d) => isMissing(d) ? this.options.missingColor : c(d)
         });
         if (that.selectAble !== ESelectOption.NONE) {
           $colsEnter.on('click', (d, j) => {

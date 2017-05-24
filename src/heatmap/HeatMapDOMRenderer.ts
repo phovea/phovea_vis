@@ -28,11 +28,11 @@ export default class HeatMapDOMRenderer implements IHeatMapRenderer {
 
   recolor($node: d3.Selection<any>, data: IHeatMapAbleMatrix, color: IScale, scale: number[]) {
     this.color = color;
-    $node.select('svg').selectAll('rect').attr('fill', (d) => color(d));
+    $node.select('svg').selectAll('rect').attr('fill', (d) => isMissing(d) ? this.options.missingColor : color(d));
   }
 
   redraw($node: d3.Selection<any>, scale: number[]) {
-    $node.select('svg').selectAll('rect').attr('fill', (d) => this.color(d));
+    $node.select('svg').selectAll('rect').attr('fill', (d) => isMissing(d) ? this.options.missingColor : this.color(d));
   }
 
   build(data: IHeatMapAbleMatrix, $parent: d3.Selection<any>, scale: [number, number], c: IScale, onReady: () => void) {
@@ -56,7 +56,7 @@ export default class HeatMapDOMRenderer implements IHeatMapRenderer {
           height: 1,
           x: (d, j) => j,
           y: i,
-          fill: (d) => isMissing(d) ? this.options.missingColor : c(d)
+          fill: (d) => isMissing(d) ? that.options.missingColor : c(d)
         });
         if (that.selectAble !== ESelectOption.NONE) {
           $colsEnter.on('click', (d, j) => {

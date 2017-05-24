@@ -4,7 +4,7 @@
 
 
 import * as d3 from 'd3';
-import {IScale} from './internal';
+import {IScale, isMissing, ICommonHeatMapOptions} from './internal';
 import {IHeatMapRenderer, ESelectOption} from './IHeatMapRenderer';
 import AHeatMapCanvasRenderer from './AHeatMapCanvasRenderer';
 import {IHeatMapAbleMatrix} from './HeatMap';
@@ -13,8 +13,8 @@ export default class HeatMapCanvasRenderer extends AHeatMapCanvasRenderer implem
   private imageData: ImageData;
   private ready = false;
 
-  constructor(selectAble = ESelectOption.CELL) {
-    super(selectAble);
+  constructor(selectAble = ESelectOption.CELL, options: ICommonHeatMapOptions) {
+    super(selectAble, options);
   }
 
   rescale($node: d3.Selection<any>, dim: number[], scale: number[]) {
@@ -49,7 +49,7 @@ export default class HeatMapCanvasRenderer extends AHeatMapCanvasRenderer implem
     arr.forEach((row, j) => {
       const t = j * ncol;
       row.forEach((cell, i) => {
-        const color = d3.rgb(c(cell));
+        const color = d3.rgb(isMissing(cell) ? this.options.missingColor : c(cell));
         rgba[(t + i) * 4] = color.r;
         rgba[(t + i) * 4 + 1] = color.g;
         rgba[(t + i) * 4 + 2] = color.b;
@@ -61,7 +61,7 @@ export default class HeatMapCanvasRenderer extends AHeatMapCanvasRenderer implem
   private redrawImpl(imageData: ImageData, $root: d3.Selection<any>, scale: number[]) {
     const context = <CanvasRenderingContext2D>(<any>$root.select('canvas').node()).getContext('2d');
 
-    context.msImageSmoothingEnabled = false;
+    (<any>context).msImageSmoothingEnabled = false;
     //if (context.hasOwnProperty('imageSmoothingEnabled')) {
     (<any>context).imageSmoothingEnabled = false;
     //}

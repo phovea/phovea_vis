@@ -9,10 +9,11 @@ import {onDOMNodeRemoved} from 'phovea_core/src';
 import {IMatrix} from 'phovea_core/src/matrix';
 import {toSelectOperation, defaultSelectionType} from 'phovea_core/src/idtype';
 import {ESelectOption} from './IHeatMapRenderer';
+import {ICommonHeatMapOptions} from './internal';
 
 export abstract class AHeatMapCanvasRenderer {
 
-  constructor(protected readonly selectAble: ESelectOption = ESelectOption.CELL) {
+  constructor(protected readonly selectAble: ESelectOption = ESelectOption.CELL, protected options: ICommonHeatMapOptions) {
 
   }
 

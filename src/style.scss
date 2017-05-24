@@ -66,6 +66,30 @@ div.phovea-heatmap {
       z-index: 2;
     }
   }
+
+  .phovea-heatmap-labels {
+    line-height: 100%;
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    overflow: hidden;
+
+    div.phovea-select-selected {
+      background-color: $select-color;
+    }
+
+    &.row-labels {
+      top: 0;
+      text-align: right;
+    }
+
+    &.column-labels {
+      top: 0;
+      transform: rotate(-90deg);
+      transform-origin: top left;
+    }
+  }
 }
 
 .phovea-scatterplot {

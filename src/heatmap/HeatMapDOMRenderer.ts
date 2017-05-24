@@ -7,19 +7,19 @@ import * as d3 from 'd3';
 import {Range, cell} from 'phovea_core/src/range';
 import {onDOMNodeRemoved} from 'phovea_core/src';
 import {toSelectOperation, defaultSelectionType} from 'phovea_core/src/idtype';
-import {IScale} from './internal';
+import {IScale, isMissing, ICommonHeatMapOptions} from './internal';
 import {IHeatMapRenderer, ESelectOption} from './IHeatMapRenderer';
 import {IHeatMapAbleMatrix} from './HeatMap';
 
 export default class HeatMapDOMRenderer implements IHeatMapRenderer {
   private color: IScale;
 
-  constructor(private readonly selectAble: ESelectOption = ESelectOption.CELL) {
+  constructor(private readonly selectAble: ESelectOption = ESelectOption.CELL, private readonly options: ICommonHeatMapOptions) {
 
   }
 
   rescale($node: d3.Selection<any>, dim: number[], scale: number[]) {
-    $node.attr({
+    $node.select('svg').attr({
       width: dim[1] * scale[0],
       height: dim[0] * scale[1]
     });
@@ -28,21 +28,21 @@ export default class HeatMapDOMRenderer implements IHeatMapRenderer {
 
   recolor($node: d3.Selection<any>, data: IHeatMapAbleMatrix, color: IScale, scale: number[]) {
     this.color = color;
-    $node.selectAll('rect').attr('fill', (d) => color(d));
+    $node.select('svg').selectAll('rect').attr('fill', (d) => color(d));
   }
 
   redraw($node: d3.Selection<any>, scale: number[]) {
-    $node.selectAll('rect').attr('fill', (d) => this.color(d));
+    $node.select('svg').selectAll('rect').attr('fill', (d) => this.color(d));
   }
 
   build(data: IHeatMapAbleMatrix, $parent: d3.Selection<any>, scale: [number, number], c: IScale, onReady: () => void) {
     const dims = data.dim, that = this;
     const width = dims[1], height = dims[0];
 
-    const $svg = $parent.append('svg').attr({
+    const $node = $parent.append('div').attr('class', 'phovea-heatmap');
+    const $svg = $node.append('svg').attr({
       width: width * scale[0],
-      height: height * scale[1],
-      'class': 'phovea-heatmap'
+      height: height * scale[1]
     });
     const $g = $svg.append('g').attr('transform', 'scale(' + scale[0] + ',' + scale[1] + ')');
     this.color = c;
@@ -56,7 +56,7 @@ export default class HeatMapDOMRenderer implements IHeatMapRenderer {
           height: 1,
           x: (d, j) => j,
           y: i,
-          fill: (d) => c(d)
+          fill: (d) => isMissing(d) ? this.options.missingColor : c(d)
         });
         if (that.selectAble !== ESelectOption.NONE) {
           $colsEnter.on('click', (d, j) => {
@@ -89,6 +89,6 @@ export default class HeatMapDOMRenderer implements IHeatMapRenderer {
       });
     }
 
-    return $svg;
+    return $node;
   }
 }

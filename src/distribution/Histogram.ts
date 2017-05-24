@@ -102,16 +102,8 @@ export default class Histogram extends AVisInstance implements IVisInstance {
       nbins: Math.floor(Math.sqrt(data.length)),
     }, options);
 
-    const size = this.size;
-
-    const $parent = d3.select(parent);
-    const $svg = $parent.append('svg').attr({
-      width: size[0],
-      height: size[1],
-      'class': 'phovea-histogram'
-    });
-
-    this.$node = this.build($svg);
+    this.$node = this.buildSvg(d3.select(parent));
+    this.build(this.$node);
     this.$node.datum(this);
     assignVis(this.node, this);
   }
@@ -129,9 +121,17 @@ export default class Histogram extends AVisInstance implements IVisInstance {
     return histData;
   }
 
+  protected buildSvg($parent) {
+    return $parent.append('svg').attr({
+      width: this.size[0],
+      height: this.size[1],
+      'class': 'phovea-histogram'
+    });
+  }
+
   protected build($svg: d3.Selection<any>) {
-      const data = this.data,
-      o = this.options;
+    const data = this.data,
+    o = this.options;
 
     const $t = $svg.append('g').attr('transform', 'scale(' + this.options.scale[0] + ',' + this.options.scale[1] + ')');
     const $data = $t.append('g');

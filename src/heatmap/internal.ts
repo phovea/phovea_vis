@@ -65,4 +65,15 @@ export interface ICommonHeatMapOptions extends IVisInstanceOptions {
    * @default derived from value
    */
   domain?: (number|string)[];
+
+  /**
+   * missing value color
+   * @default magenta
+   */
+  missingColor?: string;
+}
+
+
+export function isMissing(v: any) {
+  return (v === null || (typeof v === 'number' && isNaN(v)));
 }

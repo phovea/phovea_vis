@@ -19,18 +19,18 @@ import HeatMapCanvasRenderer from './HeatMapCanvasRenderer';
 
 export declare type IHeatMapAbleMatrix = INumericalMatrix|ICategoricalMatrix;
 
-function createRenderer(d: IHeatMapAbleMatrix, selectAble: ESelectOption = ESelectOption.CELL, forceThumbnails: boolean = false): IHeatMapRenderer {
+function createRenderer(d: IHeatMapAbleMatrix, selectAble: ESelectOption = ESelectOption.CELL, options:IHeatMapOptions): IHeatMapRenderer {
   const cells = d.length;
   if (cells <= 1000) {
-    return new HeatMapDOMRenderer(selectAble);
+    return new HeatMapDOMRenderer(selectAble, options);
   }
   const url = d.heatmapUrl(); //can the url be created the return value should be valid
-  if (url && forceThumbnails) {
-    return new HeatMapImageRenderer(selectAble);
+  if (url && options.forceThumbnails) {
+    return new HeatMapImageRenderer(selectAble, options);
   } else if (cells < 5000 || url === null) {
-    return new HeatMapCanvasRenderer(selectAble);
+    return new HeatMapCanvasRenderer(selectAble, options);
   } else {
-    return new HeatMapImageRenderer(selectAble);
+    return new HeatMapImageRenderer(selectAble, options);
   }
 }
 
@@ -73,7 +73,8 @@ export default class HeatMap extends AVisInstance implements IVisInstance {
     forceThumbnails: false,
     scale: [1, 1],
     rotate: 0,
-    labels: ESelectOption.NONE
+    labels: ESelectOption.NONE,
+    missingColor: '#d400c2'
   };
 
   constructor(public data: IHeatMapAbleMatrix, public parent: Element, options: IHeatMapOptions = {}) {
@@ -100,7 +101,7 @@ export default class HeatMap extends AVisInstance implements IVisInstance {
 
     const selection = typeof this.options.selectAble === 'boolean' ? (this.options.selectAble ? ESelectOption.CELL : ESelectOption.NONE) : ESelectOption[<string>this.options.selectAble];
 
-    this.renderer = createRenderer(data, selection, this.options.forceThumbnails);
+    this.renderer = createRenderer(data, selection, this.options);
 
     this.$node = this.build(d3.select(parent));
     this.$node.datum(data);

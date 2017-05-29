@@ -84,7 +84,7 @@ export default class Histogram extends AVisInstance implements IVisInstance {
     sort: 'asc'
   };
 
-  private readonly $node: d3.Selection<Histogram>;
+  protected readonly $node: d3.Selection<Histogram>;
 
   private xscale: d3.scale.Ordinal<number, number>;
   private yscale: d3.scale.Linear<number, number>;

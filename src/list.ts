@@ -98,6 +98,8 @@ export class List extends AVisInstance implements IVisInstance {
       return bak;
     }
     this.$node.style('transform', 'rotate(' + rotate + 'deg)');
+    this.$node.style('line-height', `${Math.round(scale[1]*100)}%`);
+    this.$node.style('font-size', `${Math.round(scale[1]*100)}%`);
     this.$node.style('width', `${scale[0] * this.options.width}px`);
     if (this.options.orientation === EOrientation.Vertical) {
       this.$node.style('height', `${scale[1] * this.data.length * this.options.rowHeight}px`);
@@ -116,6 +118,8 @@ export class List extends AVisInstance implements IVisInstance {
     const scale = this.options.scale;
     const $list = $parent.append('div').attr('class', 'phovea-list ' + (this.options.orientation === EOrientation.Vertical ? 'ver ' : 'hor ') + this.options.cssClass);
     $list.style('width', `${scale[0] * this.options.width}px`);
+    $list.style('line-height', `${Math.round(scale[1]*100)}%`);
+    $list.style('font-size', `${Math.round(scale[1]*100)}%`);
     if (this.options.orientation === EOrientation.Vertical) {
       $list.style('height', `${scale[1] * this.data.length * this.options.rowHeight}px`);
     } else if (this.options.orientation === EOrientation.Horizontal) {

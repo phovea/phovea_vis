@@ -8,6 +8,7 @@ import {
   ICategoricalValueTypeDesc, ICategory
 } from 'phovea_core/src/datatype';
 import {IVisInstanceOptions} from 'phovea_core/src/vis';
+export {isMissing} from '../utils';
 
 export enum EOrientation {
   Vertical,
@@ -76,9 +77,4 @@ export interface ICommonHeatMapOptions extends IVisInstanceOptions {
    * @default magenta
    */
   missingColor?: string;
-}
-
-
-export function isMissing(v: any) {
-  return (v === null || (typeof v === 'number' && isNaN(v)));
 }

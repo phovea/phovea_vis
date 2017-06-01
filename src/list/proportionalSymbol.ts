@@ -8,6 +8,7 @@ import {mixin} from 'phovea_core/src';
 import {INumericalVector} from 'phovea_core/src/vector';
 import AList, {IAListOptions} from './internal/AList';
 import {INumberValueTypeDesc} from 'phovea_core/src/datatype';
+import {isMissing} from '../utils';
 
 export interface IProportionalSymbolOptions extends IAListOptions {
   min?: number;
@@ -37,10 +38,14 @@ export default class ProportionalSymbol extends AList<number, INumberValueTypeDe
   }
 
   protected render($enter: d3.Selection<number>, $update: d3.Selection<number>) {
+    $enter.append('div');
     this.scale.range([0, this.maxDiameter]);
     $update.attr('title', (d) => String(d));
-    $update.style('width', (d) => this.scale(d) + 'px');
-    $update.style('height', (d) => this.scale(d) + 'px');
+    $update.style('height', (d) => this.options.scale[1] * this.options.rowHeight);
+    $update.select('div')
+      .style('width', (d) => isMissing(d) ? 0 : this.scale(d) + 'px')
+      .style('height', (d) => isMissing(d) ? 0 : this.scale(d) + 'px');
+    $update.style('visibility', (d) => isMissing(d) ? 'hidden': null);
   }
 
   protected build() {

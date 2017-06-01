@@ -34,7 +34,7 @@ export abstract class AList<T, D extends IValueTypeDesc, O extends IAListOptions
   constructor(public readonly data: IVector<T,D>, private readonly parent: HTMLElement, options: O) {
     super();
     this.options = mixin(<any>{}, DEFAULT_OPTIONS, options);
-    this.$node = select(parent).append('div').attr('class', 'phovea-list ' + this.options.cssClass);
+    this.$node = select(parent).append('div').attr('class', 'phovea-list ver ' + this.options.cssClass);
     this.$node.datum(this);
     assignVis(this.node, this);
   }

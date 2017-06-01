@@ -41,7 +41,7 @@ export default class ProportionalSymbol extends AList<number, INumberValueTypeDe
     $enter.append('div');
     this.scale.range([0, this.maxDiameter]);
     $update.attr('title', (d) => String(d));
-    $update.style('height', (d) => this.options.scale[1] * this.options.rowHeight);
+    $update.style('height', (d) => (this.options.scale[1] * this.options.rowHeight) + 'px');
     $update.select('div')
       .style('width', (d) => isMissing(d) ? 0 : this.scale(d) + 'px')
       .style('height', (d) => isMissing(d) ? 0 : this.scale(d) + 'px');

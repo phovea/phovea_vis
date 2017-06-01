@@ -84,7 +84,7 @@ export default class Histogram extends AVisInstance implements IVisInstance {
     sort: 'asc'
   };
 
-  private readonly $node: d3.Selection<Histogram>;
+  protected readonly $node: d3.Selection<Histogram>;
 
   private xscale: d3.scale.Ordinal<number, number>;
   private yscale: d3.scale.Linear<number, number>;
@@ -102,7 +102,8 @@ export default class Histogram extends AVisInstance implements IVisInstance {
       nbins: Math.floor(Math.sqrt(data.length)),
     }, options);
 
-    this.$node = this.build(d3.select(parent));
+    this.$node = this.buildSvg(d3.select(parent));
+    this.build(this.$node);
     this.$node.datum(this);
     assignVis(this.node, this);
   }
@@ -120,16 +121,18 @@ export default class Histogram extends AVisInstance implements IVisInstance {
     return histData;
   }
 
-  private build($parent: d3.Selection<any>) {
-    const size = this.size,
-      data = this.data,
-      o = this.options;
-
-    const $svg = $parent.append('svg').attr({
-      width: size[0],
-      height: size[1],
+  protected buildSvg($parent) {
+    return $parent.append('svg').attr({
+      width: this.size[0],
+      height: this.size[1],
       'class': 'phovea-histogram'
     });
+  }
+
+  protected build($svg: d3.Selection<any>) {
+    const data = this.data,
+    o = this.options;
+
     const $t = $svg.append('g').attr('transform', 'scale(' + this.options.scale[0] + ',' + this.options.scale[1] + ')');
     const $data = $t.append('g');
     const $highlight = $t.append('g').style('pointer-events', 'none').classed('phovea-select-selected', true);

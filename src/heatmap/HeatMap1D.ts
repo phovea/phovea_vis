@@ -13,7 +13,7 @@ import {INumericalVector, ICategoricalVector} from 'phovea_core/src/vector';
 import {defaultColor, defaultDomain, toScale, IScale, ICommonHeatMapOptions, isMissing, EOrientation} from './internal';
 import {SelectOperation} from 'phovea_core/src/idtype/IIDType';
 import {drawLabels} from '../barplot';
-import {MouseSelectionHelper} from '../selection/mouseselectionhelper'
+import {MouseSelectionHelper} from '../selection/mouseselectionhelper';
 
 export interface IHeatMap1DOptions extends ICommonHeatMapOptions {
   /**

@@ -34,7 +34,7 @@ export abstract class AList<T, D extends IValueTypeDesc, O extends IAListOptions
   constructor(public readonly data: IVector<T,D>, private readonly parent: HTMLElement, options: O) {
     super();
     this.options = mixin(<any>{}, DEFAULT_OPTIONS, options);
-    this.$node = select(parent).append('div').attr('class', 'phovea-list ' + this.options.cssClass);
+    this.$node = select(parent).append('div').attr('class', 'phovea-list ver ' + this.options.cssClass);
     this.$node.datum(this);
     assignVis(this.node, this);
   }
@@ -71,6 +71,8 @@ export abstract class AList<T, D extends IValueTypeDesc, O extends IAListOptions
       return bak;
     }
     this.$node.style('transform', 'rotate(' + rotate + 'deg)');
+    this.$node.style('line-height', `${Math.round(scale[1]*100)}%`);
+    this.$node.style('font-size', `${Math.round(scale[1]*100)}%`);
     this.$node.style('width', `${scale[0] * this.options.width}px`);
     this.$node.style('height', `${scale[1] * this.data.length * this.options.rowHeight}px`);
     const act = {scale, rotate};
@@ -89,6 +91,8 @@ export abstract class AList<T, D extends IValueTypeDesc, O extends IAListOptions
 
   protected build() {
     const scale = this.options.scale;
+    this.$node.style('line-height', `${Math.round(scale[1]*100)}%`);
+    this.$node.style('font-size', `${Math.round(scale[1]*100)}%`);
     this.$node.style('width', `${scale[0] * this.options.width}px`);
     this.$node.style('height', `${scale[1] * this.data.length * this.options.rowHeight}px`);
 

@@ -189,8 +189,13 @@ div.phovea-heatmap {
 
   &.phovea-proportional-symbol {
     > div {
-      border-radius: 50%;
-      background-color: black;
+      display: flex;
+      align-content: center;
+      > div {
+        border-radius: 50%;
+        background-color: black;
+        margin: auto;
+      }
     }
   }
 

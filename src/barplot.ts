@@ -14,6 +14,7 @@ import {SelectOperation} from 'phovea_core/src/idtype/IIDType';
 import {EOrientation} from './heatmap/internal';
 import {selectionUtil} from 'phovea_d3/src/d3util';
 import {MouseSelectionHelper} from './selection/mouseselectionhelper';
+import {isMissing} from './utils';
 
 export interface IBarPlotOptions extends IVisInstanceOptions {
   /**
@@ -167,8 +168,8 @@ export class BarPlot extends AVisInstance implements IVisInstance {
         yscale.range([0, this.rawSize[1]]);
         $m.attr({
           y: (d, i) => yscale(i),
-          height: (d) => yscale(1),
-          width: xscale
+          height: yscale(1),
+          width: (d) => isMissing(d) ? 0 : xscale(d)
         });
         this.labels = $svg.append('g');
         this.drawLabels();
@@ -178,8 +179,8 @@ export class BarPlot extends AVisInstance implements IVisInstance {
         $m.attr({
           x: (d, i) => binSize * i,
           width: (d) => binSize,
-          y: (d, i) => this.rawSize[1] - xscale(d),
-          height: (d, i) => xscale(d)
+          y: (d) => this.rawSize[1] - (isMissing(d) ? 0 : xscale(d)),
+          height: (d) => isMissing(d) ? 0 : xscale(d)
         });
 
       }

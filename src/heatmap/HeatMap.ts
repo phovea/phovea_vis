@@ -74,7 +74,8 @@ export default class HeatMap extends AVisInstance implements IVisInstance {
     scale: [1, 1],
     rotate: 0,
     labels: ESelectOption.NONE,
-    missingColor: '#d400c2'
+    missingColor: '#d400c2',
+    mode: 'sm'
   };
 
   constructor(public data: IHeatMapAbleMatrix, public parent: Element, options: IHeatMapOptions = {}) {

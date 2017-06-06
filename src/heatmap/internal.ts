@@ -71,6 +71,11 @@ export interface ICommonHeatMapOptions extends IVisInstanceOptions {
    * @default magenta
    */
   missingColor?: string;
+
+  /**
+   * defines the rendering mode, e.g. influencing how the selection is drawn
+   */
+  mode?: 'lg'|'sm';
 }
 
 

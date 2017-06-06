@@ -78,7 +78,11 @@ export default class HeatMapDOMRenderer implements IHeatMapRenderer {
       }
       selected.forEach((cell) => {
         cell.product((indices) => {
-          $g.select(`g:nth-child(${indices[0] + 1})`).select(`rect:nth-child(${indices[1] + 1})`).classed('phovea-select-' + type, true);
+          const cell = <SVGRectElement>$g.select(`rect[y="${indices[0]}"][x="${indices[1]}"]`).classed('phovea-select-' + type, true).node();
+          // push parent to front
+          cell.parentElement.appendChild(cell);
+          // push parent to front
+          cell.parentElement.parentElement.appendChild(cell.parentElement);
         }, data.dim);
       });
     };

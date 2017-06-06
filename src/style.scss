@@ -137,11 +137,9 @@ div.phovea-heatmap {
     rect {
       &.phovea-select-selected {
         stroke: $select-color;
-        stroke-width: 1;
       }
       &.phovea-select-hovered {
         stroke: $hover-color;
-        stroke-width: 1;
       }
     }
   }

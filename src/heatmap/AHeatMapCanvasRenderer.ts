@@ -47,20 +47,26 @@ export abstract class AHeatMapCanvasRenderer {
       return;
     }
 
-    ctx.scale(canvas.width / dim[1], canvas.height / dim[0]);
-    selected.forEach((cell) => {
-      if (this.options.mode === 'sm') {
+
+    if (this.options.mode === 'sm') {
+      ctx.scale(canvas.width / dim[1], canvas.height / dim[0]);
+      selected.forEach((cell) => {
         cell.product((indices) => {
           const [i, j] = indices;
           ctx.fillRect(j, i, 1, 1);
         }, dim);
-      } else {
+      });
+    } else {
+      const cw = canvas.width / dim[1];
+      const ch = canvas.height / dim[0];
+      selected.forEach((cell) => {
         cell.product((indices) => {
           const [i, j] = indices;
-          ctx.strokeRect(j, i, 1, 1);
+          ctx.strokeRect(j * cw, i * ch, cw, ch);
         }, dim);
-      }
-    });
+      });
+    }
+
     ctx.restore();
 
   }

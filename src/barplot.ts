@@ -242,6 +242,10 @@ export function create(data: INumericalVector, parent: Element, options?: IBarPl
  * @param labels D3 Elements with all labels
  */
 export function drawLabels(size:number[], data:INumericalVector, labels: d3.Selection<any>) {
+  if(!labels) {
+    return;
+  }
+
   const rowHeight = size[1] / data.dim[0];
   labels.attr({
     'display': (rowHeight >= 15) ? 'inline' : 'none',

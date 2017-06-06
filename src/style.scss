@@ -132,13 +132,27 @@ div.phovea-heatmap {
 
 
 .phovea-heatmap {
-  // highlight selection for svg heatmap
-  rect {
-    &.phovea-select-selected {
-      fill: $select-color;
+  &.lg {
+    // highlight selection for svg heatmap
+    rect {
+      &.phovea-select-selected {
+        stroke: $select-color;
+        stroke-width: 1;
+      }
+      &.phovea-select-hovered {
+        stroke: $hover-color;
+        stroke-width: 1;
+      }
     }
-    &.phovea-select-hovered {
-      fill: $hover-color;
+  }
+  &.sm {
+    rect {
+      &.phovea-select-selected {
+        fill: $select-color;
+      }
+      &.phovea-select-hovered {
+        fill: $hover-color;
+      }
     }
   }
 }

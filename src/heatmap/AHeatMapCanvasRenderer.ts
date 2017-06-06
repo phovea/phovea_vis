@@ -35,6 +35,8 @@ export abstract class AHeatMapCanvasRenderer {
     ctx.save();
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     ctx.fillStyle = 'orange';
+    ctx.strokeStyle = 'orange';
+
     if (selected.length === 0) {
       ctx.restore();
       return;
@@ -47,10 +49,17 @@ export abstract class AHeatMapCanvasRenderer {
 
     ctx.scale(canvas.width / dim[1], canvas.height / dim[0]);
     selected.forEach((cell) => {
-      cell.product((indices) => {
-        const [i, j] = indices;
-        ctx.fillRect(j, i, 1, 1);
-      }, dim);
+      if (this.options.mode === 'sm') {
+        cell.product((indices) => {
+          const [i, j] = indices;
+          ctx.fillRect(j, i, 1, 1);
+        }, dim);
+      } else {
+        cell.product((indices) => {
+          const [i, j] = indices;
+          ctx.strokeRect(j, i, 1, 1);
+        }, dim);
+      }
     });
     ctx.restore();
 

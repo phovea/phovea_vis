@@ -107,8 +107,9 @@ export default class HeatMapImageRenderer extends AHeatMapCanvasRenderer impleme
       this.ready = true;
       onReady();
     };
+    const domain = c.domain();
     const args: IHeatMapUrlOptions = {
-      range: <[number, number]>c.domain(),
+      range: [domain[0], domain[domain.length - 1]],
       missing: ensureHex(this.options.missingColor)
     };
 

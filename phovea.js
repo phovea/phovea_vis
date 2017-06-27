@@ -68,13 +68,7 @@ module.exports = function(registry) {
     filter: 'vector',
     sizeDependsOnDataDimension: true
   });
-  registry.push('vis', 'scatterplot', function () {
-    return System.import('./src/scatterplot');
-  }, {
-    name: 'ScatterPlot',
-    filter: 'matrix'
-
-  });
+  
   registry.push('vis', 'phovea-vis-heatmap', function () {
     return System.import('./src/heatmap');
   }, {

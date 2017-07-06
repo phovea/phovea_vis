@@ -155,7 +155,7 @@ export default class HeatMap1D extends AVisInstance implements IVisInstance {
       const mouseSelectionHelper = new MouseSelectionHelper(r, $g, this.data);
       mouseSelectionHelper.installListeners(onClickAdd, onClickRemove);
       $rows.attr({
-        fill: (d) => c(d)
+        fill: (d) => isMissing(d) ? this.options.missingColor : c(d)
       });
       if (this.options.orientation === EOrientation.Vertical) {
         $rows.attr({

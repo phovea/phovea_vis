@@ -247,6 +247,15 @@ export function drawLabels(size:number[], data:INumericalVector, labels: d3.Sele
     'display': (rowHeight >= 15) ? 'inline' : 'none',
     'font-size': '14px'
   });
+  const categories = (<any>data.desc.value).categories;
+  const nameToLabel = new Map<string, string>();
+  if (categories) {
+    // replace each item in data with label
+    categories.forEach((d) => {
+      nameToLabel.set(d.name, d.label);
+    });
+  }
+
   data.data().then((_data) => {
     const $n = labels.selectAll('text').data(_data);
     $n.enter().append('text');
@@ -257,6 +266,9 @@ export function drawLabels(size:number[], data:INumericalVector, labels: d3.Sele
       x: xPadding,
       y: (d, i) => (i + 0.5) * rowHeight,
       height: (d) => rowHeight - yPadding
-    }).text(String);
+    }).text((d) => {
+      const name = String(d);
+      return (nameToLabel.has(name)) ? nameToLabel.get(name) : name;
+    });
   });
 }

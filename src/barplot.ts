@@ -249,7 +249,7 @@ export function drawLabels(size:number[], data:IAnyVector, labels: d3.Selection<
     'font-size': '14px'
   });
   const nameToLabel = new Map<string, string>();
-  if (data.desc.type === 'categorical') {
+  if (data.valuetype.type === 'categorical') {
     const categories = (<ICategoricalVector>data).valuetype.categories;
     // replace each item in data with label
     categories.forEach((d) => {

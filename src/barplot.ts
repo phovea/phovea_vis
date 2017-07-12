@@ -266,7 +266,6 @@ export function drawLabels(size:number[], data:IAnyVector, labels: d3.Selection<
     const yPadding = 2;
     const xPadding = 3;
     $n.attr({
-      'alignment-baseline': 'central',
       x: xPadding,
       y: (d, i) => (i + 0.5) * rowHeight,
     }).text((d) => {

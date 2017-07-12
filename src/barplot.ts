@@ -15,6 +15,7 @@ import {EOrientation} from './heatmap/internal';
 import {selectionUtil} from 'phovea_d3/src/d3util';
 import {MouseSelectionHelper} from './selection/mouseselectionhelper';
 import {isMissing} from './utils';
+import {IAnyVector} from 'phovea_core/src/vector/IVector';
 
 export interface IBarPlotOptions extends IVisInstanceOptions {
   /**
@@ -241,7 +242,7 @@ export function create(data: INumericalVector, parent: Element, options?: IBarPl
  * @param data loaded data set
  * @param labels D3 Elements with all labels
  */
-export function drawLabels(size:number[], data:INumericalVector, labels: d3.Selection<any>) {
+export function drawLabels(size:number[], data:IAnyVector, labels: d3.Selection<any>) {
   const rowHeight = size[1] / data.dim[0];
   labels.attr({
     'display': (rowHeight >= 15) ? 'inline' : 'none',

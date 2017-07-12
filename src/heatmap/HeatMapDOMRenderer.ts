@@ -28,18 +28,20 @@ export default class HeatMapDOMRenderer implements IHeatMapRenderer {
 
   recolor($node: d3.Selection<any>, data: IHeatMapAbleMatrix, color: IScale, scale: number[]) {
     this.color = color;
-    $node.select('svg').selectAll('rect').attr('fill', (d) => isMissing(d) ? this.options.missingColor : color(d));
+    this.redraw($node, scale);
   }
 
   redraw($node: d3.Selection<any>, scale: number[]) {
-    $node.select('svg').selectAll('rect').attr('fill', (d) => isMissing(d) ? this.options.missingColor : this.color(d));
+    $node.select('svg').selectAll('rect')
+      .attr('fill', (d) => isMissing(d) ? this.options.missingColor : this.color(d))
+      .classed('missing', isMissing);
   }
 
   build(data: IHeatMapAbleMatrix, $parent: d3.Selection<any>, scale: [number, number], c: IScale, onReady: () => void) {
     const dims = data.dim, that = this;
     const width = dims[1], height = dims[0];
 
-    const $node = $parent.append('div').attr('class', 'phovea-heatmap');
+    const $node = $parent.append('div').attr('class', 'phovea-heatmap ' + this.options.mode);
     const $svg = $node.append('svg').attr({
       width: width * scale[0],
       height: height * scale[1]
@@ -58,6 +60,7 @@ export default class HeatMapDOMRenderer implements IHeatMapRenderer {
           y: i,
           fill: (d) => isMissing(d) ? that.options.missingColor : c(d)
         });
+        $colsEnter.classed('missing', isMissing);
         if (that.selectAble !== ESelectOption.NONE) {
           $colsEnter.on('click', (d, j) => {
             data.selectProduct([cell(i, j)], toSelectOperation(<MouseEvent>d3.event));
@@ -75,7 +78,11 @@ export default class HeatMapDOMRenderer implements IHeatMapRenderer {
       }
       selected.forEach((cell) => {
         cell.product((indices) => {
-          $g.select(`g:nth-child(${indices[0] + 1})`).select(`rect:nth-child(${indices[1] + 1})`).classed('phovea-select-' + type, true);
+          const cell = <SVGRectElement>$g.select(`rect[y="${indices[0]}"][x="${indices[1]}"]`).classed('phovea-select-' + type, true).node();
+          // push parent to front
+          cell.parentElement.appendChild(cell);
+          // push parent to front
+          cell.parentElement.parentElement.appendChild(cell.parentElement);
         }, data.dim);
       });
     };

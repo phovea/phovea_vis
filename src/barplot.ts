@@ -15,7 +15,7 @@ import {EOrientation} from './heatmap/internal';
 import {selectionUtil} from 'phovea_d3/src/d3util';
 import {MouseSelectionHelper} from './selection/mouseselectionhelper';
 import {isMissing} from './utils';
-import {IAnyVector} from 'phovea_core/src/vector/IVector';
+import {IAnyVector, ICategoricalVector} from 'phovea_core/src/vector/IVector';
 
 export interface IBarPlotOptions extends IVisInstanceOptions {
   /**
@@ -243,16 +243,19 @@ export function create(data: INumericalVector, parent: Element, options?: IBarPl
  * @param labels D3 Elements with all labels
  */
 export function drawLabels(size:number[], data:IAnyVector, labels: d3.Selection<any>) {
-  const rowHeight = size[1] / data.dim[0];
+  const rowHeight = size[1] / data.length;
   labels.attr({
     'display': (rowHeight >= 15) ? 'inline' : 'none',
     'font-size': '14px'
   });
-  const categories = (<any>data.desc.value).categories;
   const nameToLabel = new Map<string, string>();
-  if (categories) {
+  if (data.desc.type === 'categorical') {
+    const categories = (<ICategoricalVector>data).valuetype.categories;
     // replace each item in data with label
     categories.forEach((d) => {
+      if (typeof d === 'string' || !d.label) {
+        return;
+      }
       nameToLabel.set(d.name, d.label);
     });
   }
@@ -266,7 +269,6 @@ export function drawLabels(size:number[], data:IAnyVector, labels: d3.Selection<
       'alignment-baseline': 'central',
       x: xPadding,
       y: (d, i) => (i + 0.5) * rowHeight,
-      height: (d) => rowHeight - yPadding
     }).text((d) => {
       const name = String(d);
       return (nameToLabel.has(name)) ? nameToLabel.get(name) : name;

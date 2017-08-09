@@ -66,7 +66,7 @@ export class BoxPlot extends AVisInstance implements IVisInstance {
     const s = this.scale = d3.scale.linear().domain((<any>this.data.desc).value.range).range([0, size[0]]).clamp(true);
 
     $t.append('path').attr({
-      d: 'M0,0 L0,$ M0,§ L%,§ M%,0 L%,$'.replace(/%/g, String(size[0])).replace(/\$/g, String(size[1])).replace(/\§/g, String(size[1] / 2)),
+      d: `M0,0 L0,${size[1]} M0,${size[1] / 2} L${size[0]},${size[1] / 2} M${size[0]},0 L${size[0]},${size[1]}`,
       'class': 'axis'
     });
     data.statsAdvanced().then((stats) => {

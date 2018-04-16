@@ -116,7 +116,7 @@ export class ForceDirectedGraphVis extends AVisInstance implements IVisInstance 
       }));
       const f = d3.layout.force()
         .size(this.rawSize);
-      f.nodes(nodes).links(edges);
+      f.nodes(<any>nodes).links(<any>edges); // TODO remove possibly wrong <any> typecast
 
       const $links = $root.selectAll('.edge').data(edges);
       $links.enter().append('line').classed('edge', true);

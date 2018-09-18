@@ -2,7 +2,7 @@
   "name": "phovea_vis",
   "description": "Utilitiy reposititory containing common visualizations (table, heatmap, scatterplot, axis, pie, distribution, ..)",
   "homepage": "https://phovea.caleydo.org",
-  "version": "2.0.1-SNAPSHOT",
+  "version": "2.1.1-SNAPSHOT",
   "author": {
     "name": "The Caleydo Team",
     "email": "contact@caleydo.org",

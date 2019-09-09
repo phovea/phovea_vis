@@ -10,7 +10,7 @@ import {IScale, ICommonHeatMapOptions} from './internal';
 import {IHeatMapRenderer, ESelectOption} from './IHeatMapRenderer';
 import AHeatMapCanvasRenderer from './AHeatMapCanvasRenderer';
 import {IHeatMapAbleMatrix} from './HeatMap';
-import {sendAPI, encodeParams} from 'phovea_core/src/ajax';
+import {sendAPI, encodeParams, MAX_URL_LENGTH} from 'phovea_core/src/ajax';
 import parseRange from 'phovea_core/src/range/parser';
 import {prepareHeatmapUrlParameter} from 'phovea_core/src/matrix/loader';
 
@@ -20,9 +20,6 @@ function ensureHex(color: string) {
   const toHex = (d: number) => ('00' + d.toString(16)).slice(-2);
   return `#${toHex(rgb.r)}${toHex(rgb.g)}${toHex(rgb.b)}`;
 }
-
-// maximum number of characters of a valid URL
-const MAX_URL_LENGTH = 4096;
 
 export default class HeatMapImageRenderer extends AHeatMapCanvasRenderer implements IHeatMapRenderer {
   private image: HTMLImageElement;

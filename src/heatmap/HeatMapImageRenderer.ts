@@ -10,8 +10,9 @@ import {IScale, ICommonHeatMapOptions} from './internal';
 import {IHeatMapRenderer, ESelectOption} from './IHeatMapRenderer';
 import AHeatMapCanvasRenderer from './AHeatMapCanvasRenderer';
 import {IHeatMapAbleMatrix} from './HeatMap';
-import {sendAPI, api2absURL, encodeParams} from 'phovea_core/src/ajax';
+import {sendAPI, encodeParams} from 'phovea_core/src/ajax';
 import parseRange from 'phovea_core/src/range/parser';
+import {prepareHeatmapUrlParameter} from 'phovea_core/src/matrix/loader';
 
 
 function ensureHex(color: string) {
@@ -139,7 +140,7 @@ export default class HeatMapImageRenderer extends AHeatMapCanvasRenderer impleme
     // persist to get range and create range object again
     // TODO: make range property on matrix public
     const range = parseRange(data.persist().range);
-    const params = prepareParameter(range, args);
+    const params = prepareHeatmapUrlParameter(range, args);
     const url = `/dataset/matrix/${data.desc.id}/data`;
 
     const encoded = encodeParams(params);
@@ -157,25 +158,4 @@ export default class HeatMapImageRenderer extends AHeatMapCanvasRenderer impleme
 
     return $root;
   }
-}
-
-function prepareParameter(range: Range, options: IHeatMapUrlOptions) {
-  const args: any = {
-    format: options.format || 'png',
-    range: range.toString()
-  };
-  if (options.transpose === true) {
-    args.format_transpose = true;
-  }
-  if (options.range) {
-    args.format_min = options.range[0];
-    args.format_max = options.range[1];
-  }
-  if (options.palette) {
-    args.format_palette = options.palette.toString();
-  }
-  if (options.missing) {
-    args.format_missing = options.missing;
-  }
-  return args;
 }

@@ -20,7 +20,8 @@ function ensureHex(color: string) {
   return `#${toHex(rgb.r)}${toHex(rgb.g)}${toHex(rgb.b)}`;
 }
 
-const TOO_LONG_URL = 4096;
+// maximum number of characters of a valid URL
+const MAX_URL_LENGTH = 4096;
 
 export default class HeatMapImageRenderer extends AHeatMapCanvasRenderer implements IHeatMapRenderer {
   private image: HTMLImageElement;
@@ -142,7 +143,7 @@ export default class HeatMapImageRenderer extends AHeatMapCanvasRenderer impleme
     const url = `/dataset/matrix/${data.desc.id}/data`;
 
     const encoded = encodeParams(params);
-    if (encoded && (url.length + encoded.length > TOO_LONG_URL)) {
+    if (encoded && (url.length + encoded.length >= MAX_URL_LENGTH)) {
       // use post instead
       sendAPI(url, params, 'POST', 'blob').then((image) => {
         const imageURL = window.URL.createObjectURL(image);

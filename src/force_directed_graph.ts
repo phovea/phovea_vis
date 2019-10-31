@@ -8,6 +8,7 @@ import * as d3 from 'd3';
 import {AVisInstance, IVisInstance, assignVis, IVisInstanceOptions} from 'phovea_core/src/vis';
 import {mixin} from 'phovea_core/src';
 import GraphProxy from 'phovea_core/src/graph/GraphProxy';
+import { GraphNode } from 'phovea_core/src/graph/graph';
 
 export interface IForceDirectedGraphOptions extends IVisInstanceOptions {
   /**
@@ -15,6 +16,13 @@ export interface IForceDirectedGraphOptions extends IVisInstanceOptions {
    * @default true
    */
   colors?: boolean;
+}
+
+/**
+ * Extends the D3 Node with a Phovea GraphNode property
+ */
+interface MixedNode extends d3.layout.force.Node {
+  v: GraphNode;
 }
 
 export class ForceDirectedGraphVis extends AVisInstance implements IVisInstance {
@@ -107,7 +115,7 @@ export class ForceDirectedGraphVis extends AVisInstance implements IVisInstance 
     const colors = d3.scale.category10().range().slice();
 
     this.data.impl().then((graph) => {
-      const nodes = graph.nodes.map((n) => ({v: n}));
+      const nodes: MixedNode[] = graph.nodes.map((n) => ({v: n}));
       const lookup = d3.map(nodes, (d) => String(d.v.id));
       const edges = graph.edges.map((n) => ({
         v: n,

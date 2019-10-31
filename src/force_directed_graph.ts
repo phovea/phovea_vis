@@ -21,7 +21,7 @@ export interface IForceDirectedGraphOptions extends IVisInstanceOptions {
 /**
  * Extends the D3 Node with a Phovea GraphNode property
  */
-interface MixedNode extends d3.layout.force.Node {
+interface IMixedNode extends d3.layout.force.Node {
   v: GraphNode;
 }
 
@@ -115,7 +115,7 @@ export class ForceDirectedGraphVis extends AVisInstance implements IVisInstance 
     const colors = d3.scale.category10().range().slice();
 
     this.data.impl().then((graph) => {
-      const nodes: MixedNode[] = graph.nodes.map((n) => ({v: n}));
+      const nodes: IMixedNode[] = graph.nodes.map((n) => ({v: n}));
       const lookup = d3.map(nodes, (d) => String(d.v.id));
       const edges = graph.edges.map((n) => ({
         v: n,

@@ -1,13 +1,13 @@
 language: node_js
 node_js:
-- 6
+- 8
 addons:
   firefox: 49.0.1
 services:
   - xvfb
 before_install:
 - export DISPLAY=:99.0
-- if [[ `npm -v` != 3* ]]; then npm i -g npm@3; fi
+- if [[ `npm -v` != 5* ]]; then npm i -g npm@5; fi
 script: npm run dist
 notifications:
   slack:

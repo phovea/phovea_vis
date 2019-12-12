@@ -92,7 +92,7 @@ export function resolveHistMax(hist: IHistogram, totalHeight: ITotalHeight): Pro
 
 export declare type ITotalHeight = number|boolean|((hist: IHistogram) => number|boolean|Promise<number|boolean>);
 
-// ts-lint:disable-next-line:no-empty-interface
+// tslint:disable-next-line:no-empty-interface
 export interface IDistributionOptions extends IVisInstanceOptions {
 
 }

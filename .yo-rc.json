@@ -216,6 +216,12 @@
     "today": "Thu, 03 Nov 2016 13:55:14 GMT",
     "libraryExternals": [
       "d3"
-    ]
+    ],
+    "promptValues": {
+      "authorName": "The Caleydo Team",
+      "authorEmail": "contact@caleydo.org",
+      "authorUrl": "https://caleydo.org",
+      "githubAccount": "phovea"
+    }
   }
 }

@@ -1,13 +1,12 @@
 language: node_js
 node_js:
-- 6
+- 12
 addons:
   firefox: 49.0.1
-services:
-  - xvfb
 before_install:
 - export DISPLAY=:99.0
-- if [[ `npm -v` != 3* ]]; then npm i -g npm@3; fi
+- sh -e /etc/init.d/xvfb start
+- if [[ `npm -v` != 6* ]]; then npm i -g npm@6; fi
 script: npm run dist
 notifications:
   slack:

@@ -99,7 +99,7 @@ export default class Mosaic extends AVisInstance implements IVisInstance {
       const highlights = this.histData.map((entry, i) => {
         const s = entry.range.intersect(selected);
         return {
-          i: i,
+          i,
           acc: entry.acc,
           v: s.size()[0]
         };

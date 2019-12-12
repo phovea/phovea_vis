@@ -30,8 +30,8 @@
   },
   "scripts": {
     "compile": "tsc",
-    "lint": "tslint -c tslint.json src/**.ts tests/**.ts",
-    "docs": "typedoc --options typedoc.json src/**.ts",
+    "lint": "tslint -c tslint.json -p . 'src/**/*.ts?(x)' 'tests/**/*.ts?(x)'",
+    "docs": "typedoc --options typedoc.json src/",
     "prebuild": "node -e \"process.exit(process.env.PHOVEA_SKIP_TESTS === undefined?1:0)\" || npm run test",
     "pretest": "npm run compile",
     "test": "test ! -d tests || karma start",
@@ -51,8 +51,8 @@
   "dependencies": {
     "phovea_core": "github:phovea/phovea_core#develop",
     "phovea_d3": "github:phovea/phovea_d3#develop",
-    "@types/d3": "3.5.36",
-    "d3": "3.5.17"
+    "@types/d3": "~3.5.36",
+    "d3": "~3.5.17"
   },
   "devDependencies": {
     "@types/jasmine": "2.5.47",
@@ -81,7 +81,7 @@
     "tslib": "1.9.0",
     "tslint": "5.9.1",
     "typedoc": "0.11.1",
-    "typescript": "2.7.2",
+    "typescript": "2.8.1",
     "url-loader": "0.5.8",
     "webpack": "2.3.3",
     "webpack-dev-server": "2.4.2",

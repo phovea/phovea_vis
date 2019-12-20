@@ -4,12 +4,15 @@
 
 
 import * as d3 from 'd3';
-import {all} from 'phovea_core/src/range';
+import {all, Range} from 'phovea_core/src/range';
 import {IHeatMapUrlOptions} from 'phovea_core/src/matrix';
 import {IScale, ICommonHeatMapOptions} from './internal';
 import {IHeatMapRenderer, ESelectOption} from './IHeatMapRenderer';
 import AHeatMapCanvasRenderer from './AHeatMapCanvasRenderer';
 import {IHeatMapAbleMatrix} from './HeatMap';
+import {sendAPI, encodeParams, MAX_URL_LENGTH} from 'phovea_core/src/ajax';
+import parseRange from 'phovea_core/src/range/parser';
+import {prepareHeatmapUrlParameter} from 'phovea_core/src/matrix/loader';
 
 
 function ensureHex(color: string) {
@@ -130,11 +133,26 @@ export default class HeatMapImageRenderer extends AHeatMapCanvasRenderer impleme
     } else if (colors.length === 2 || colors.length === 3) {
       args.palette = colors.map(ensureHex).join('-');
     }
-    this.image.src = data.heatmapUrl(all(), args);
+
+    // persist to get range and create range object again
+    // TODO: make range property on matrix public
+    const range = parseRange(data.persist().range);
+    const params = prepareHeatmapUrlParameter(range, args);
+    const url = `/dataset/matrix/${data.desc.id}/data`;
+
+    const encoded = encodeParams(params);
+    if (encoded && (url.length + encoded.length >= MAX_URL_LENGTH)) {
+      // use post instead
+      sendAPI(url, params, 'POST', 'blob').then((image) => {
+        const imageURL = window.URL.createObjectURL(image);
+        this.image.src = imageURL;
+      });
+    } else {
+      this.image.src = data.heatmapUrl(all(), args);
+    }
 
     super.buildSelection(data, $root, scale);
 
     return $root;
-
   }
 }

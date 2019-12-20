@@ -9,11 +9,15 @@
     "experimentalDecorators": true,
     "lib": [
       "dom",
-      "es2015"
+      "es2015",
+      "es2016.array.include",
+      "es2017.object"
     ],
     "baseUrl": "../",
     "noImplicitAny": false,
-    "skipLibCheck": true
+    "skipLibCheck": true,
+    "esModuleInterop": false,
+    "allowSyntheticDefaultImports": true
   },
   "include": [
     "src/**/*.ts",

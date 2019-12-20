@@ -49,10 +49,10 @@
     "dist": "mkdirp dist && cd build && tar cvzf ../dist/phovea_vis.tar.gz *"
   },
   "dependencies": {
-    "phovea_core": "github:phovea/phovea_core#stoiber/webpack4",
-    "phovea_d3": "github:phovea/phovea_d3#stoiber/webpack4",
     "@types/d3": "~3.5.36",
-    "d3": "~3.5.17"
+    "d3": "~3.5.17",
+    "phovea_core": "github:phovea/phovea_core#stoiber/webpack4",
+    "phovea_d3": "github:phovea/phovea_d3#stoiber/webpack4"
   },
   "devDependencies": {
     "@types/jasmine": "2.5.47",

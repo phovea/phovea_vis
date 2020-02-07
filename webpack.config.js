@@ -35,6 +35,70 @@ const includeFeature = registry ? (extension, id) => {
   return include.every(test) && !exclude.some(test);
 } : () => true;
 
+const tsLoader = [
+  {
+    loader: 'awesome-typescript-loader'
+  }
+];
+
+const tsLoaderDev = [
+  {loader: 'cache-loader'},
+  {
+    loader: 'thread-loader',
+    options: {
+      // there should be 1 cpu for the fork-ts-checker-webpack-plugin
+      workers: require('os').cpus().length - 1
+    }
+  },
+  {
+    loader: 'ts-loader',
+    options: {
+      happyPackMode: true, // IMPORTANT! use happyPackMode mode to speed-up compilation and reduce errors reported to webpack,
+      compilerOptions: {
+        target: 'es6'
+      }
+    }
+  }
+];
+
+// list of loaders and their mappings
+const webpackloaders = [
+  {test: /\.scss$/, use: 'style-loader!css-loader!sass-loader'},
+  {test: /\.css$/, use: 'style-loader!css-loader'},
+  {test: /\.tsx?$/, use: tsLoader},
+  {
+    test: /phovea(_registry)?\.js$/, use: [{
+      loader: 'ifdef-loader',
+      options: Object.assign({include: includeFeature}, preCompilerFlags)
+    }]
+  },
+  {test: /\.json$/, use: 'json-loader'},
+  {
+    test: /\.(png|jpg|gif|webp)$/,
+    loader: 'url-loader',
+    options: {
+      limit: 10000 // inline <= 10kb
+    }
+  },
+  {
+    test: /\.woff(2)?(\?v=[0-9]\.[0-9]\.[0-9])?$/,
+    loader: 'url-loader',
+    options: {
+      limit: 10000, // inline <= 10kb
+      mimetype: 'application/font-woff'
+    }
+  },
+  {
+    test: /\.svg(2)?(\?v=[0-9]\.[0-9]\.[0-9])?$/,
+    loader: 'url-loader',
+    options: {
+      limit: 10000, // inline <= 10kb
+      mimetype: 'image/svg+xml'
+    }
+  },
+  {test: /\.(ttf|eot)(\?v=[0-9]\.[0-9]\.[0-9])?$/, loader: 'file-loader'}
+];
+
 /**
  * tests whether the given phovea module name is matching the requested file and if so convert it to an external lookup
  * depending on the loading type
@@ -269,7 +333,7 @@ module.exports = (env, options) => {
   if (app) {
     // extract the included css file to own file
     const p = new ExtractTextPlugin({
-      filename: (app ? 'style' : pkg.name) + '.css',
+      filename: (options.isApp || options.moduleBundle ? 'style' : pkg.name) + (options.min && !options.nosuffix ? '.min' : '') + '.css',
       allChunks: true // there seems to be a bug in dynamically loaded chunk styles are not loaded, workaround: extract all styles from all chunks
     });
     base.plugins.push(p);

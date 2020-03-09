@@ -49,8 +49,8 @@
     "dist": "mkdir dist && cd build && tar cvzf ../dist/phovea_vis.tar.gz *"
   },
   "dependencies": {
-    "phovea_core": "github:phovea/phovea_core#update_dependencies_38",
-    "phovea_d3": "github:phovea/phovea_d3#update_dependencies_38",
+    "phovea_core": "github:phovea/phovea_core#update_dep_req",
+    "phovea_d3": "github:phovea/phovea_d3#update_dep_req",
     "@types/d3": "~3.5.36",
     "d3": "~3.5.17"
   },

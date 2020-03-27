@@ -1,4 +1,4 @@
-/// <reference types="jasmine" />
+/// <reference types="jest" />
 import {toScale, defaultDomain, defaultColor} from '../src/heatmap/internal';
 import {INumberValueTypeDesc} from 'phovea_core/src/datatype';
 

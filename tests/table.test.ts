@@ -1,4 +1,4 @@
-/// <reference types="jasmine" />
+/// <reference types="jest" />
 import {create} from '../src/table';
 import {parseMatrix} from 'phovea_d3/src/parser';
 import {parse} from 'phovea_core/src/range';

@@ -1,5 +1,7 @@
-phovea_vis [![Phovea][phovea-image]][phovea-url] [![NPM version][npm-image]][npm-url] [![Build Status][travis-image]][travis-url] [![Dependency Status][daviddm-image]][daviddm-url]
+phovea_vis
 =====================
+[![Phovea][phovea-image]][phovea-url] [![NPM version][npm-image]][npm-url] [![Build Status][circleci-image]][circleci-url]
+
 
 Phovea client plugin providing standard visualization techniques (table, heatmap, scatterplot, axis, pie, distribution, ..).
 
@@ -40,5 +42,4 @@ This repository is part of **[Phovea](http://phovea.caleydo.org/)**, a platform 
 [npm-url]: https://npmjs.org/package/phovea_vis
 [circleci-image]: https://circleci.com/gh/phovea/phovea_vis.svg?style=shield
 [circleci-url]: https://circleci.com/gh/phovea/phovea_vis
-[daviddm-image]: https://david-dm.org/phovea/phovea_vis/status.svg
-[daviddm-url]: https://david-dm.org/phovea/phovea_vis
+

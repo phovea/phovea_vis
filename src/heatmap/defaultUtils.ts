@@ -2,12 +2,10 @@
  * Created by Samuel Gratzl on 26.12.2016.
  */
 
-import * as d3 from 'd3';
 import {
-  IValueTypeDesc, VALUE_TYPE_CATEGORICAL, INumberValueTypeDesc,
+  VALUE_TYPE_CATEGORICAL, INumberValueTypeDesc,
   ICategoricalValueTypeDesc, ICategory
 } from 'phovea_core/src/datatype';
-import {IVisInstanceOptions} from 'phovea_core/src/vis';
 
 
 export function defaultColor(value: INumberValueTypeDesc|ICategoricalValueTypeDesc): string[] {
@@ -34,50 +32,6 @@ export function defaultDomain(value: INumberValueTypeDesc|ICategoricalValueTypeD
   }
   return r;
 }
-
-export interface IScale {
-  (x: any): any;
-  domain(): any[];
-  domain(values: any[]): IScale;
-
-  range(): any[];
-  range(values: any[]): IScale;
-}
-
-export function toScale(value): IScale {
-  if (value.type === VALUE_TYPE_CATEGORICAL) {
-    return d3.scale.ordinal();
-  }
-  return d3.scale.linear();
-}
-
-
-export interface ICommonHeatMapOptions extends IVisInstanceOptions {
-  /**
-   * @default 10
-   */
-  initialScale?: number;
-  /**
-   * @default derived from value
-   */
-  color?: string[];
-  /**
-   * @default derived from value
-   */
-  domain?: (number|string)[];
-
-  /**
-   * missing value color
-   * @default magenta
-   */
-  missingColor?: string;
-
-  /**
-   * defines the rendering mode, e.g. influencing how the selection is drawn
-   */
-  mode?: 'lg'|'sm';
-}
-
 
 export function isMissing(v: any) {
   return (v === null || (typeof v === 'number' && isNaN(v)));

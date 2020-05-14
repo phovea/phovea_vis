@@ -107,6 +107,6 @@ export class BoxPlot extends AVisInstance implements IVisInstance {
 }
 export default BoxPlot;
 
-export function create(data: INumericalVector, parent: Element, options?: IBoxPlotOptions) {
+export function createBoxPlot(data: INumericalVector, parent: Element, options?: IBoxPlotOptions) {
   return new BoxPlot(data, parent, options);
 }

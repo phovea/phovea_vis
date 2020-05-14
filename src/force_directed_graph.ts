@@ -182,6 +182,6 @@ export class ForceDirectedGraphVis extends AVisInstance implements IVisInstance 
   }
 }
 
-export function create(data: GraphProxy, parent: Element, options?: IForceDirectedGraphOptions) {
+export function createForceDirectedGraphVis(data: GraphProxy, parent: Element, options?: IForceDirectedGraphOptions) {
   return new ForceDirectedGraphVis(data, parent, options);
 }

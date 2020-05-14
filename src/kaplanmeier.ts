@@ -139,6 +139,6 @@ export class KaplanMeierPlot extends AVisInstance implements IVisInstance {
   }
 }
 
-export function create(data: INumericalVector, parent: Element, options?: IKaplanMaierOptions) {
+export function createKaplanMeierPlot(data: INumericalVector, parent: Element, options?: IKaplanMaierOptions) {
   return new KaplanMeierPlot(data, parent, options);
 }

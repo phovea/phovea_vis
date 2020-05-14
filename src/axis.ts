@@ -189,6 +189,6 @@ export class Axis extends AVisInstance implements IVisInstance {
 
 export default Axis;
 
-export function create(data: INumericalVector, parent: HTMLElement, options: IAxisOptions) {
+export function createAxis(data: INumericalVector, parent: HTMLElement, options: IAxisOptions) {
   return new Axis(data, parent, options);
 }

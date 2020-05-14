@@ -193,6 +193,6 @@ export default class Histogram extends AVisInstance implements IVisInstance {
 }
 
 
-export function create(data: IHistAbleDataType<ICategoricalValueTypeDesc|INumberValueTypeDesc>, parent: Element, options?: IHistogramOptions) {
+export function createHistrogram(data: IHistAbleDataType<ICategoricalValueTypeDesc|INumberValueTypeDesc>, parent: Element, options?: IHistogramOptions) {
   return new Histogram(data, parent, options);
 }

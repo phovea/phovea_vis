@@ -47,6 +47,6 @@ export default class ProportionalSymbol extends AList<number, INumberValueTypeDe
   }
 }
 
-export function create(data: INumericalVector, parent: HTMLElement, options: IProportionalSymbolOptions) {
+export function createProportionalSymbol(data: INumericalVector, parent: HTMLElement, options: IProportionalSymbolOptions) {
   return new ProportionalSymbol(data, parent, options);
 }

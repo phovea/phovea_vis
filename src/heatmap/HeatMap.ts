@@ -18,6 +18,7 @@ import {IHeatMapRenderer, ESelectOption} from './IHeatMapRenderer';
 import HeatMapDOMRenderer from './HeatMapDOMRenderer';
 import HeatMapImageRenderer from './HeatMapImageRenderer';
 import HeatMapCanvasRenderer from './HeatMapCanvasRenderer';
+import {IHeatMap1DOptions, create1D, IHeatMapAbleVector} from './HeatMap1D';
 
 export declare type IHeatMapAbleMatrix = INumericalMatrix|ICategoricalMatrix;
 
@@ -251,7 +252,15 @@ export default class HeatMap extends AVisInstance implements IVisInstance {
   }
 }
 
-export function create(data: IHeatMapAbleMatrix, parent: HTMLElement, options?: IHeatMapOptions) {
+export function create2D(data: IHeatMapAbleMatrix, parent: HTMLElement, options?: IHeatMapOptions) {
   return new HeatMap(data, parent, options);
 }
 
+export function createHeatMapDimensions(data: IHeatMapAbleMatrix|IHeatMapAbleVector, parent: HTMLElement, options?: IHeatMapOptions|IHeatMap1DOptions): AVisInstance {
+  if (data.desc.type === 'matrix') {
+    return create2D(<IHeatMapAbleMatrix>data, parent, <IHeatMapOptions>options);
+  } else if (data.desc.type === 'vector') {
+    return create1D(<IHeatMapAbleVector>data, parent, <IHeatMap1DOptions>options);
+  }
+  throw new Error('unknown data type: ' + data.desc.type);
+}

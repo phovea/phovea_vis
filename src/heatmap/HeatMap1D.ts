@@ -160,6 +160,6 @@ export default class HeatMap1D extends AVisInstance implements IVisInstance {
 }
 
 
-export function create(data: IHeatMapAbleVector, parent: HTMLElement, options?: IHeatMap1DOptions): AVisInstance {
+export function create1D(data: IHeatMapAbleVector, parent: HTMLElement, options?: IHeatMap1DOptions): AVisInstance {
   return new HeatMap1D(data, parent, options);
 }

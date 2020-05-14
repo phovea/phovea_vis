@@ -4,9 +4,10 @@
 
 
 import * as d3 from 'd3';
-import {all, Range} from 'phovea_core/src/range';
+import {all} from 'phovea_core/src/range';
 import {IHeatMapUrlOptions} from 'phovea_core/src/matrix';
-import {IScale, ICommonHeatMapOptions} from './internal';
+import {ICommonHeatMapOptions} from './ICommonHeatMapOptions';
+import {IScale} from './IScale';
 import {IHeatMapRenderer, ESelectOption} from './IHeatMapRenderer';
 import AHeatMapCanvasRenderer from './AHeatMapCanvasRenderer';
 import {IHeatMapAbleMatrix} from './HeatMap';

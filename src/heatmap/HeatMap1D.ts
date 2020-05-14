@@ -10,7 +10,9 @@ import {rect} from 'phovea_core/src/geom';
 import {mixin} from 'phovea_core/src';
 import {selectionUtil} from 'phovea_d3/src/d3util';
 import {INumericalVector, ICategoricalVector} from 'phovea_core/src/vector';
-import {defaultColor, defaultDomain, toScale, IScale, ICommonHeatMapOptions, isMissing} from './internal';
+import {defaultColor, defaultDomain, isMissing} from './defaultUtils';
+import {ICommonHeatMapOptions} from './ICommonHeatMapOptions';
+import {toScale, IScale} from './IScale';
 
 export interface IHeatMap1DOptions extends ICommonHeatMapOptions {
   /**

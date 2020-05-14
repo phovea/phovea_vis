@@ -4,7 +4,9 @@
 
 
 import * as d3 from 'd3';
-import {IScale, isMissing, ICommonHeatMapOptions} from './internal';
+import {isMissing} from './defaultUtils';
+import {ICommonHeatMapOptions} from './ICommonHeatMapOptions';
+import {IScale} from './IScale';
 import {IHeatMapRenderer, ESelectOption} from './IHeatMapRenderer';
 import AHeatMapCanvasRenderer from './AHeatMapCanvasRenderer';
 import {IHeatMapAbleMatrix} from './HeatMap';

@@ -3,7 +3,7 @@
  */
 
 import * as d3 from 'd3';
-import {IScale} from './internal';
+import {IScale} from './IScale';
 import {IHeatMapAbleMatrix} from './HeatMap';
 
 export enum ESelectOption {

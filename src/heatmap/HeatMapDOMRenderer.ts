@@ -7,7 +7,9 @@ import * as d3 from 'd3';
 import {Range, cell} from 'phovea_core/src/range';
 import {onDOMNodeRemoved} from 'phovea_core/src';
 import {toSelectOperation, defaultSelectionType} from 'phovea_core/src/idtype';
-import {IScale, isMissing, ICommonHeatMapOptions} from './internal';
+import {isMissing} from './defaultUtils';
+import {ICommonHeatMapOptions} from './ICommonHeatMapOptions';
+import {IScale} from './IScale';
 import {IHeatMapRenderer, ESelectOption} from './IHeatMapRenderer';
 import {IHeatMapAbleMatrix} from './HeatMap';
 

@@ -9,7 +9,7 @@ import {onDOMNodeRemoved} from 'phovea_core/src';
 import {IMatrix} from 'phovea_core/src/matrix';
 import {toSelectOperation, defaultSelectionType} from 'phovea_core/src/idtype';
 import {ESelectOption} from './IHeatMapRenderer';
-import {ICommonHeatMapOptions} from './internal';
+import {ICommonHeatMapOptions} from './ICommonHeatMapOptions';
 
 export abstract class AHeatMapCanvasRenderer {
 

@@ -11,7 +11,9 @@ import {rect} from 'phovea_core/src/geom';
 import {mixin, onDOMNodeRemoved} from 'phovea_core/src';
 import {toSelectOperation} from 'phovea_core/src/idtype';
 import {INumericalMatrix, ICategoricalMatrix, DIM_ROW, DIM_COL} from 'phovea_core/src/matrix/IMatrix';
-import {defaultColor, defaultDomain, toScale, IScale, ICommonHeatMapOptions} from './internal';
+import {defaultColor, defaultDomain} from './defaultUtils';
+import {ICommonHeatMapOptions} from './ICommonHeatMapOptions';
+import {toScale, IScale} from './IScale';
 import {IHeatMapRenderer, ESelectOption} from './IHeatMapRenderer';
 import HeatMapDOMRenderer from './HeatMapDOMRenderer';
 import HeatMapImageRenderer from './HeatMapImageRenderer';
@@ -252,3 +254,4 @@ export default class HeatMap extends AVisInstance implements IVisInstance {
 export function create(data: IHeatMapAbleMatrix, parent: HTMLElement, options?: IHeatMapOptions) {
   return new HeatMap(data, parent, options);
 }
+

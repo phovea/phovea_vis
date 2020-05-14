@@ -14,7 +14,7 @@ import {ICatHistogram} from 'phovea_core/src/math';
 import {toSelectOperation} from 'phovea_core/src/idtype';
 import {vec2, polygon} from 'phovea_core/src/geom';
 import bindTooltip from 'phovea_d3/src/tooltip';
-import {IDistributionOptions, ITotalHeight, resolveHistMax} from './internal';
+import {IDistributionOptions, ITotalHeight, resolveHistMax} from './HistData';
 
 
 function toPolygon(start: number, end: number, radius: number) {
@@ -234,6 +234,6 @@ export default class Pie extends AVisInstance implements IVisInstance {
   //}
 }
 
-export function create(data: IHistAbleDataType<ICategoricalValueTypeDesc|INumberValueTypeDesc>|IStratification, parent: Element, options?: IPieOptions) {
+export function createPie(data: IHistAbleDataType<ICategoricalValueTypeDesc|INumberValueTypeDesc>|IStratification, parent: Element, options?: IPieOptions) {
   return new Pie(data, parent, options);
 }

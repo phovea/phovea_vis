@@ -12,7 +12,7 @@ import {IStratification} from 'phovea_core/src/stratification';
 import {IHistogram} from 'phovea_core/src/math';
 import {toSelectOperation} from 'phovea_core/src/idtype';
 import bindTooltip from 'phovea_d3/src/tooltip';
-import {createHistData, IDistributionOptions, IHistData, ITotalHeight, resolveHistMax} from './internal';
+import {createHistData, IDistributionOptions, IHistData, ITotalHeight, resolveHistMax} from './HistData';
 
 export interface IHistogramOptions extends IDistributionOptions {
   /**

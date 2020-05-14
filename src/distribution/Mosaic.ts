@@ -12,7 +12,7 @@ import {IStratification} from 'phovea_core/src/stratification';
 import {IHistogram} from 'phovea_core/src/math';
 import {toSelectOperation} from 'phovea_core/src/idtype';
 import bindTooltip from 'phovea_d3/src/tooltip';
-import {createHistData, IDistributionOptions, IHistData} from './internal';
+import {createHistData, IDistributionOptions, IHistData} from './HistData';
 
 
 export interface IMosaicOptions extends IDistributionOptions {
@@ -192,6 +192,6 @@ export default class Mosaic extends AVisInstance implements IVisInstance {
   }
 }
 
-export function create(data: IHistAbleDataType<ICategoricalValueTypeDesc|INumberValueTypeDesc>|IStratification, parent: Element, options?: IMosaicOptions) {
+export function createMosaic(data: IHistAbleDataType<ICategoricalValueTypeDesc|INumberValueTypeDesc>|IStratification, parent: Element, options?: IMosaicOptions) {
   return new Mosaic(data, parent, options);
 }

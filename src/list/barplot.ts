@@ -45,6 +45,6 @@ export default class BarPlot extends AList<number, INumberValueTypeDesc, IBarPlo
   }
 }
 
-export function create(data: INumericalVector, parent: HTMLElement, options: IBarPlotOptions) {
+export function createBarPlot(data: INumericalVector, parent: HTMLElement, options: IBarPlotOptions) {
   return new BarPlot(data, parent, options);
 }

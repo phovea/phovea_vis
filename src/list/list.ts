@@ -29,6 +29,6 @@ export class List extends AList<any, IValueTypeDesc, IListOptions> {
 
 export default List;
 
-export function create(data: IAnyVector, parent: HTMLElement, options: IListOptions) {
+export function createList(data: IAnyVector, parent: HTMLElement, options: IListOptions) {
   return new List(data, parent, options);
 }

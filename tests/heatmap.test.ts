@@ -1,5 +1,6 @@
 /// <reference types="jest" />
-import {toScale, defaultDomain, defaultColor} from '../src/heatmap/internal';
+import {defaultDomain, defaultColor} from '../src/heatmap/defaultUtils';
+import {toScale} from '../src/heatmap/IScale';
 import {INumberValueTypeDesc} from 'phovea_core/src/datatype';
 
 describe('toScale', () => {

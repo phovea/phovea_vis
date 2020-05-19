@@ -14,7 +14,7 @@ export interface IBarPlotOptions extends IAListOptions {
   max?: number;
 }
 
-export default class BarPlot extends AList<number, INumberValueTypeDesc, IBarPlotOptions> {
+export class BarPlot extends AList<number, INumberValueTypeDesc, IBarPlotOptions> {
   private readonly scale = scale.linear<number,number>();
 
   constructor(data: INumericalVector, parent: HTMLElement, options: IBarPlotOptions = {}) {

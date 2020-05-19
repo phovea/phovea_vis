@@ -101,6 +101,4 @@ export abstract class AList<T, D extends IValueTypeDesc, O extends IAListOptions
       this.markReady();
     });
   }
-
 }
-export default AList;

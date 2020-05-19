@@ -29,7 +29,7 @@ export interface IHeatMap1DOptions extends ICommonHeatMapOptions {
 
 export declare type IHeatMapAbleVector = INumericalVector|ICategoricalVector;
 
-export default class HeatMap1D extends AVisInstance implements IVisInstance {
+export class HeatMap1D extends AVisInstance implements IVisInstance {
   private readonly $node: d3.Selection<any>;
   private readonly colorer: IScale;
 

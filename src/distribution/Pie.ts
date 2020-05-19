@@ -67,7 +67,7 @@ export interface IPieOptions extends IDistributionOptions {
   innerRadius?: number;
 }
 
-export default class Pie extends AVisInstance implements IVisInstance {
+export class Pie extends AVisInstance implements IVisInstance {
   private readonly options: IPieOptions = {
     radius: 50,
     innerRadius: 0,

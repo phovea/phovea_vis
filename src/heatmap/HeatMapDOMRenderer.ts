@@ -13,7 +13,7 @@ import {IScale} from './IScale';
 import {IHeatMapRenderer, ESelectOption} from './IHeatMapRenderer';
 import {IHeatMapAbleMatrix} from './HeatMap';
 
-export default class HeatMapDOMRenderer implements IHeatMapRenderer {
+export class HeatMapDOMRenderer implements IHeatMapRenderer {
   private color: IScale;
 
   constructor(private readonly selectAble: ESelectOption = ESelectOption.CELL, private readonly options: ICommonHeatMapOptions) {

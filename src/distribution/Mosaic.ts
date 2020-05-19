@@ -39,7 +39,7 @@ export interface IMosaicOptions extends IDistributionOptions {
   selectAble?: boolean;
 }
 
-export default class Mosaic extends AVisInstance implements IVisInstance {
+export class Mosaic extends AVisInstance implements IVisInstance {
   private readonly options: IMosaicOptions = {
     width: 20,
     initialScale: 10,

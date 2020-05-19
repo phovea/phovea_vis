@@ -11,7 +11,7 @@ import {IHeatMapRenderer, ESelectOption} from './IHeatMapRenderer';
 import AHeatMapCanvasRenderer from './AHeatMapCanvasRenderer';
 import {IHeatMapAbleMatrix} from './HeatMap';
 
-export default class HeatMapCanvasRenderer extends AHeatMapCanvasRenderer implements IHeatMapRenderer {
+export class HeatMapCanvasRenderer extends AHeatMapCanvasRenderer implements IHeatMapRenderer {
   private imageData: ImageData;
   private ready = false;
 

@@ -112,5 +112,3 @@ export abstract class AHeatMapCanvasRenderer {
     });
   }
 }
-
-export default AHeatMapCanvasRenderer;

@@ -15,14 +15,7 @@ import {sendAPI, encodeParams, MAX_URL_LENGTH} from 'phovea_core/src/ajax';
 import parseRange from 'phovea_core/src/range/parser';
 import {prepareHeatmapUrlParameter} from 'phovea_core/src/matrix/loader';
 
-
-function ensureHex(color: string) {
-  const rgb = d3.rgb(color);
-  const toHex = (d: number) => ('00' + d.toString(16)).slice(-2);
-  return `#${toHex(rgb.r)}${toHex(rgb.g)}${toHex(rgb.b)}`;
-}
-
-export default class HeatMapImageRenderer extends AHeatMapCanvasRenderer implements IHeatMapRenderer {
+export class HeatMapImageRenderer extends AHeatMapCanvasRenderer implements IHeatMapRenderer {
   private image: HTMLImageElement;
   private ready = false;
   private color: IScale;

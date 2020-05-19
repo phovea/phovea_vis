@@ -104,8 +104,6 @@ export class BoxPlot extends AVisInstance implements IVisInstance {
       return rect(ex[0], 0, ex[1] - ex[0], 50);
     });
   }
-}
-export default BoxPlot;
 
 export function createBoxPlot(data: INumericalVector, parent: Element, options?: IBoxPlotOptions) {
   return new BoxPlot(data, parent, options);

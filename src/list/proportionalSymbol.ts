@@ -14,7 +14,7 @@ export interface IProportionalSymbolOptions extends IAListOptions {
   max?: number;
 }
 
-export default class ProportionalSymbol extends AList<number, INumberValueTypeDesc, IProportionalSymbolOptions> {
+export class ProportionalSymbol extends AList<number, INumberValueTypeDesc, IProportionalSymbolOptions> {
   private readonly scale = scale.linear<number,number>();
 
   constructor(data: INumericalVector, parent: HTMLElement, options: IProportionalSymbolOptions = {}) {

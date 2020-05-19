@@ -38,7 +38,7 @@ export interface IHistogramOptions extends IDistributionOptions {
   color?: number;
 }
 
-export default class Histogram extends AVisInstance implements IVisInstance {
+export class Histogram extends AVisInstance implements IVisInstance {
   private options: IHistogramOptions = {
     nbins: 5,
     total: true,

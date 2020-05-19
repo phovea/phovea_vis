@@ -63,7 +63,7 @@ export interface IHeatMapOptions extends ICommonHeatMapOptions {
   labels?: ESelectOption;
 }
 
-export default class HeatMap extends AVisInstance implements IVisInstance {
+export class HeatMap extends AVisInstance implements IVisInstance {
   private $node: d3.Selection<any>;
   private colorer: IScale;
   private renderer: IHeatMapRenderer;

@@ -6,7 +6,7 @@ import '../style.scss';
 import {scale} from 'd3';
 import {mixin} from 'phovea_core/src';
 import {INumericalVector} from 'phovea_core/src/vector';
-import AList, {IAListOptions} from './internal/AList';
+import {AList, IAListOptions} from './internal/AList';
 import {INumberValueTypeDesc} from 'phovea_core/src/datatype';
 
 export interface IBarPlotOptions extends IAListOptions {
@@ -43,8 +43,10 @@ export class BarPlot extends AList<number, INumberValueTypeDesc, IBarPlotOptions
     this.scale.domain(this.domain).range([0, this.maxBarWidth]);
     return super.build();
   }
+
+
+  static createBarPlot(data: INumericalVector, parent: HTMLElement, options: IBarPlotOptions) {
+    return new BarPlot(data, parent, options);
+  }
 }
 
-export function createBarPlot(data: INumericalVector, parent: HTMLElement, options: IBarPlotOptions) {
-  return new BarPlot(data, parent, options);
-}

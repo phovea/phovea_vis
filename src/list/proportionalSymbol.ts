@@ -6,7 +6,7 @@ import '../style.scss';
 import {scale} from 'd3';
 import {mixin} from 'phovea_core/src';
 import {INumericalVector} from 'phovea_core/src/vector';
-import AList, {IAListOptions} from './internal/AList';
+import {AList, IAListOptions} from './internal/AList';
 import {INumberValueTypeDesc} from 'phovea_core/src/datatype';
 
 export interface IProportionalSymbolOptions extends IAListOptions {
@@ -45,8 +45,8 @@ export class ProportionalSymbol extends AList<number, INumberValueTypeDesc, IPro
     this.scale.domain(this.domain).range([0, this.maxDiameter]);
     return super.build();
   }
-}
 
-export function createProportionalSymbol(data: INumericalVector, parent: HTMLElement, options: IProportionalSymbolOptions) {
-  return new ProportionalSymbol(data, parent, options);
+  static createProportionalSymbol(data: INumericalVector, parent: HTMLElement, options: IProportionalSymbolOptions) {
+    return new ProportionalSymbol(data, parent, options);
+  }
 }

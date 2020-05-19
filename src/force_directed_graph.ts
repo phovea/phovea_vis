@@ -180,8 +180,7 @@ export class ForceDirectedGraphVis extends AVisInstance implements IVisInstance 
     });
     return $svg;
   }
-}
-
-export function createForceDirectedGraphVis(data: GraphProxy, parent: Element, options?: IForceDirectedGraphOptions) {
-  return new ForceDirectedGraphVis(data, parent, options);
+  static createForceDirectedGraphVis(data: GraphProxy, parent: Element, options?: IForceDirectedGraphOptions) {
+    return new ForceDirectedGraphVis(data, parent, options);
+  }
 }

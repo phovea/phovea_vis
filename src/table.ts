@@ -117,8 +117,8 @@ export class Table extends AVisInstance implements IVisInstance {
 
     return $table;
   }
-}
 
-export function createTable(data: IAnyMatrix|ITable|IAnyVector, parent: Element, options?: ITableOptions) {
-  return new Table(data, parent, options);
+  static createTable(data: IAnyMatrix|ITable|IAnyVector, parent: Element, options?: ITableOptions) {
+    return new Table(data, parent, options);
+  }
 }

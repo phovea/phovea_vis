@@ -185,7 +185,8 @@ export class Axis extends AVisInstance implements IVisInstance {
     base.h += 2 * this.options.r;
     return base;
   }
-}
-export function createAxis(data: INumericalVector, parent: HTMLElement, options: IAxisOptions) {
-  return new Axis(data, parent, options);
+
+  static createAxis(data: INumericalVector, parent: HTMLElement, options: IAxisOptions) {
+    return new Axis(data, parent, options);
+  }
 }

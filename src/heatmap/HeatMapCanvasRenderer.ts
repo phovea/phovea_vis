@@ -8,7 +8,7 @@ import {isMissing} from './defaultUtils';
 import {ICommonHeatMapOptions} from './ICommonHeatMapOptions';
 import {IScale} from './IScale';
 import {IHeatMapRenderer, ESelectOption} from './IHeatMapRenderer';
-import AHeatMapCanvasRenderer from './AHeatMapCanvasRenderer';
+import {AHeatMapCanvasRenderer} from './AHeatMapCanvasRenderer';
 import {IHeatMapAbleMatrix} from './HeatMap';
 
 export class HeatMapCanvasRenderer extends AHeatMapCanvasRenderer implements IHeatMapRenderer {

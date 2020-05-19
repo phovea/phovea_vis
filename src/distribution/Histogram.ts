@@ -190,9 +190,8 @@ export class Histogram extends AVisInstance implements IVisInstance {
     this.options.rotate = rotate;
     return act;
   }
-}
 
-
-export function createHistrogram(data: IHistAbleDataType<ICategoricalValueTypeDesc|INumberValueTypeDesc>, parent: Element, options?: IHistogramOptions) {
-  return new Histogram(data, parent, options);
+  static createHistrogram(data: IHistAbleDataType<ICategoricalValueTypeDesc|INumberValueTypeDesc>, parent: Element, options?: IHistogramOptions) {
+    return new Histogram(data, parent, options);
+  }
 }

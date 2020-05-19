@@ -9,7 +9,7 @@ import {IHeatMapUrlOptions} from 'phovea_core/src/matrix';
 import {ICommonHeatMapOptions} from './ICommonHeatMapOptions';
 import {IScale} from './IScale';
 import {IHeatMapRenderer, ESelectOption} from './IHeatMapRenderer';
-import AHeatMapCanvasRenderer from './AHeatMapCanvasRenderer';
+import {AHeatMapCanvasRenderer} from './AHeatMapCanvasRenderer';
 import {IHeatMapAbleMatrix} from './HeatMap';
 import {sendAPI, encodeParams, MAX_URL_LENGTH} from 'phovea_core/src/ajax';
 import parseRange from 'phovea_core/src/range/parser';
@@ -107,7 +107,7 @@ export class HeatMapImageRenderer extends AHeatMapCanvasRenderer implements IHea
     const domain = c.domain();
     const args: IHeatMapUrlOptions = {
       range: [domain[0], domain[domain.length - 1]],
-      missing: ensureHex(this.options.missingColor)
+      missing: HeatMapImageRenderer.ensureHex(this.options.missingColor)
     };
 
     function arrEqual(a: any[], b: any[]) {
@@ -125,7 +125,7 @@ export class HeatMapImageRenderer extends AHeatMapCanvasRenderer implements IHea
     } else if (arrEqual(colors, ['blue', 'white', 'red'])) {
       args.palette = 'blue_white_red';
     } else if (colors.length === 2 || colors.length === 3) {
-      args.palette = colors.map(ensureHex).join('-');
+      args.palette = colors.map(HeatMapImageRenderer.ensureHex).join('-');
     }
 
     // persist to get range and create range object again
@@ -148,5 +148,11 @@ export class HeatMapImageRenderer extends AHeatMapCanvasRenderer implements IHea
     super.buildSelection(data, $root, scale);
 
     return $root;
+  }
+
+  static ensureHex(color: string) {
+    const rgb = d3.rgb(color);
+    const toHex = (d: number) => ('00' + d.toString(16)).slice(-2);
+    return `#${toHex(rgb.r)}${toHex(rgb.g)}${toHex(rgb.b)}`;
   }
 }

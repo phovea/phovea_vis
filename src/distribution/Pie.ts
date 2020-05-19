@@ -16,20 +16,6 @@ import {vec2, polygon} from 'phovea_core/src/geom';
 import bindTooltip from 'phovea_d3/src/tooltip';
 import {IDistributionOptions, ITotalHeight, resolveHistMax} from './HistData';
 
-
-function toPolygon(start: number, end: number, radius: number) {
-  const r = [
-    vec2(radius, radius),
-    vec2(radius + Math.cos(start) * radius, radius + Math.sin(start) * radius),
-    vec2(radius + Math.cos(end) * radius, radius + Math.sin(end) * radius)
-  ];
-  //approximate by triangle
-  if (end - start > Math.PI) { //more than 180 degree use one more point
-    r.splice(2, 0, vec2(radius + Math.cos((end - start) * 0.5) * radius, radius + Math.sin((end - start) * 0.5) * radius));
-  }
-  return polygon(r);
-}
-
 interface IRadialHistData {
   name: string;
   start: number;
@@ -194,7 +180,7 @@ export class Pie extends AVisInstance implements IVisInstance {
       const ex = d3.extent(data, (value) => this.hist.binOf(value));
       const startAngle = this.scale(this.histData[ex[0]].start);
       const endAngle = this.scale(this.histData[ex[1]].end);
-      return Promise.resolve(toPolygon(startAngle, endAngle, o.radius));
+      return Promise.resolve(Pie.toPolygon(startAngle, endAngle, o.radius));
     });
   }
 
@@ -219,6 +205,22 @@ export class Pie extends AVisInstance implements IVisInstance {
     return act;
   }
 
+  static createPie(data: IHistAbleDataType<ICategoricalValueTypeDesc|INumberValueTypeDesc>|IStratification, parent: Element, options?: IPieOptions) {
+    return new Pie(data, parent, options);
+  }
+
+  static toPolygon(start: number, end: number, radius: number) {
+    const r = [
+      vec2(radius, radius),
+      vec2(radius + Math.cos(start) * radius, radius + Math.sin(start) * radius),
+      vec2(radius + Math.cos(end) * radius, radius + Math.sin(end) * radius)
+    ];
+    //approximate by triangle
+    if (end - start > Math.PI) { //more than 180 degree use one more point
+      r.splice(2, 0, vec2(radius + Math.cos((end - start) * 0.5) * radius, radius + Math.sin((end - start) * 0.5) * radius));
+    }
+    return polygon(r);
+  }
 
   //updatedOption (name, value) {
   //  if (name === 'innerRadius' || name === 'radius' || name === 'total') {
@@ -232,8 +234,4 @@ export class Pie extends AVisInstance implements IVisInstance {
   //
   //  this.$node.selectAll('path').transition().attr('d', this.arc);
   //}
-}
-
-export function createPie(data: IHistAbleDataType<ICategoricalValueTypeDesc|INumberValueTypeDesc>|IStratification, parent: Element, options?: IPieOptions) {
-  return new Pie(data, parent, options);
 }

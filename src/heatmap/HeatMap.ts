@@ -15,27 +15,12 @@ import {defaultColor, defaultDomain} from './defaultUtils';
 import {ICommonHeatMapOptions} from './ICommonHeatMapOptions';
 import {toScale, IScale} from './IScale';
 import {IHeatMapRenderer, ESelectOption} from './IHeatMapRenderer';
-import HeatMapDOMRenderer from './HeatMapDOMRenderer';
-import HeatMapImageRenderer from './HeatMapImageRenderer';
-import HeatMapCanvasRenderer from './HeatMapCanvasRenderer';
-import {IHeatMap1DOptions, create1D, IHeatMapAbleVector} from './HeatMap1D';
+import {HeatMapDOMRenderer} from './HeatMapDOMRenderer';
+import {HeatMapImageRenderer} from './HeatMapImageRenderer';
+import {HeatMapCanvasRenderer} from './HeatMapCanvasRenderer';
+import {HeatMap1D, IHeatMap1DOptions, IHeatMapAbleVector} from './HeatMap1D';
 
 export declare type IHeatMapAbleMatrix = INumericalMatrix|ICategoricalMatrix;
-
-function createRenderer(d: IHeatMapAbleMatrix, selectAble: ESelectOption = ESelectOption.CELL, options:IHeatMapOptions): IHeatMapRenderer {
-  const cells = d.length;
-  if (cells <= 1000) {
-    return new HeatMapDOMRenderer(selectAble, options);
-  }
-  const url = d.heatmapUrl(); //can the url be created the return value should be valid
-  if (url && options.forceThumbnails) {
-    return new HeatMapImageRenderer(selectAble, options);
-  } else if (cells < 5000 || url === null) {
-    return new HeatMapCanvasRenderer(selectAble, options);
-  } else {
-    return new HeatMapImageRenderer(selectAble, options);
-  }
-}
 
 export interface IHeatMapOptions extends ICommonHeatMapOptions {
   /**
@@ -105,7 +90,7 @@ export class HeatMap extends AVisInstance implements IVisInstance {
 
     const selection = typeof this.options.selectAble === 'boolean' ? (this.options.selectAble ? ESelectOption.CELL : ESelectOption.NONE) : ESelectOption[<string>this.options.selectAble];
 
-    this.renderer = createRenderer(data, selection, this.options);
+    this.renderer = HeatMap.createRenderer(data, selection, this.options);
 
     this.$node = this.build(d3.select(parent));
     this.$node.datum(data);
@@ -250,17 +235,33 @@ export class HeatMap extends AVisInstance implements IVisInstance {
   update() {
     this.renderer.redraw(this.$node, this.options.scale);
   }
-}
 
-export function create2D(data: IHeatMapAbleMatrix, parent: HTMLElement, options?: IHeatMapOptions) {
-  return new HeatMap(data, parent, options);
-}
-
-export function createHeatMapDimensions(data: IHeatMapAbleMatrix|IHeatMapAbleVector, parent: HTMLElement, options?: IHeatMapOptions|IHeatMap1DOptions): AVisInstance {
-  if (data.desc.type === 'matrix') {
-    return create2D(<IHeatMapAbleMatrix>data, parent, <IHeatMapOptions>options);
-  } else if (data.desc.type === 'vector') {
-    return create1D(<IHeatMapAbleVector>data, parent, <IHeatMap1DOptions>options);
+  static createRenderer(d: IHeatMapAbleMatrix, selectAble: ESelectOption = ESelectOption.CELL, options:IHeatMapOptions): IHeatMapRenderer {
+    const cells = d.length;
+    if (cells <= 1000) {
+      return new HeatMapDOMRenderer(selectAble, options);
+    }
+    const url = d.heatmapUrl(); //can the url be created the return value should be valid
+    if (url && options.forceThumbnails) {
+      return new HeatMapImageRenderer(selectAble, options);
+    } else if (cells < 5000 || url === null) {
+      return new HeatMapCanvasRenderer(selectAble, options);
+    } else {
+      return new HeatMapImageRenderer(selectAble, options);
+    }
   }
-  throw new Error('unknown data type: ' + data.desc.type);
+
+  static create2D(data: IHeatMapAbleMatrix, parent: HTMLElement, options?: IHeatMapOptions) {
+    return new HeatMap(data, parent, options);
+  }
+
+  static createHeatMapDimensions(data: IHeatMapAbleMatrix|IHeatMapAbleVector, parent: HTMLElement, options?: IHeatMapOptions|IHeatMap1DOptions): AVisInstance {
+    if (data.desc.type === 'matrix') {
+      return HeatMap.create2D(<IHeatMapAbleMatrix>data, parent, <IHeatMapOptions>options);
+    } else if (data.desc.type === 'vector') {
+      return HeatMap1D.create1D(<IHeatMapAbleVector>data, parent, <IHeatMap1DOptions>options);
+    }
+    throw new Error('unknown data type: ' + data.desc.type);
+  }
 }
+

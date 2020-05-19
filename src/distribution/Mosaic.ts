@@ -190,8 +190,8 @@ export class Mosaic extends AVisInstance implements IVisInstance {
     this.options.rotate = rotate;
     return act;
   }
-}
 
-export function createMosaic(data: IHistAbleDataType<ICategoricalValueTypeDesc|INumberValueTypeDesc>|IStratification, parent: Element, options?: IMosaicOptions) {
-  return new Mosaic(data, parent, options);
+  static createMosaic(data: IHistAbleDataType<ICategoricalValueTypeDesc|INumberValueTypeDesc>|IStratification, parent: Element, options?: IMosaicOptions) {
+    return new Mosaic(data, parent, options);
+  }
 }

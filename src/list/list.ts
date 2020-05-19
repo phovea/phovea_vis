@@ -6,7 +6,7 @@ import '../style.scss';
 import {format} from 'd3';
 import {mixin} from 'phovea_core/src';
 import {IAnyVector} from 'phovea_core/src/vector';
-import AList, {IAListOptions} from './internal/AList';
+import {AList, IAListOptions} from './internal/AList';
 import {IValueTypeDesc} from 'phovea_core/src/datatype';
 
 export interface IListOptions extends IAListOptions {
@@ -25,6 +25,8 @@ export class List extends AList<any, IValueTypeDesc, IListOptions> {
     $update.style('font-size', (factor >= 1 ? null : Math.round(factor * 100) + '%'));
     $update.text(formatter);
   }
+
+
 }
 
 export function createList(data: IAnyVector, parent: HTMLElement, options: IListOptions) {

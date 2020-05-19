@@ -157,9 +157,8 @@ export class HeatMap1D extends AVisInstance implements IVisInstance {
     });
     return $svg;
   }
-}
 
-
-export function create1D(data: IHeatMapAbleVector, parent: HTMLElement, options?: IHeatMap1DOptions): AVisInstance {
-  return new HeatMap1D(data, parent, options);
+  static create1D(data: IHeatMapAbleVector, parent: HTMLElement, options?: IHeatMap1DOptions): AVisInstance {
+    return new HeatMap1D(data, parent, options);
+  }
 }

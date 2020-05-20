@@ -6,7 +6,7 @@ import './style.scss';
 import * as d3 from 'd3';
 import {mixin} from 'phovea_core/src';
 import {AVisInstance, IVisInstance, assignVis, ITransform, IVisInstanceOptions} from 'phovea_core/src/vis';
-import {selectionUtil} from 'phovea_d3/src/d3util';
+import {D3Utils} from 'phovea_d3/src/d3util';
 import {INumericalVector} from 'phovea_core/src/vector';
 import {Range} from 'phovea_core/src/range';
 
@@ -104,7 +104,7 @@ export class Axis extends AVisInstance implements IVisInstance {
     }
     $axis.call(axis);
 
-    const onClick = selectionUtil(this.data, $points, 'circle');
+    const onClick = D3Utils.selectionUtil(this.data, $points, 'circle');
 
     const cxy = (o.orient === 'left' || o.orient === 'right') ? 'cy' : 'cx';
     data.data().then((arr) => {

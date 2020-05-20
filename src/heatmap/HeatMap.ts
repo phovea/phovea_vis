@@ -11,7 +11,7 @@ import {rect} from 'phovea_core/src/geom';
 import {mixin, onDOMNodeRemoved} from 'phovea_core/src';
 import {toSelectOperation} from 'phovea_core/src/idtype';
 import {INumericalMatrix, ICategoricalMatrix, DIM_ROW, DIM_COL} from 'phovea_core/src/matrix/IMatrix';
-import {defaultColor, defaultDomain} from './defaultUtils';
+import {DefaultUtils} from './DefaultUtils';
 import {ICommonHeatMapOptions} from './ICommonHeatMapOptions';
 import {toScale, IScale} from './IScale';
 import {IHeatMapRenderer, ESelectOption} from './IHeatMapRenderer';
@@ -70,8 +70,8 @@ export class HeatMap extends AVisInstance implements IVisInstance {
     super();
     const value = this.data.valuetype;
     mixin(this.options, {
-      color: defaultColor(value),
-      domain: defaultDomain(value)
+      color: DefaultUtils.defaultColor(value),
+      domain: DefaultUtils.defaultDomain(value)
     }, options);
 
     // if direct scale not given use initial scale

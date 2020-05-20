@@ -26,9 +26,9 @@ export class List extends AList<any, IValueTypeDesc, IListOptions> {
     $update.text(formatter);
   }
 
+  static createList(data: IAnyVector, parent: HTMLElement, options: IListOptions) {
+    return new List(data, parent, options);
+  }
 
 }
 
-export function createList(data: IAnyVector, parent: HTMLElement, options: IListOptions) {
-  return new List(data, parent, options);
-}

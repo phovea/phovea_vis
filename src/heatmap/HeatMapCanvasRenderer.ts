@@ -4,7 +4,7 @@
 
 
 import * as d3 from 'd3';
-import {isMissing} from './defaultUtils';
+import {DefaultUtils} from './DefaultUtils';
 import {ICommonHeatMapOptions} from './ICommonHeatMapOptions';
 import {IScale} from './IScale';
 import {IHeatMapRenderer, ESelectOption} from './IHeatMapRenderer';
@@ -51,7 +51,7 @@ export class HeatMapCanvasRenderer extends AHeatMapCanvasRenderer implements IHe
     arr.forEach((row, j) => {
       const t = j * ncol;
       row.forEach((cell, i) => {
-        const color = d3.rgb(isMissing(cell) ? this.options.missingColor : c(cell));
+        const color = d3.rgb(DefaultUtils.isMissing(cell) ? this.options.missingColor : c(cell));
         rgba[(t + i) * 4] = color.r;
         rgba[(t + i) * 4 + 1] = color.g;
         rgba[(t + i) * 4 + 2] = color.b;

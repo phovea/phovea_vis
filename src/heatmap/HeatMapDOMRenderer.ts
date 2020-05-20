@@ -7,7 +7,7 @@ import * as d3 from 'd3';
 import {Range, cell} from 'phovea_core/src/range';
 import {onDOMNodeRemoved} from 'phovea_core/src';
 import {toSelectOperation, defaultSelectionType} from 'phovea_core/src/idtype';
-import {isMissing} from './defaultUtils';
+import {DefaultUtils} from './DefaultUtils';
 import {ICommonHeatMapOptions} from './ICommonHeatMapOptions';
 import {IScale} from './IScale';
 import {IHeatMapRenderer, ESelectOption} from './IHeatMapRenderer';
@@ -35,8 +35,8 @@ export class HeatMapDOMRenderer implements IHeatMapRenderer {
 
   redraw($node: d3.Selection<any>, scale: number[]) {
     $node.select('svg').selectAll('rect')
-      .attr('fill', (d) => isMissing(d) ? this.options.missingColor : this.color(d))
-      .classed('missing', isMissing);
+      .attr('fill', (d) => DefaultUtils.isMissing(d) ? this.options.missingColor : this.color(d))
+      .classed('missing', DefaultUtils.isMissing);
   }
 
   build(data: IHeatMapAbleMatrix, $parent: d3.Selection<any>, scale: [number, number], c: IScale, onReady: () => void) {
@@ -60,9 +60,9 @@ export class HeatMapDOMRenderer implements IHeatMapRenderer {
           height: 1,
           x: (d, j) => j,
           y: i,
-          fill: (d) => isMissing(d) ? that.options.missingColor : c(d)
+          fill: (d) => DefaultUtils.isMissing(d) ? that.options.missingColor : c(d)
         });
-        $colsEnter.classed('missing', isMissing);
+        $colsEnter.classed('missing', DefaultUtils.isMissing);
         if (that.selectAble !== ESelectOption.NONE) {
           $colsEnter.on('click', (d, j) => {
             data.selectProduct([cell(i, j)], toSelectOperation(<MouseEvent>d3.event));

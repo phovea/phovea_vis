@@ -11,8 +11,8 @@ import {IHistAbleDataType, ICategoricalValueTypeDesc, INumberValueTypeDesc} from
 import {IStratification} from 'phovea_core/src/stratification';
 import {IHistogram} from 'phovea_core/src/math';
 import {toSelectOperation} from 'phovea_core/src/idtype';
-import bindTooltip from 'phovea_d3/src/tooltip';
-import {createHistData, IDistributionOptions, IHistData} from './HistData';
+import {ToolTip} from 'phovea_d3/src/ToolTip';
+import {HistUtils, IDistributionOptions, IHistData} from './HistData';
 
 
 export interface IMosaicOptions extends IDistributionOptions {
@@ -124,12 +124,12 @@ export class Mosaic extends AVisInstance implements IVisInstance {
 
     this.data.hist().then((hist) => {
       this.hist = hist;
-      const histData = this.histData = createHistData(hist, data);
+      const histData = this.histData = HistUtils.createHistData(hist, data);
 
       const $m = $data.selectAll('rect').data(histData);
       $m.enter().append('rect')
         .attr('width', '100%')
-        .call(bindTooltip<IHistData>((d) => `${d.name} ${d.v} entries (${Math.round(d.ratio * 100)}%)`))
+        .call(ToolTip.bind<IHistData>((d) => `${d.name} ${d.v} entries (${Math.round(d.ratio * 100)}%)`))
         .on('click', onClick);
       $m.attr({
         y: (d) => d.acc,

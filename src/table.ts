@@ -10,7 +10,7 @@ import {rect} from 'phovea_core/src/geom';
 import {IAnyMatrix} from 'phovea_core/src/matrix';
 import {ITable} from 'phovea_core/src/table';
 import {IAnyVector} from 'phovea_core/src/vector';
-import {selectionUtil} from 'phovea_d3/src/d3util';
+import {D3Utils} from 'phovea_d3/src/d3util';
 import {mixin} from 'phovea_core/src';
 
 export declare type ITableOptions = IVisInstanceOptions;
@@ -91,7 +91,7 @@ export class Table extends AVisInstance implements IVisInstance {
     const $table = $parent.append('table').attr('class', 'phovea-table');
     $table.append('thead').append('tr');
     $table.append('tbody');
-    const onClick = selectionUtil(this.data, $table.select('tbody'), 'tr');
+    const onClick = D3Utils.selectionUtil(this.data, $table.select('tbody'), 'tr');
     Promise.all(promises).then((arr) => {
       const cols: string[] = arr[0], rows: string[] = arr[1], d: any[][] = arr[2];
       const $headers = $table.select('thead tr').selectAll('th').data(['ID'].concat(cols));

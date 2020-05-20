@@ -11,8 +11,8 @@ import {IHistAbleDataType, ICategoricalValueTypeDesc, INumberValueTypeDesc} from
 import {IStratification} from 'phovea_core/src/stratification';
 import {IHistogram} from 'phovea_core/src/math';
 import {toSelectOperation} from 'phovea_core/src/idtype';
-import bindTooltip from 'phovea_d3/src/tooltip';
-import {createHistData, IDistributionOptions, IHistData, ITotalHeight, resolveHistMax} from './HistData';
+import {ToolTip} from 'phovea_d3/src/ToolTip';
+import {HistUtils, IDistributionOptions, IHistData, ITotalHeight} from './HistData';
 
 export interface IHistogramOptions extends IDistributionOptions {
   /**
@@ -125,16 +125,16 @@ export class Histogram extends AVisInstance implements IVisInstance {
     this.data.hist(Math.floor(o.nbins)).then((hist) => {
       this.hist = hist;
       xscale.domain(d3.range(hist.bins));
-      return resolveHistMax(hist, this.options.total);
+      return HistUtils.resolveHistMax(hist, this.options.total);
     }).then((histmax) => {
       const hist = this.hist;
       yscale.domain([0, histmax]);
-      const histData = this.histData = createHistData(hist, this.data);
+      const histData = this.histData = HistUtils.createHistData(hist, this.data);
 
       const $m = $data.selectAll('rect').data(histData);
       $m.enter().append('rect')
         .attr('width', xscale.rangeBand())
-        .call(bindTooltip<IHistData>((d) => `${d.name} ${d.v} entries (${Math.round(d.ratio * 100)}%)`))
+        .call(ToolTip.bind<IHistData>((d) => `${d.name} ${d.v} entries (${Math.round(d.ratio * 100)}%)`))
         .on('click', onClick);
       $m.attr({
         x: (d, i) => xscale(i),

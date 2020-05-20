@@ -8,9 +8,9 @@ import {Range} from 'phovea_core/src/range';
 import {AVisInstance, IVisInstance, assignVis} from 'phovea_core/src/vis';
 import {rect} from 'phovea_core/src/geom';
 import {mixin} from 'phovea_core/src';
-import {selectionUtil} from 'phovea_d3/src/d3util';
+import {D3Utils} from 'phovea_d3/src/d3util';
 import {INumericalVector, ICategoricalVector} from 'phovea_core/src/vector';
-import {defaultColor, defaultDomain, isMissing} from './defaultUtils';
+import {DefaultUtils} from './DefaultUtils';
 import {ICommonHeatMapOptions} from './ICommonHeatMapOptions';
 import {toScale, IScale} from './IScale';
 
@@ -46,8 +46,8 @@ export class HeatMap1D extends AVisInstance implements IVisInstance {
     super();
     const value = this.data.valuetype;
     mixin(this.options, {
-      color: defaultColor(value),
-      domain: defaultDomain(value)
+      color: DefaultUtils.defaultColor(value),
+      domain: DefaultUtils.defaultDomain(value)
     }, options);
     this.options.scale = [1, this.options.initialScale];
     if (this.options.heightTo) {
@@ -125,7 +125,7 @@ export class HeatMap1D extends AVisInstance implements IVisInstance {
   private recolor() {
     const c = this.colorer;
     c.domain(this.options.domain).range(this.options.color);
-    this.$node.selectAll('rect').attr('fill', (d) => isMissing(d) ? this.options.missingColor : c(d));
+    this.$node.selectAll('rect').attr('fill', (d) => DefaultUtils.isMissing(d) ? this.options.missingColor : c(d));
   }
 
   private build($parent: d3.Selection<any>) {
@@ -143,13 +143,13 @@ export class HeatMap1D extends AVisInstance implements IVisInstance {
     const t = <Promise<string|number[]>>this.data.data();
     t.then((arr: any[]) => {
       const $rows = $g.selectAll('rect').data(arr);
-      const onClick = selectionUtil(this.data, $g, 'rect');
+      const onClick = D3Utils.selectionUtil(this.data, $g, 'rect');
       $rows.enter().append('rect').on('click', onClick).attr({
         width: this.options.width,
         height: 1
       }).append('title').text(String);
       $rows.attr({
-        fill: (d) => isMissing(d) ? this.options.missingColor : c(d),
+        fill: (d) => DefaultUtils.isMissing(d) ? this.options.missingColor : c(d),
         y: (d, i) => i
       });
       $rows.exit().remove();

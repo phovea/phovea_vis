@@ -9,7 +9,7 @@ import {AVisInstance, IVisInstance, assignVis, IVisInstanceOptions} from 'phovea
 import {rect} from 'phovea_core/src/geom';
 import {mixin} from 'phovea_core/src';
 import {INumericalVector} from 'phovea_core/src/vector';
-import bindTooltip from 'phovea_d3/src/tooltip';
+import {ToolTip} from 'phovea_d3/src/ToolTip';
 
 
 export declare type IBoxPlotOptions = IVisInstanceOptions;
@@ -78,7 +78,7 @@ export class BoxPlot extends AVisInstance implements IVisInstance {
         width: s(stats.q3),
         height: '80%',
         'class': 'box'
-      }).call(bindTooltip(text));
+      }).call(ToolTip.bind(text));
 
       $t.append('line').attr({
         x1: s(stats.median),

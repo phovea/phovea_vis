@@ -13,8 +13,8 @@ import {IStratification} from 'phovea_core/src/stratification';
 import {ICatHistogram} from 'phovea_core/src/math';
 import {toSelectOperation} from 'phovea_core/src/idtype';
 import {vec2, polygon} from 'phovea_core/src/geom';
-import bindTooltip from 'phovea_d3/src/tooltip';
-import {IDistributionOptions, ITotalHeight, resolveHistMax} from './HistData';
+import {ToolTip} from 'phovea_d3/src/ToolTip';
+import {IDistributionOptions, ITotalHeight, HistUtils} from './HistData';
 
 interface IRadialHistData {
   name: string;
@@ -131,7 +131,7 @@ export class Pie extends AVisInstance implements IVisInstance {
 
     data.hist().then((hist) => {
       this.hist = <ICatHistogram>hist;
-      return resolveHistMax(hist, this.options.total);
+      return HistUtils.resolveHistMax(hist, this.options.total);
     }).then((total) => {
       const hist = this.hist;
       scale.domain([0, total]);
@@ -154,7 +154,7 @@ export class Pie extends AVisInstance implements IVisInstance {
       const $m = $data.selectAll('path').data(histData);
       $m.enter()
         .append('path')
-        .call(bindTooltip<IRadialHistData>((d) => d.name + ' ' + (d.size) + ' entries (' + Math.round(d.ratio * 100) + '%)'))
+        .call(ToolTip.bind<IRadialHistData>((d) => d.name + ' ' + (d.size) + ' entries (' + Math.round(d.ratio * 100) + '%)'))
         .on('click', (d) => data.select(0, d.range, toSelectOperation(<MouseEvent>d3.event)));
       $m.attr('d', arc)
         .attr('fill', (d) => d.color)

@@ -22,72 +22,75 @@ export interface IHistData {
   readonly color: string;
 }
 
-function createCategoricalHistData(hist: ICatHistogram): IHistData[] {
-  const categories: any[] = hist.categories;
-  const cols = hist.colors || d3.scale.category10().range();
-  const total = hist.validCount;
-  const data = [];
-  let acc = 0;
+export class HistUtils {
 
-  hist.forEach((b, i) => {
-    data[i] = {
-      v: b,
-      acc,
-      ratio: b / total,
-      range: hist.range(i),
+  static createCategoricalHistData(hist: ICatHistogram): IHistData[] {
+    const categories: any[] = hist.categories;
+    const cols = hist.colors || d3.scale.category10().range();
+    const total = hist.validCount;
+    const data = [];
+    let acc = 0;
 
-      name: (typeof categories[i] === 'string') ? categories[i] : categories[i].name,
-      color: (categories[i].color === undefined) ? cols[i] : categories[i].color
-    };
-    acc += b;
-  });
-  return data;
-}
+    hist.forEach((b, i) => {
+      data[i] = {
+        v: b,
+        acc,
+        ratio: b / total,
+        range: hist.range(i),
 
-function createNumericalHistData(hist: IHistogram, range: number[]): IHistData[] {
-  const data = [],
-    cols = d3.scale.linear<string, string>().domain(range).range(['#111111', '#999999']),
-    total = hist.validCount,
-    binWidth = (range[1] - range[0]) / hist.bins;
-  let acc = 0;
-  hist.forEach((b, i) => {
-    data[i] = {
-      v: b,
-      acc,
-      ratio: b / total,
-      range: hist.range(i),
-
-      name: 'Bin ' + (i + 1) + ' (center: ' + d3.round((i + 0.5) * binWidth, 2) + ')',
-      color: cols((i + 0.5) * binWidth)
-    };
-    acc += b;
-  });
-  return data;
-}
-
-export function createHistData(hist: IHistogram, data: IHistAbleDataType<ICategoricalValueTypeDesc|INumberValueTypeDesc>|IStratification) {
-  if (data.desc.type === 'stratification') {
-    return createCategoricalHistData(<ICatHistogram>hist);
+        name: (typeof categories[i] === 'string') ? categories[i] : categories[i].name,
+        color: (categories[i].color === undefined) ? cols[i] : categories[i].color
+      };
+      acc += b;
+    });
+    return data;
   }
-  const d = (<IHistAbleDataType<ICategoricalValueTypeDesc|INumberValueTypeDesc>>data).valuetype;
-  if (d.type === VALUE_TYPE_CATEGORICAL) {
-    return createCategoricalHistData(<ICatHistogram>hist);
+
+  static createNumericalHistData(hist: IHistogram, range: number[]): IHistData[] {
+    const data = [],
+      cols = d3.scale.linear<string, string>().domain(range).range(['#111111', '#999999']),
+      total = hist.validCount,
+      binWidth = (range[1] - range[0]) / hist.bins;
+    let acc = 0;
+    hist.forEach((b, i) => {
+      data[i] = {
+        v: b,
+        acc,
+        ratio: b / total,
+        range: hist.range(i),
+
+        name: 'Bin ' + (i + 1) + ' (center: ' + d3.round((i + 0.5) * binWidth, 2) + ')',
+        color: cols((i + 0.5) * binWidth)
+      };
+      acc += b;
+    });
+    return data;
   }
-  return createNumericalHistData(hist, (<INumberValueTypeDesc>d).range);
-}
+
+  static createHistData(hist: IHistogram, data: IHistAbleDataType<ICategoricalValueTypeDesc|INumberValueTypeDesc>|IStratification) {
+    if (data.desc.type === 'stratification') {
+      return HistUtils.createCategoricalHistData(<ICatHistogram>hist);
+    }
+    const d = (<IHistAbleDataType<ICategoricalValueTypeDesc|INumberValueTypeDesc>>data).valuetype;
+    if (d.type === VALUE_TYPE_CATEGORICAL) {
+      return HistUtils.createCategoricalHistData(<ICatHistogram>hist);
+    }
+    return HistUtils.createNumericalHistData(hist, (<INumberValueTypeDesc>d).range);
+  }
 
 
-export function resolveHistMax(hist: IHistogram, totalHeight: ITotalHeight): Promise<number> {
-  const op: ((hist: IHistogram) => number|boolean) = typeof totalHeight === 'function' ? (<(hist: IHistogram) => number|boolean>totalHeight) : () => <number|boolean>totalHeight;
-  return Promise.resolve<number|boolean>(op(hist)).then((r: number|boolean) => {
-    if (r === true) {
-      return hist.validCount;
-    }
-    if (r === false) {
-      return hist.largestBin;
-    }
-    return <number>r;
-  });
+  static resolveHistMax(hist: IHistogram, totalHeight: ITotalHeight): Promise<number> {
+    const op: ((hist: IHistogram) => number|boolean) = typeof totalHeight === 'function' ? (<(hist: IHistogram) => number|boolean>totalHeight) : () => <number|boolean>totalHeight;
+    return Promise.resolve<number|boolean>(op(hist)).then((r: number|boolean) => {
+      if (r === true) {
+        return hist.validCount;
+      }
+      if (r === false) {
+        return hist.largestBin;
+      }
+      return <number>r;
+    });
+  }
 }
 
 export declare type ITotalHeight = number|boolean|((hist: IHistogram) => number|boolean|Promise<number|boolean>);

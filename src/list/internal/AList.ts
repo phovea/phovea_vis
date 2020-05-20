@@ -6,7 +6,7 @@ import '../../style.scss';
 import {select, extent, selection} from 'd3';
 import {mixin} from 'phovea_core/src';
 import {AVisInstance, IVisInstance, assignVis, IVisInstanceOptions} from 'phovea_core/src/vis';
-import {selectionUtil} from 'phovea_d3/src/d3util';
+import {D3Utils} from 'phovea_d3/src/d3util';
 import {IVector} from 'phovea_core/src/vector';
 import {rect} from 'phovea_core/src/geom';
 import Range from 'phovea_core/src/range/Range';
@@ -92,7 +92,7 @@ export abstract class AList<T, D extends IValueTypeDesc, O extends IAListOptions
     this.$node.style('width', `${scale[0] * this.options.width}px`);
     this.$node.style('height', `${scale[1] * this.data.length * this.options.rowHeight}px`);
 
-    const onClick = selectionUtil(this.data, this.$node, 'div');
+    const onClick = D3Utils.selectionUtil(this.data, this.$node, 'div');
     this.data.data().then((arr: T[]) => {
       const $rows = this.$node.selectAll('div').data(arr);
       const $rowsEnter = $rows.enter().append('div').on('click', onClick);

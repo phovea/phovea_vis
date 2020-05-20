@@ -1,5 +1,5 @@
 /// <reference types="jest" />
-import {defaultDomain, defaultColor} from '../src/heatmap/defaultUtils';
+import {DefaultUtils} from '../src/heatmap/DefaultUtils';
 import {toScale} from '../src/heatmap/IScale';
 import {INumberValueTypeDesc} from 'phovea_core/src/datatype';
 
@@ -9,8 +9,8 @@ describe('toScale', () => {
       type: 'real',
       range: [-1, 1]
     };
-    const domain = defaultDomain(value);
-    const range = defaultColor(value);
+    const domain = DefaultUtils.defaultDomain(value);
+    const range = DefaultUtils.defaultColor(value);
     const scale = toScale(value).domain(domain).range(range);
     expect(scale(-1)).toEqual('#0000ff');
     expect(scale(0)).toEqual('#ffffff');
@@ -21,8 +21,8 @@ describe('toScale', () => {
       type: 'real',
       range: [-0.1, 10]
     };
-    const domain = defaultDomain(value);
-    const range = defaultColor(value);
+    const domain = DefaultUtils.defaultDomain(value);
+    const range = DefaultUtils.defaultColor(value);
     const scale = toScale(value).domain(domain).range(range);
     expect(scale(-0.1)).toEqual('#fcfcff');
     expect(scale(0)).toEqual('#ffffff');
@@ -34,8 +34,8 @@ describe('toScale', () => {
       type: 'real',
       range: [0, 1]
     };
-    const domain = defaultDomain(value);
-    const range = defaultColor(value);
+    const domain = DefaultUtils.defaultDomain(value);
+    const range = DefaultUtils.defaultColor(value);
     const scale = toScale(value).domain(domain).range(range);
     expect(scale(0)).toEqual('#ffffff');
     expect(scale(0.5)).toEqual('#ff8080'); // interpolation
@@ -46,8 +46,8 @@ describe('toScale', () => {
       type: 'real',
       range: [-1, 0]
     };
-    const domain = defaultDomain(value);
-    const range = defaultColor(value);
+    const domain = DefaultUtils.defaultDomain(value);
+    const range = DefaultUtils.defaultColor(value);
     const scale = toScale(value).domain(domain).range(range);
     expect(scale(-1)).toEqual('#ffffff'); // TODO: Should be #0000ff?
     expect(scale(0)).toEqual('#ff0000'); // TODO: Should be #ffffff?

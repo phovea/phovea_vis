@@ -2,7 +2,7 @@
  * Created by Samuel Gratzl on 05.08.2014.
  */
 
-export * from './defaultUtils';
+export * from './DefaultUtils';
 export * from './HeatMap';
 export * from './HeatMap1D';
 export * from './IHeatMapRenderer';

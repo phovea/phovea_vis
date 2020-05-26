@@ -1,5 +1,5 @@
 /// <reference types="jest" />
-import {Table} from '../src/table';
+import {Table} from '../src/base/table';
 import {Matrix} from 'phovea_core';
 import {RangeElem} from 'phovea_core';
 

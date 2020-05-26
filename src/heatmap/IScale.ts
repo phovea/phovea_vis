@@ -1,5 +1,5 @@
 import * as d3 from 'd3';
-import {VALUE_TYPE_CATEGORICAL} from 'phovea_core/src/datatype';
+import {VALUE_TYPE_CATEGORICAL} from 'phovea_core';
 
 export interface IScale {
   (x: any): any;

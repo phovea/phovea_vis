@@ -3,14 +3,14 @@
  */
 
 import * as d3 from 'd3';
-import {Range} from 'phovea_core/src/range';
-import {IVisInstanceOptions} from 'phovea_core/src/vis';
+import {Range} from 'phovea_core';
+import {IVisInstanceOptions} from 'phovea_core';
 import {
   VALUE_TYPE_CATEGORICAL,
   IHistAbleDataType, INumberValueTypeDesc, ICategoricalValueTypeDesc
-} from 'phovea_core/src/datatype';
-import {IStratification} from 'phovea_core/src/stratification';
-import {ICatHistogram, IHistogram} from 'phovea_core/src/math';
+} from 'phovea_core';
+import {IStratification} from 'phovea_core';
+import {ICatHistogram, IHistogram} from 'phovea_core';
 
 
 export interface IHistData {

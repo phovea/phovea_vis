@@ -4,14 +4,14 @@
 
 import '../style.scss';
 import * as d3 from 'd3';
-import {onDOMNodeRemoved, mixin} from 'phovea_core/src';
-import {Range} from 'phovea_core/src/range';
-import {AVisInstance, IVisInstance, assignVis, ITransform} from 'phovea_core/src/vis';
-import {IHistAbleDataType, ICategoricalValueTypeDesc, INumberValueTypeDesc} from 'phovea_core/src/datatype';
-import {IStratification} from 'phovea_core/src/stratification';
-import {IHistogram} from 'phovea_core/src/math';
-import {toSelectOperation} from 'phovea_core/src/idtype';
-import {ToolTip} from 'phovea_d3/src/ToolTip';
+import {onDOMNodeRemoved, mixin} from 'phovea_core';
+import {Range} from 'phovea_core';
+import {AVisInstance, IVisInstance, assignVis, ITransform} from 'phovea_core';
+import {IHistAbleDataType, ICategoricalValueTypeDesc, INumberValueTypeDesc} from 'phovea_core';
+import {IStratification} from 'phovea_core';
+import {IHistogram} from 'phovea_core';
+import {toSelectOperation} from 'phovea_core';
+import {ToolTip} from 'phovea_d3';
 import {HistUtils, IDistributionOptions, IHistData} from './HistData';
 
 

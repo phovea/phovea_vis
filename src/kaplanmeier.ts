@@ -5,13 +5,13 @@
 
 import './style.scss';
 import * as d3 from 'd3';
-import {Range} from 'phovea_core/src/range';
-import {AVisInstance, IVisInstance, assignVis, IVisInstanceOptions} from 'phovea_core/src/vis';
-import {mixin} from 'phovea_core/src';
-import {INumericalVector} from 'phovea_core/src/vector';
-import {} from 'phovea_core/src/vis';
-import {} from 'phovea_core/src/range';
-import {} from 'phovea_core/src';
+import {Range} from 'phovea_core';
+import {AVisInstance, IVisInstance, assignVis, IVisInstanceOptions} from 'phovea_core';
+import {mixin} from 'phovea_core';
+import {INumericalVector} from 'phovea_core';
+import {} from 'phovea_core';
+import {} from 'phovea_core';
+import {} from 'phovea_core';
 
 export interface IKaplanMaierOptions extends IVisInstanceOptions {
   /**

@@ -1,4 +1,4 @@
-import {IVisInstanceOptions} from 'phovea_core/src/vis';
+import {IVisInstanceOptions} from 'phovea_core';
 
 export interface ICommonHeatMapOptions extends IVisInstanceOptions {
   /**

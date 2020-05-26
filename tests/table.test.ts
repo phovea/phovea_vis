@@ -1,7 +1,7 @@
 /// <reference types="jest" />
 import {Table} from '../src/table';
-import {asMatrix as parseMatrix} from 'phovea_core/src/matrix';
-import {parse} from 'phovea_core/src/range';
+import {asMatrix as parseMatrix} from 'phovea_core';
+import {parse} from 'phovea_core';
 
 describe('table', () => {
   let squareTable;

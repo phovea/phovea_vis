@@ -4,12 +4,12 @@
 
 import './style.scss';
 import * as d3 from 'd3';
-import {Range} from 'phovea_core/src/range';
-import {AVisInstance, IVisInstance, assignVis, IVisInstanceOptions} from 'phovea_core/src/vis';
-import {rect} from 'phovea_core/src/geom';
-import {mixin} from 'phovea_core/src';
-import {INumericalVector} from 'phovea_core/src/vector';
-import {ToolTip} from 'phovea_d3/src/ToolTip';
+import {Range} from 'phovea_core';
+import {AVisInstance, IVisInstance, assignVis, IVisInstanceOptions} from 'phovea_core';
+import {rect} from 'phovea_core';
+import {mixin} from 'phovea_core';
+import {INumericalVector} from 'phovea_core';
+import {ToolTip} from 'phovea_d3';
 
 
 export declare type IBoxPlotOptions = IVisInstanceOptions;

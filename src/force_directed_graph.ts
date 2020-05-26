@@ -5,10 +5,10 @@
 
 import './style.scss';
 import * as d3 from 'd3';
-import {AVisInstance, IVisInstance, assignVis, IVisInstanceOptions} from 'phovea_core/src/vis';
-import {mixin} from 'phovea_core/src';
-import GraphProxy from 'phovea_core/src/graph/GraphProxy';
-import { GraphNode } from 'phovea_core/src/graph/graph';
+import {AVisInstance, IVisInstance, assignVis, IVisInstanceOptions} from 'phovea_core';
+import {mixin} from 'phovea_core';
+import GraphProxy from 'phovea_core';
+import { GraphNode } from 'phovea_core';
 
 export interface IForceDirectedGraphOptions extends IVisInstanceOptions {
   /**

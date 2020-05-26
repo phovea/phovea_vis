@@ -5,7 +5,7 @@
 import {
   VALUE_TYPE_CATEGORICAL, INumberValueTypeDesc,
   ICategoricalValueTypeDesc, ICategory
-} from 'phovea_core/src/datatype';
+} from 'phovea_core';
 
 export class DefaultUtils {
 

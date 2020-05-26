@@ -5,12 +5,12 @@
 
 import '../style.scss';
 import * as d3 from 'd3';
-import Range from 'phovea_core/src/range/Range';
-import {AVisInstance, IVisInstance, assignVis} from 'phovea_core/src/vis';
-import {rect} from 'phovea_core/src/geom';
-import {mixin, onDOMNodeRemoved} from 'phovea_core/src';
-import {toSelectOperation} from 'phovea_core/src/idtype';
-import {INumericalMatrix, ICategoricalMatrix, DIM_ROW, DIM_COL} from 'phovea_core/src/matrix/IMatrix';
+import Range from 'phovea_core';
+import {AVisInstance, IVisInstance, assignVis} from 'phovea_core';
+import {rect} from 'phovea_core';
+import {mixin, onDOMNodeRemoved} from 'phovea_core';
+import {toSelectOperation} from 'phovea_core';
+import {INumericalMatrix, ICategoricalMatrix, DIM_ROW, DIM_COL} from 'phovea_core';
 import {DefaultUtils} from './DefaultUtils';
 import {ICommonHeatMapOptions} from './ICommonHeatMapOptions';
 import {toScale, IScale} from './IScale';

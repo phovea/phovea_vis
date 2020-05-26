@@ -4,13 +4,13 @@
 
 import '../../style.scss';
 import {select, extent, selection} from 'd3';
-import {mixin} from 'phovea_core/src';
-import {AVisInstance, IVisInstance, assignVis, IVisInstanceOptions} from 'phovea_core/src/vis';
-import {D3Utils} from 'phovea_d3/src/d3util';
-import {IVector} from 'phovea_core/src/vector';
-import {rect} from 'phovea_core/src/geom';
-import Range from 'phovea_core/src/range/Range';
-import {IValueTypeDesc} from 'phovea_core/src/datatype';
+import {mixin} from 'phovea_core';
+import {AVisInstance, IVisInstance, assignVis, IVisInstanceOptions} from 'phovea_core';
+import {D3Utils} from 'phovea_d3';
+import {IVector} from 'phovea_core';
+import {rect} from 'phovea_core';
+import Range from 'phovea_core';
+import {IValueTypeDesc} from 'phovea_core';
 
 export interface IAListOptions extends IVisInstanceOptions {
   width?: number;

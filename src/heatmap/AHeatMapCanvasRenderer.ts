@@ -4,10 +4,10 @@
 
 
 import * as d3 from 'd3';
-import {Range, cell} from 'phovea_core/src/range';
-import {onDOMNodeRemoved} from 'phovea_core/src';
-import {IMatrix} from 'phovea_core/src/matrix';
-import {toSelectOperation, defaultSelectionType} from 'phovea_core/src/idtype';
+import {Range, cell} from 'phovea_core';
+import {onDOMNodeRemoved} from 'phovea_core';
+import {IMatrix} from 'phovea_core';
+import {toSelectOperation, defaultSelectionType} from 'phovea_core';
 import {ESelectOption} from './IHeatMapRenderer';
 import {ICommonHeatMapOptions} from './ICommonHeatMapOptions';
 

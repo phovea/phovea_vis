@@ -4,14 +4,14 @@
 
 import './style.scss';
 import * as d3 from 'd3';
-import {Range} from 'phovea_core/src/range';
-import {AVisInstance, IVisInstance, assignVis, IVisInstanceOptions} from 'phovea_core/src/vis';
-import {rect} from 'phovea_core/src/geom';
-import {IAnyMatrix} from 'phovea_core/src/matrix';
-import {ITable} from 'phovea_core/src/table';
-import {IAnyVector} from 'phovea_core/src/vector';
-import {D3Utils} from 'phovea_d3/src/d3util';
-import {mixin} from 'phovea_core/src';
+import {Range} from 'phovea_core';
+import {AVisInstance, IVisInstance, assignVis, IVisInstanceOptions} from 'phovea_core';
+import {rect} from 'phovea_core';
+import {IAnyMatrix} from 'phovea_core';
+import {ITable} from 'phovea_core';
+import {IAnyVector} from 'phovea_core';
+import {D3Utils} from 'phovea_d3';
+import {mixin} from 'phovea_core';
 
 export declare type ITableOptions = IVisInstanceOptions;
 

@@ -4,9 +4,9 @@
 
 
 import * as d3 from 'd3';
-import {Range, cell} from 'phovea_core/src/range';
-import {onDOMNodeRemoved} from 'phovea_core/src';
-import {toSelectOperation, defaultSelectionType} from 'phovea_core/src/idtype';
+import {Range, cell} from 'phovea_core';
+import {onDOMNodeRemoved} from 'phovea_core';
+import {toSelectOperation, defaultSelectionType} from 'phovea_core';
 import {DefaultUtils} from './DefaultUtils';
 import {ICommonHeatMapOptions} from './ICommonHeatMapOptions';
 import {IScale} from './IScale';

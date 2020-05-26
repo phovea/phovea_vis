@@ -4,10 +4,10 @@
 
 import '../style.scss';
 import {format} from 'd3';
-import {mixin} from 'phovea_core/src';
-import {IAnyVector} from 'phovea_core/src/vector';
+import {mixin} from 'phovea_core';
+import {IAnyVector} from 'phovea_core';
 import {AList, IAListOptions} from './internal/AList';
-import {IValueTypeDesc} from 'phovea_core/src/datatype';
+import {IValueTypeDesc} from 'phovea_core';
 
 export interface IListOptions extends IAListOptions {
   format?: string;

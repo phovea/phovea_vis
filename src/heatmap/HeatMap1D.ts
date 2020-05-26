@@ -4,12 +4,12 @@
 
 import '../style.scss';
 import * as d3 from 'd3';
-import {Range} from 'phovea_core/src/range';
-import {AVisInstance, IVisInstance, assignVis} from 'phovea_core/src/vis';
-import {rect} from 'phovea_core/src/geom';
-import {mixin} from 'phovea_core/src';
-import {D3Utils} from 'phovea_d3/src/d3util';
-import {INumericalVector, ICategoricalVector} from 'phovea_core/src/vector';
+import {Range} from 'phovea_core';
+import {AVisInstance, IVisInstance, assignVis} from 'phovea_core';
+import {rect} from 'phovea_core';
+import {mixin} from 'phovea_core';
+import {D3Utils} from 'phovea_d3';
+import {INumericalVector, ICategoricalVector} from 'phovea_core';
 import {DefaultUtils} from './DefaultUtils';
 import {ICommonHeatMapOptions} from './ICommonHeatMapOptions';
 import {toScale, IScale} from './IScale';

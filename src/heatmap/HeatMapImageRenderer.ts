@@ -4,16 +4,16 @@
 
 
 import * as d3 from 'd3';
-import {all} from 'phovea_core/src/range';
-import {IHeatMapUrlOptions} from 'phovea_core/src/matrix';
+import {all} from 'phovea_core';
+import {IHeatMapUrlOptions} from 'phovea_core';
 import {ICommonHeatMapOptions} from './ICommonHeatMapOptions';
 import {IScale} from './IScale';
 import {IHeatMapRenderer, ESelectOption} from './IHeatMapRenderer';
 import {AHeatMapCanvasRenderer} from './AHeatMapCanvasRenderer';
 import {IHeatMapAbleMatrix} from './HeatMap';
-import {sendAPI, encodeParams, MAX_URL_LENGTH} from 'phovea_core/src/ajax';
-import parseRange from 'phovea_core/src/range/parser';
-import {prepareHeatmapUrlParameter} from 'phovea_core/src/matrix/loader';
+import {sendAPI, encodeParams, MAX_URL_LENGTH} from 'phovea_core';
+import parseRange from 'phovea_core';
+import {prepareHeatmapUrlParameter} from 'phovea_core';
 
 export class HeatMapImageRenderer extends AHeatMapCanvasRenderer implements IHeatMapRenderer {
   private image: HTMLImageElement;

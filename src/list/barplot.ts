@@ -4,10 +4,10 @@
 
 import '../style.scss';
 import {scale} from 'd3';
-import {mixin} from 'phovea_core/src';
-import {INumericalVector} from 'phovea_core/src/vector';
+import {mixin} from 'phovea_core';
+import {INumericalVector} from 'phovea_core';
 import {AList, IAListOptions} from './internal/AList';
-import {INumberValueTypeDesc} from 'phovea_core/src/datatype';
+import {INumberValueTypeDesc} from 'phovea_core';
 
 export interface IBarPlotOptions extends IAListOptions {
   min?: number;

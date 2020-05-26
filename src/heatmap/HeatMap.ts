@@ -5,7 +5,7 @@
 
 import '../style.scss';
 import * as d3 from 'd3';
-import Range from 'phovea_core';
+import {Range} from 'phovea_core';
 import {AVisInstance, IVisInstance, VisUtils} from 'phovea_core';
 import {Rect} from 'phovea_core';
 import {BaseUtils, AppContext} from 'phovea_core';

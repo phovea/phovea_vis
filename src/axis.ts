@@ -5,7 +5,7 @@
 import './style.scss';
 import * as d3 from 'd3';
 import {BaseUtils} from 'phovea_core';
-import {AVisInstance, IVisInstance, assignVis, ITransform, IVisInstanceOptions} from 'phovea_core';
+import {AVisInstance, IVisInstance, VisUtils, ITransform, IVisInstanceOptions} from 'phovea_core';
 import {D3Utils} from 'phovea_d3';
 import {INumericalVector} from 'phovea_core';
 import {Range} from 'phovea_core';
@@ -54,7 +54,7 @@ export class Axis extends AVisInstance implements IVisInstance {
 
     this.$node = this.build(d3.select(parent));
     this.$node.datum(this);
-    assignVis(this.node, this);
+    VisUtils.assignVis(this.node, this);
   }
 
   get rawSize(): [number, number] {

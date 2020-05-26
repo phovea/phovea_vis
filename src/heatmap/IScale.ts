@@ -1,5 +1,5 @@
 import * as d3 from 'd3';
-import {VALUE_TYPE_CATEGORICAL} from 'phovea_core';
+import {ValueTypeUtils} from 'phovea_core';
 
 export interface IScale {
   (x: any): any;
@@ -11,7 +11,7 @@ export interface IScale {
 }
 
 export function toScale(value): IScale {
-  if (value.type === VALUE_TYPE_CATEGORICAL) {
+  if (value.type === ValueTypeUtils.VALUE_TYPE_CATEGORICAL) {
     return d3.scale.ordinal();
   }
   return d3.scale.linear();

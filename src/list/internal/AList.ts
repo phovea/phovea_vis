@@ -4,12 +4,12 @@
 
 import '../../style.scss';
 import {select, extent, selection} from 'd3';
-import {mixin} from 'phovea_core';
-import {AVisInstance, IVisInstance, assignVis, IVisInstanceOptions} from 'phovea_core';
+import {BaseUtils} from 'phovea_core';
+import {AVisInstance, IVisInstance, VisUtils, IVisInstanceOptions} from 'phovea_core';
 import {D3Utils} from 'phovea_d3';
 import {IVector} from 'phovea_core';
-import {rect} from 'phovea_core';
-import Range from 'phovea_core';
+import {Rect} from 'phovea_core';
+import {Range} from 'phovea_core';
 import {IValueTypeDesc} from 'phovea_core';
 
 export interface IAListOptions extends IVisInstanceOptions {
@@ -33,10 +33,10 @@ export abstract class AList<T, D extends IValueTypeDesc, O extends IAListOptions
 
   constructor(public readonly data: IVector<T,D>, private readonly parent: HTMLElement, options: O) {
     super();
-    this.options = mixin(<any>{}, DEFAULT_OPTIONS, options);
+    this.options = BaseUtils.mixin(<any>{}, DEFAULT_OPTIONS, options);
     this.$node = select(parent).append('div').attr('class', 'phovea-list ' + this.options.cssClass);
     this.$node.datum(this);
-    assignVis(this.node, this);
+    VisUtils.assignVis(this.node, this);
   }
 
   get rawSize(): [number, number] {
@@ -59,7 +59,7 @@ export abstract class AList<T, D extends IValueTypeDesc, O extends IAListOptions
       a = <HTMLElement>this.node.childNodes.item(ex[0]);
       b = <HTMLElement>this.node.childNodes.item(ex[1]);
     }
-    return Promise.resolve(rect(0, a.offsetTop, w, b.offsetTop + b.clientHeight - a.offsetTop));
+    return Promise.resolve(Rect.rect(0, a.offsetTop, w, b.offsetTop + b.clientHeight - a.offsetTop));
   }
 
   transform(scale?: [number, number], rotate: number = 0) {

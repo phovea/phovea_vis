@@ -5,14 +5,14 @@
 
 import '../style.scss';
 import * as d3 from 'd3';
-import {onDOMNodeRemoved, mixin} from 'phovea_core';
+import {AppContext, BaseUtils} from 'phovea_core';
 import {Range} from 'phovea_core';
-import {AVisInstance, IVisInstance, assignVis, ITransform} from 'phovea_core';
+import {AVisInstance, IVisInstance, VisUtils, ITransform} from 'phovea_core';
 import {IHistAbleDataType, ICategoricalValueTypeDesc, INumberValueTypeDesc} from 'phovea_core';
 import {IStratification} from 'phovea_core';
 import {ICatHistogram} from 'phovea_core';
-import {toSelectOperation} from 'phovea_core';
-import {vec2, polygon} from 'phovea_core';
+import {SelectionUtils} from 'phovea_core';
+import {Vector2D, Polygon} from 'phovea_core';
 import {ToolTip} from 'phovea_d3';
 import {IDistributionOptions, ITotalHeight, HistUtils} from './HistData';
 
@@ -73,11 +73,11 @@ export class Pie extends AVisInstance implements IVisInstance {
 
   constructor(public readonly data: IHistAbleDataType<ICategoricalValueTypeDesc|INumberValueTypeDesc>|IStratification, parent: Element, options: IPieOptions = {}) {
     super();
-    mixin(this.options, options);
+    BaseUtils.mixin(this.options, options);
 
     this.$node = this.build(d3.select(parent));
     this.$node.datum(this);
-    assignVis(this.node, this);
+    VisUtils.assignVis(this.node, this);
   }
 
   get rawSize(): [number, number] {
@@ -125,7 +125,7 @@ export class Pie extends AVisInstance implements IVisInstance {
       $m.attr('d', arc);
     };
     data.on('select', l);
-    onDOMNodeRemoved(<Element>$data.node(), function () {
+    AppContext.getInstance().onDOMNodeRemoved(<Element>$data.node(), function () {
       data.off('select', l);
     });
 
@@ -155,7 +155,7 @@ export class Pie extends AVisInstance implements IVisInstance {
       $m.enter()
         .append('path')
         .call(ToolTip.bind<IRadialHistData>((d) => d.name + ' ' + (d.size) + ' entries (' + Math.round(d.ratio * 100) + '%)'))
-        .on('click', (d) => data.select(0, d.range, toSelectOperation(<MouseEvent>d3.event)));
+        .on('click', (d) => data.select(0, d.range, SelectionUtils.toSelectOperation(<MouseEvent>d3.event)));
       $m.attr('d', arc)
         .attr('fill', (d) => d.color)
         .style('opacity', 0);
@@ -211,15 +211,15 @@ export class Pie extends AVisInstance implements IVisInstance {
 
   static toPolygon(start: number, end: number, radius: number) {
     const r = [
-      vec2(radius, radius),
-      vec2(radius + Math.cos(start) * radius, radius + Math.sin(start) * radius),
-      vec2(radius + Math.cos(end) * radius, radius + Math.sin(end) * radius)
+      Vector2D.vec2(radius, radius),
+      Vector2D.vec2(radius + Math.cos(start) * radius, radius + Math.sin(start) * radius),
+      Vector2D.vec2(radius + Math.cos(end) * radius, radius + Math.sin(end) * radius)
     ];
     //approximate by triangle
     if (end - start > Math.PI) { //more than 180 degree use one more point
-      r.splice(2, 0, vec2(radius + Math.cos((end - start) * 0.5) * radius, radius + Math.sin((end - start) * 0.5) * radius));
+      r.splice(2, 0, Vector2D.vec2(radius + Math.cos((end - start) * 0.5) * radius, radius + Math.sin((end - start) * 0.5) * radius));
     }
-    return polygon(r);
+    return Polygon.polygon(r);
   }
 
   //updatedOption (name, value) {

@@ -6,11 +6,11 @@
 import '../style.scss';
 import * as d3 from 'd3';
 import Range from 'phovea_core';
-import {AVisInstance, IVisInstance, assignVis} from 'phovea_core';
-import {rect} from 'phovea_core';
-import {mixin, onDOMNodeRemoved} from 'phovea_core';
-import {toSelectOperation} from 'phovea_core';
-import {INumericalMatrix, ICategoricalMatrix, DIM_ROW, DIM_COL} from 'phovea_core';
+import {AVisInstance, IVisInstance, VisUtils} from 'phovea_core';
+import {Rect} from 'phovea_core';
+import {BaseUtils, AppContext} from 'phovea_core';
+import {SelectionUtils} from 'phovea_core';
+import {INumericalMatrix, ICategoricalMatrix, AMatrix} from 'phovea_core';
 import {DefaultUtils} from './DefaultUtils';
 import {ICommonHeatMapOptions} from './ICommonHeatMapOptions';
 import {toScale, IScale} from './IScale';
@@ -69,7 +69,7 @@ export class HeatMap extends AVisInstance implements IVisInstance {
   constructor(public data: IHeatMapAbleMatrix, public parent: Element, options: IHeatMapOptions = {}) {
     super();
     const value = this.data.valuetype;
-    mixin(this.options, {
+    BaseUtils.mixin(this.options, {
       color: DefaultUtils.defaultColor(value),
       domain: DefaultUtils.defaultDomain(value)
     }, options);
@@ -94,7 +94,7 @@ export class HeatMap extends AVisInstance implements IVisInstance {
 
     this.$node = this.build(d3.select(parent));
     this.$node.datum(data);
-    assignVis(this.node, this);
+    VisUtils.assignVis(this.node, this);
   }
 
   get rawSize(): [number, number] {
@@ -136,7 +136,7 @@ export class HeatMap extends AVisInstance implements IVisInstance {
 
     const xw = l(range.dim(1), width, o.scale[0]);
     const yh = l(range.dim(0), height, o.scale[1]);
-    return Promise.resolve(rect(xw[0], yh[0], xw[1], yh[1]));
+    return Promise.resolve(Rect.rect(xw[0], yh[0], xw[1], yh[1]));
   }
 
   transform(scale?: [number, number], rotate: number = 0) {
@@ -196,7 +196,7 @@ export class HeatMap extends AVisInstance implements IVisInstance {
   }
 
   private renderLabels($node: d3.Selection<any>, mode: ESelectOption, names: Promise<string[]>) {
-    const dim = mode === ESelectOption.ROW ? DIM_ROW : DIM_COL;
+    const dim = mode === ESelectOption.ROW ? AMatrix.DIM_ROW : AMatrix.DIM_COL;
     const $group = $node.append('div').attr('class', 'phovea-heatmap-labels ' + (mode === ESelectOption.ROW ? 'row-labels' : 'column-labels'));
 
     const l = function (event: any, type: string, selected: Range) {
@@ -215,7 +215,7 @@ export class HeatMap extends AVisInstance implements IVisInstance {
     names.then((data) => {
       const $names = $group.selectAll('div').data(data);
       $names.enter().append('div').on('click', (d, i) => {
-        this.data.select(dim, [i], toSelectOperation(<MouseEvent>d3.event));
+        this.data.select(dim, [i], SelectionUtils.toSelectOperation(<MouseEvent>d3.event));
       });
       $names.text(String);
       $names.exit().remove();
@@ -225,7 +225,7 @@ export class HeatMap extends AVisInstance implements IVisInstance {
       });
     });
     this.data.on('select', l);
-    onDOMNodeRemoved(<Element>$group.node(), () => {
+    AppContext.getInstance().onDOMNodeRemoved(<Element>$group.node(), () => {
       this.data.off('select', l);
     });
 

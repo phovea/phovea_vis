@@ -6,8 +6,8 @@
 import './style.scss';
 import * as d3 from 'd3';
 import {Range} from 'phovea_core';
-import {AVisInstance, IVisInstance, assignVis, IVisInstanceOptions} from 'phovea_core';
-import {mixin} from 'phovea_core';
+import {AVisInstance, IVisInstance, VisUtils, IVisInstanceOptions} from 'phovea_core';
+import {BaseUtils} from 'phovea_core';
 import {INumericalVector} from 'phovea_core';
 import {} from 'phovea_core';
 import {} from 'phovea_core';
@@ -46,10 +46,10 @@ export class KaplanMeierPlot extends AVisInstance implements IVisInstance {
   constructor(public readonly data: INumericalVector, public parent: Element, options: IKaplanMaierOptions = {}) {
     super();
     //var value = (<any>this.data.desc).value;
-    mixin(this.options, options);
+    BaseUtils.mixin(this.options, options);
     this.$node = this.build(d3.select(parent));
     this.$node.datum(data);
-    assignVis(this.node, this);
+    VisUtils.assignVis(this.node, this);
   }
 
   get rawSize(): [number, number] {

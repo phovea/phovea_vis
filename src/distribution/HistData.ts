@@ -6,7 +6,7 @@ import * as d3 from 'd3';
 import {Range} from 'phovea_core';
 import {IVisInstanceOptions} from 'phovea_core';
 import {
-  VALUE_TYPE_CATEGORICAL,
+  ValueTypeUtils,
   IHistAbleDataType, INumberValueTypeDesc, ICategoricalValueTypeDesc
 } from 'phovea_core';
 import {IStratification} from 'phovea_core';
@@ -72,7 +72,7 @@ export class HistUtils {
       return HistUtils.createCategoricalHistData(<ICatHistogram>hist);
     }
     const d = (<IHistAbleDataType<ICategoricalValueTypeDesc|INumberValueTypeDesc>>data).valuetype;
-    if (d.type === VALUE_TYPE_CATEGORICAL) {
+    if (d.type === ValueTypeUtils.VALUE_TYPE_CATEGORICAL) {
       return HistUtils.createCategoricalHistData(<ICatHistogram>hist);
     }
     return HistUtils.createNumericalHistData(hist, (<INumberValueTypeDesc>d).range);

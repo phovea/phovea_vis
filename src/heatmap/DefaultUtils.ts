@@ -3,14 +3,14 @@
  */
 
 import {
-  VALUE_TYPE_CATEGORICAL, INumberValueTypeDesc,
+  ValueTypeUtils, INumberValueTypeDesc,
   ICategoricalValueTypeDesc, ICategory
 } from 'phovea_core';
 
 export class DefaultUtils {
 
   static defaultColor(value: INumberValueTypeDesc|ICategoricalValueTypeDesc): string[] {
-    if (value.type === VALUE_TYPE_CATEGORICAL) {
+    if (value.type === ValueTypeUtils.VALUE_TYPE_CATEGORICAL) {
       return (<ICategoricalValueTypeDesc>value).categories.map((c) => typeof c === 'string' ? 'gray' : (<ICategory>c).color || 'gray');
     }
     const nv = <INumberValueTypeDesc>value;
@@ -23,7 +23,7 @@ export class DefaultUtils {
   }
 
   static defaultDomain(value: INumberValueTypeDesc|ICategoricalValueTypeDesc): (string|number)[] {
-    if (value.type === VALUE_TYPE_CATEGORICAL) {
+    if (value.type === ValueTypeUtils.VALUE_TYPE_CATEGORICAL) {
       return (<ICategoricalValueTypeDesc>value).categories.map((c) => typeof c === 'string' ? <string>c : (<ICategory>c).name);
     }
     const nv = <INumberValueTypeDesc>value;

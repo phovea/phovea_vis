@@ -5,13 +5,13 @@
 import './style.scss';
 import * as d3 from 'd3';
 import {Range} from 'phovea_core';
-import {AVisInstance, IVisInstance, assignVis, IVisInstanceOptions} from 'phovea_core';
-import {rect} from 'phovea_core';
+import {AVisInstance, IVisInstance, VisUtils, IVisInstanceOptions} from 'phovea_core';
+import {Rect} from 'phovea_core';
 import {IAnyMatrix} from 'phovea_core';
 import {ITable} from 'phovea_core';
 import {IAnyVector} from 'phovea_core';
 import {D3Utils} from 'phovea_d3';
-import {mixin} from 'phovea_core';
+import {BaseUtils} from 'phovea_core';
 
 export declare type ITableOptions = IVisInstanceOptions;
 
@@ -24,7 +24,7 @@ export class Table extends AVisInstance implements IVisInstance {
 
   constructor(public readonly data: IAnyMatrix|ITable|IAnyVector, parent: Element, options: ITableOptions = {}) {
     super();
-    mixin(this.options, options);
+    BaseUtils.mixin(this.options, options);
     const $p = d3.select(parent);
     switch (data.desc.type) { //depending on the type of the data, create a different table
       case 'matrix':
@@ -45,7 +45,7 @@ export class Table extends AVisInstance implements IVisInstance {
         break;
     }
     this.$node.datum(data);
-    assignVis(this.node, this);
+    VisUtils.assignVis(this.node, this);
   }
 
   get rawSize(): [number, number] {
@@ -63,12 +63,12 @@ export class Table extends AVisInstance implements IVisInstance {
     let a, b;
     if (range.isAll || range.isNone) {
       b = $tbody.select('tr:last').node();
-      return Promise.resolve(rect(0, offset, w, b.offsetTop + b.clientHeight));
+      return Promise.resolve(Rect.rect(0, offset, w, b.offsetTop + b.clientHeight));
     }
     const ex: any = d3.extent(range.dim(0).iter().asList());
     a = $tbody.select('tr:nth-child(' + (ex[0] + 1) + ')').node();
     b = $tbody.select('tr:nth-child(' + (ex[1] + 1) + ')').node();
-    return Promise.resolve(rect(0, a.offsetTop, w, b.offsetTop + b.clientHeight - a.offsetTop));
+    return Promise.resolve(Rect.rect(0, a.offsetTop, w, b.offsetTop + b.clientHeight - a.offsetTop));
   }
 
   transform(scale?: [number, number], rotate: number = 0) {

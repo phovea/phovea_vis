@@ -4,7 +4,7 @@
 
 import './style.scss';
 import * as d3 from 'd3';
-import {mixin} from 'phovea_core';
+import {BaseUtils} from 'phovea_core';
 import {AVisInstance, IVisInstance, assignVis, ITransform, IVisInstanceOptions} from 'phovea_core';
 import {D3Utils} from 'phovea_d3';
 import {INumericalVector} from 'phovea_core';
@@ -50,7 +50,7 @@ export class Axis extends AVisInstance implements IVisInstance {
 
   constructor(public readonly data: INumericalVector, parent: HTMLElement, options: IAxisOptions = {}) {
     super();
-    mixin(this.options, options);
+    BaseUtils.mixin(this.options, options);
 
     this.$node = this.build(d3.select(parent));
     this.$node.datum(this);

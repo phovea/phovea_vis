@@ -4,13 +4,13 @@
 
 import '../style.scss';
 import * as d3 from 'd3';
-import {onDOMNodeRemoved, mixin} from 'phovea_core';
+import {AppContext, BaseUtils} from 'phovea_core';
 import {Range} from 'phovea_core';
-import {AVisInstance, IVisInstance, assignVis, ITransform} from 'phovea_core';
+import {AVisInstance, IVisInstance, VisUtils, ITransform} from 'phovea_core';
 import {IHistAbleDataType, ICategoricalValueTypeDesc, INumberValueTypeDesc} from 'phovea_core';
 import {IStratification} from 'phovea_core';
 import {IHistogram} from 'phovea_core';
-import {toSelectOperation} from 'phovea_core';
+import {SelectionUtils} from 'phovea_core';
 import {ToolTip} from 'phovea_d3';
 import {HistUtils, IDistributionOptions, IHistData} from './HistData';
 
@@ -57,7 +57,7 @@ export class Mosaic extends AVisInstance implements IVisInstance {
 
   constructor(public readonly data: IHistAbleDataType<ICategoricalValueTypeDesc|INumberValueTypeDesc>|IStratification, parent: Element, options: IMosaicOptions = {}) {
     super();
-    mixin(this.options, {
+    BaseUtils.mixin(this.options, {
       scale: [1, this.options.initialScale]
     }, options);
 
@@ -67,7 +67,7 @@ export class Mosaic extends AVisInstance implements IVisInstance {
 
     this.$node = this.build(d3.select(parent));
     this.$node.datum(this);
-    assignVis(this.node, this);
+    VisUtils.assignVis(this.node, this);
   }
 
   get rawSize(): [number, number] {
@@ -115,11 +115,11 @@ export class Mosaic extends AVisInstance implements IVisInstance {
     };
     if (o.selectAble) {
       data.on('select', l);
-      onDOMNodeRemoved(<Element>$data.node(), () => data.off('select', l));
+      AppContext.getInstance().onDOMNodeRemoved(<Element>$data.node(), () => data.off('select', l));
     }
 
     const onClick = o.selectAble ? (d) => {
-        data.select(0, d.range, toSelectOperation(<MouseEvent>d3.event));
+        data.select(0, d.range, SelectionUtils.toSelectOperation(<MouseEvent>d3.event));
       } : null;
 
     this.data.hist().then((hist) => {

@@ -4,7 +4,7 @@
 
 import '../style.scss';
 import {scale} from 'd3';
-import {mixin} from 'phovea_core';
+import {BaseUtils} from 'phovea_core';
 import {INumericalVector} from 'phovea_core';
 import {AList, IAListOptions} from './internal/AList';
 import {INumberValueTypeDesc} from 'phovea_core';
@@ -18,7 +18,7 @@ export class ProportionalSymbol extends AList<number, INumberValueTypeDesc, IPro
   private readonly scale = scale.linear<number,number>();
 
   constructor(data: INumericalVector, parent: HTMLElement, options: IProportionalSymbolOptions = {}) {
-    super(data, parent, mixin({cssClass: 'phovea-proportional-symbol', width: 20, min: NaN, max: NaN}, options));
+    super(data, parent, BaseUtils.mixin({cssClass: 'phovea-proportional-symbol', width: 20, min: NaN, max: NaN}, options));
     this.build();
   }
 

@@ -4,7 +4,7 @@
 
 import '../style.scss';
 import {format} from 'd3';
-import {mixin} from 'phovea_core';
+import {BaseUtils} from 'phovea_core';
 import {IAnyVector} from 'phovea_core';
 import {AList, IAListOptions} from './internal/AList';
 import {IValueTypeDesc} from 'phovea_core';
@@ -15,7 +15,7 @@ export interface IListOptions extends IAListOptions {
 
 export class List extends AList<any, IValueTypeDesc, IListOptions> {
   constructor(data: IAnyVector, parent: HTMLElement, options: IListOptions = {}) {
-    super(data, parent, mixin({format: null, rowHeight: 18}, options));
+    super(data, parent, BaseUtils.mixin({format: null, rowHeight: 18}, options));
     this.build();
   }
 

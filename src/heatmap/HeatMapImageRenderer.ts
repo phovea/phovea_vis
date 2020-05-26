@@ -4,16 +4,16 @@
 
 
 import * as d3 from 'd3';
-import {all} from 'phovea_core';
+import {Range} from 'phovea_core';
 import {IHeatMapUrlOptions} from 'phovea_core';
 import {ICommonHeatMapOptions} from './ICommonHeatMapOptions';
 import {IScale} from './IScale';
 import {IHeatMapRenderer, ESelectOption} from './IHeatMapRenderer';
 import {AHeatMapCanvasRenderer} from './AHeatMapCanvasRenderer';
 import {IHeatMapAbleMatrix} from './HeatMap';
-import {sendAPI, encodeParams, MAX_URL_LENGTH} from 'phovea_core';
-import parseRange from 'phovea_core';
-import {prepareHeatmapUrlParameter} from 'phovea_core';
+import {AppContext, Ajax} from 'phovea_core';
+import {ParseRangeUtils} from 'phovea_core';
+import {MatrixLoaderHelper} from 'phovea_core';
 
 export class HeatMapImageRenderer extends AHeatMapCanvasRenderer implements IHeatMapRenderer {
   private image: HTMLImageElement;
@@ -130,19 +130,19 @@ export class HeatMapImageRenderer extends AHeatMapCanvasRenderer implements IHea
 
     // persist to get range and create range object again
     // TODO: make range property on matrix public
-    const range = parseRange(data.persist().range);
-    const params = prepareHeatmapUrlParameter(range, args);
+    const range = ParseRangeUtils.parseRange(data.persist().range);
+    const params = MatrixLoaderHelper.prepareHeatmapUrlParameter(range, args);
     const url = `/dataset/matrix/${data.desc.id}/data`;
 
-    const encoded = encodeParams(params);
-    if (encoded && (url.length + encoded.length >= MAX_URL_LENGTH)) {
+    const encoded = Ajax.encodeParams(params);
+    if (encoded && (url.length + encoded.length >= Ajax.MAX_URL_LENGTH)) {
       // use post instead
-      sendAPI(url, params, 'POST', 'blob').then((image) => {
+      AppContext.getInstance().sendAPI(url, params, 'POST', 'blob').then((image) => {
         const imageURL = window.URL.createObjectURL(image);
         this.image.src = imageURL;
       });
     } else {
-      this.image.src = data.heatmapUrl(all(), args);
+      this.image.src = data.heatmapUrl(Range.all(), args);
     }
 
     super.buildSelection(data, $root, scale);

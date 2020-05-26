@@ -5,9 +5,9 @@
 import '../style.scss';
 import * as d3 from 'd3';
 import {Range} from 'phovea_core';
-import {AVisInstance, IVisInstance, assignVis} from 'phovea_core';
-import {rect} from 'phovea_core';
-import {mixin} from 'phovea_core';
+import {AVisInstance, IVisInstance, VisUtils} from 'phovea_core';
+import {Rect} from 'phovea_core';
+import {BaseUtils} from 'phovea_core';
 import {D3Utils} from 'phovea_d3';
 import {INumericalVector, ICategoricalVector} from 'phovea_core';
 import {DefaultUtils} from './DefaultUtils';
@@ -45,7 +45,7 @@ export class HeatMap1D extends AVisInstance implements IVisInstance {
   constructor(public readonly data: IHeatMapAbleVector, public parent: Element, options: IHeatMap1DOptions = {}) {
     super();
     const value = this.data.valuetype;
-    mixin(this.options, {
+    BaseUtils.mixin(this.options, {
       color: DefaultUtils.defaultColor(value),
       domain: DefaultUtils.defaultDomain(value)
     }, options);
@@ -56,7 +56,7 @@ export class HeatMap1D extends AVisInstance implements IVisInstance {
     this.colorer = toScale(value).domain(this.options.domain).range(this.options.color);
     this.$node = this.build(d3.select(parent));
     this.$node.datum(data);
-    assignVis(this.node, this);
+    VisUtils.assignVis(this.node, this);
   }
 
   get rawSize(): [number, number] {
@@ -97,7 +97,7 @@ export class HeatMap1D extends AVisInstance implements IVisInstance {
     }
 
     const yh = l(range.dim(0), height, this.options.scale[1]);
-    return Promise.resolve(rect(0, yh[0], 20, yh[1]));
+    return Promise.resolve(Rect.rect(0, yh[0], 20, yh[1]));
   }
 
   transform(scale?: [number, number], rotate: number = 0) {

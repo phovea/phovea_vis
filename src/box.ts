@@ -5,9 +5,9 @@
 import './style.scss';
 import * as d3 from 'd3';
 import {Range} from 'phovea_core';
-import {AVisInstance, IVisInstance, assignVis, IVisInstanceOptions} from 'phovea_core';
-import {rect} from 'phovea_core';
-import {mixin} from 'phovea_core';
+import {AVisInstance, IVisInstance, VisUtils, IVisInstanceOptions} from 'phovea_core';
+import {Rect} from 'phovea_core';
+import {BaseUtils} from 'phovea_core';
 import {INumericalVector} from 'phovea_core';
 import {ToolTip} from 'phovea_d3';
 
@@ -37,11 +37,11 @@ export class BoxPlot extends AVisInstance implements IVisInstance {
 
   constructor(public data: INumericalVector, parent: Element, options: IBoxPlotOptions = {}) {
     super();
-    mixin(this.options, options);
+    BaseUtils.mixin(this.options, options);
 
     this.$node = this.build(d3.select(parent));
     this.$node.datum(this);
-    assignVis(this.node, this);
+    VisUtils.assignVis(this.node, this);
   }
 
   get rawSize(): [number, number] {
@@ -97,11 +97,11 @@ export class BoxPlot extends AVisInstance implements IVisInstance {
     const that = this;
     if (range.isAll || range.isNone) {
       const r = this.scale.range();
-      return Promise.resolve(rect(r[0], 0, r[1] - r[0], 50));
+      return Promise.resolve(Rect.rect(r[0], 0, r[1] - r[0], 50));
     }
     return this.data.data(range).then(function (data) {
       const ex = d3.extent(data, that.scale);
-      return rect(ex[0], 0, ex[1] - ex[0], 50);
+      return Rect.rect(ex[0], 0, ex[1] - ex[0], 50);
     });
   }
 

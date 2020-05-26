@@ -4,13 +4,13 @@
 
 import '../style.scss';
 import * as d3 from 'd3';
-import {onDOMNodeRemoved, mixin} from 'phovea_core';
+import {AppContext, BaseUtils} from 'phovea_core';
 import {Range} from 'phovea_core';
-import {AVisInstance, IVisInstance, assignVis, ITransform} from 'phovea_core';
+import {AVisInstance, IVisInstance, VisUtils, ITransform} from 'phovea_core';
 import {IHistAbleDataType, ICategoricalValueTypeDesc, INumberValueTypeDesc} from 'phovea_core';
 import {IStratification} from 'phovea_core';
 import {IHistogram} from 'phovea_core';
-import {toSelectOperation} from 'phovea_core';
+import {SelectionUtils} from 'phovea_core';
 import {ToolTip} from 'phovea_d3';
 import {HistUtils, IDistributionOptions, IHistData, ITotalHeight} from './HistData';
 
@@ -57,13 +57,13 @@ export class Histogram extends AVisInstance implements IVisInstance {
 
   constructor(public readonly data: IHistAbleDataType<ICategoricalValueTypeDesc|INumberValueTypeDesc>|IStratification, parent: Element, options: IHistogramOptions = {}) {
     super();
-    mixin(this.options, {
+    BaseUtils.mixin(this.options, {
       nbins: Math.floor(Math.sqrt(data.length)),
     }, options);
 
     this.$node = this.build(d3.select(parent));
     this.$node.datum(this);
-    assignVis(this.node, this);
+    VisUtils.assignVis(this.node, this);
   }
 
   get rawSize(): [number, number] {
@@ -116,11 +116,11 @@ export class Histogram extends AVisInstance implements IVisInstance {
       $m.exit().remove();
     };
     data.on('select', l);
-    onDOMNodeRemoved(<Element>$data.node(), function () {
+    AppContext.getInstance().onDOMNodeRemoved(<Element>$data.node(), function () {
       data.off('select', l);
     });
 
-    const onClick = (d) => data.select(0, d.range, toSelectOperation(<MouseEvent>d3.event));
+    const onClick = (d) => data.select(0, d.range, SelectionUtils.toSelectOperation(<MouseEvent>d3.event));
 
     this.data.hist(Math.floor(o.nbins)).then((hist) => {
       this.hist = hist;

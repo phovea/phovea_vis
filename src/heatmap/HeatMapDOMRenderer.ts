@@ -4,9 +4,9 @@
 
 
 import * as d3 from 'd3';
-import {Range, cell} from 'phovea_core';
-import {onDOMNodeRemoved} from 'phovea_core';
-import {toSelectOperation, defaultSelectionType} from 'phovea_core';
+import {Range} from 'phovea_core';
+import {AppContext} from 'phovea_core';
+import {SelectionUtils} from 'phovea_core';
 import {DefaultUtils} from './DefaultUtils';
 import {ICommonHeatMapOptions} from './ICommonHeatMapOptions';
 import {IScale} from './IScale';
@@ -65,7 +65,7 @@ export class HeatMapDOMRenderer implements IHeatMapRenderer {
         $colsEnter.classed('missing', DefaultUtils.isMissing);
         if (that.selectAble !== ESelectOption.NONE) {
           $colsEnter.on('click', (d, j) => {
-            data.selectProduct([cell(i, j)], toSelectOperation(<MouseEvent>d3.event));
+            data.selectProduct([Range.cell(i, j)], SelectionUtils.toSelectOperation(<MouseEvent>d3.event));
           });
         }
         $colsEnter.append('title').text(String);
@@ -90,11 +90,11 @@ export class HeatMapDOMRenderer implements IHeatMapRenderer {
     };
     if (this.selectAble !== ESelectOption.NONE) {
       data.on('selectProduct', l);
-      onDOMNodeRemoved(<Element>$g.node(), function () {
+      AppContext.getInstance().onDOMNodeRemoved(<Element>$g.node(), function () {
         data.off('selectProduct', l);
       });
       data.productSelections().then(function (selected) {
-        l(null, defaultSelectionType, selected);
+        l(null, SelectionUtils.defaultSelectionType, selected);
       });
     }
 

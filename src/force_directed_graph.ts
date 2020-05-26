@@ -5,9 +5,9 @@
 
 import './style.scss';
 import * as d3 from 'd3';
-import {AVisInstance, IVisInstance, assignVis, IVisInstanceOptions} from 'phovea_core';
-import {mixin} from 'phovea_core';
-import GraphProxy from 'phovea_core';
+import {AVisInstance, IVisInstance, VisUtils, IVisInstanceOptions} from 'phovea_core';
+import {BaseUtils} from 'phovea_core';
+import {GraphProxy} from 'phovea_core';
 import { GraphNode } from 'phovea_core';
 
 export interface IForceDirectedGraphOptions extends IVisInstanceOptions {
@@ -36,10 +36,10 @@ export class ForceDirectedGraphVis extends AVisInstance implements IVisInstance 
 
   constructor(public readonly data: GraphProxy, public parent: Element, options: IForceDirectedGraphOptions = {}) {
     super();
-    mixin(this.options, options);
+    BaseUtils.mixin(this.options, options);
     this.$node = this.build(d3.select(parent));
     this.$node.datum(data);
-    assignVis(this.node, this);
+    VisUtils.assignVis(this.node, this);
   }
 
   /**

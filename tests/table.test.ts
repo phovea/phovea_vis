@@ -1,7 +1,7 @@
 /// <reference types="jest" />
 import {Table} from '../src/base/table';
 import {Matrix} from 'phovea_core';
-import {RangeElem} from 'phovea_core';
+import {ParseRangeUtils} from 'phovea_core';
 
 describe('table', () => {
   let squareTable;
@@ -19,8 +19,8 @@ describe('table', () => {
     );
     const element = document.createElement('div');
     squareTable = Table.createTable(data, element);
-    colTable = Table.createTable(data.view(RangeElem.parse([[0,1],[1]])), element);
-    rowTable = Table.createTable(data.view(RangeElem.parse([[1],[0,1]])), element);
+    colTable = Table.createTable(data.view(ParseRangeUtils.parseRangeLike([[0,1],[1]])), element);
+    rowTable = Table.createTable(data.view(ParseRangeUtils.parseRangeLike([[1],[0,1]])), element);
     setTimeout(function() {
       done();
     }, 1000); // TODO: Can we do better than this? create() doesn't let us provide a callback?

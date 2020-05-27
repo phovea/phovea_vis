@@ -52,7 +52,8 @@
   "dependencies": {
     "@types/d3": "~3.5.36",
     "d3": "~3.5.17",
-    "phovea_core": "github:phovea/phovea_core#asteiner/refactoring"
+    "phovea_core": "github:phovea/phovea_core#asteiner/refactoring",
+    "phovea_d3": "github:phovea/phovea_d3#asteiner/refactoring"
   },
   "devDependencies": {
     "@types/jest": "25.1.4",

@@ -9,7 +9,7 @@ import { BaseUtils, AppContext } from 'phovea_core';
 import { SelectionUtils } from 'phovea_core';
 import { AMatrix } from 'phovea_core';
 import { DefaultUtils } from './DefaultUtils';
-import { toScale } from './IScale';
+import { ScaleUtils } from './IScale';
 import { ESelectOption } from './IHeatMapRenderer';
 import { HeatMapDOMRenderer } from './HeatMapDOMRenderer';
 import { HeatMapImageRenderer } from './HeatMapImageRenderer';
@@ -46,7 +46,7 @@ export class HeatMap extends AVisInstance {
             this.options.scale = this.options.scaleTo.map((d, i) => d / raw[i]);
         }
         this.options.rotate = 0;
-        this.colorer = toScale(value).domain(this.options.domain).range(this.options.color);
+        this.colorer = ScaleUtils.toScale(value).domain(this.options.domain).range(this.options.color);
         // handle string case
         this.options.labels = typeof this.options.labels === 'string' ? ESelectOption[this.options.labels] : this.options.labels;
         const selection = typeof this.options.selectAble === 'boolean' ? (this.options.selectAble ? ESelectOption.CELL : ESelectOption.NONE) : ESelectOption[this.options.selectAble];

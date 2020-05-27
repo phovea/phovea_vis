@@ -5,4 +5,6 @@ export interface IScale {
     range(): any[];
     range(values: any[]): IScale;
 }
-export declare function toScale(value: any): IScale;
+export declare class ScaleUtils {
+    static toScale(value: any): IScale;
+}

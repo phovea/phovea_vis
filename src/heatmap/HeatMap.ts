@@ -13,7 +13,7 @@ import {SelectionUtils} from 'phovea_core';
 import {INumericalMatrix, ICategoricalMatrix, AMatrix} from 'phovea_core';
 import {DefaultUtils} from './DefaultUtils';
 import {ICommonHeatMapOptions} from './ICommonHeatMapOptions';
-import {toScale, IScale} from './IScale';
+import {ScaleUtils, IScale} from './IScale';
 import {IHeatMapRenderer, ESelectOption} from './IHeatMapRenderer';
 import {HeatMapDOMRenderer} from './HeatMapDOMRenderer';
 import {HeatMapImageRenderer} from './HeatMapImageRenderer';
@@ -83,7 +83,7 @@ export class HeatMap extends AVisInstance implements IVisInstance {
       this.options.scale = <[number, number]>this.options.scaleTo.map((d, i) => d / raw[i]);
     }
     this.options.rotate = 0;
-    this.colorer = toScale(value).domain(this.options.domain).range(this.options.color);
+    this.colorer = ScaleUtils.toScale(value).domain(this.options.domain).range(this.options.color);
 
     // handle string case
     this.options.labels = typeof this.options.labels === 'string' ? ESelectOption[<string>this.options.labels]: this.options.labels;

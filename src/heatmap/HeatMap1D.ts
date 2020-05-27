@@ -12,7 +12,7 @@ import {D3Utils} from 'phovea_d3';
 import {INumericalVector, ICategoricalVector} from 'phovea_core';
 import {DefaultUtils} from './DefaultUtils';
 import {ICommonHeatMapOptions} from './ICommonHeatMapOptions';
-import {toScale, IScale} from './IScale';
+import {ScaleUtils, IScale} from './IScale';
 
 export interface IHeatMap1DOptions extends ICommonHeatMapOptions {
   /**
@@ -53,7 +53,7 @@ export class HeatMap1D extends AVisInstance implements IVisInstance {
     if (this.options.heightTo) {
       this.options.scale[1] = this.options.heightTo / this.data.dim[0];
     }
-    this.colorer = toScale(value).domain(this.options.domain).range(this.options.color);
+    this.colorer = ScaleUtils.toScale(value).domain(this.options.domain).range(this.options.color);
     this.$node = this.build(d3.select(parent));
     this.$node.datum(data);
     VisUtils.assignVis(this.node, this);

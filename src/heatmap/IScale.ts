@@ -10,9 +10,11 @@ export interface IScale {
   range(values: any[]): IScale;
 }
 
-export function toScale(value): IScale {
-  if (value.type === ValueTypeUtils.VALUE_TYPE_CATEGORICAL) {
-    return d3.scale.ordinal();
+export class ScaleUtils {
+  static toScale(value): IScale {
+    if (value.type === ValueTypeUtils.VALUE_TYPE_CATEGORICAL) {
+      return d3.scale.ordinal();
+    }
+    return d3.scale.linear();
   }
-  return d3.scale.linear();
 }

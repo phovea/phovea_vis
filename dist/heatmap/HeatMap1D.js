@@ -8,7 +8,7 @@ import { Rect } from 'phovea_core';
 import { BaseUtils } from 'phovea_core';
 import { D3Utils } from 'phovea_d3';
 import { DefaultUtils } from './DefaultUtils';
-import { toScale } from './IScale';
+import { ScaleUtils } from './IScale';
 export class HeatMap1D extends AVisInstance {
     constructor(data, parent, options = {}) {
         super();
@@ -31,7 +31,7 @@ export class HeatMap1D extends AVisInstance {
         if (this.options.heightTo) {
             this.options.scale[1] = this.options.heightTo / this.data.dim[0];
         }
-        this.colorer = toScale(value).domain(this.options.domain).range(this.options.color);
+        this.colorer = ScaleUtils.toScale(value).domain(this.options.domain).range(this.options.color);
         this.$node = this.build(d3.select(parent));
         this.$node.datum(data);
         VisUtils.assignVis(this.node, this);

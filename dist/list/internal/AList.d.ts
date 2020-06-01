@@ -2,7 +2,7 @@
  * Created by Samuel Gratzl on 25.01.2016.
  */
 /// <reference types="d3" />
-import '../../style.scss';
+import '../scss/main.scss';
 import { AVisInstance, IVisInstance, IVisInstanceOptions } from 'phovea_core';
 import { IVector } from 'phovea_core';
 import { Rect } from 'phovea_core';

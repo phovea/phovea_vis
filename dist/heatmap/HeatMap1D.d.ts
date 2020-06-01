@@ -1,7 +1,7 @@
 /**
  * Created by Samuel Gratzl on 26.12.2016.
  */
-import '../style.scss';
+import '../scss/main.scss';
 import { Range } from 'phovea_core';
 import { AVisInstance, IVisInstance } from 'phovea_core';
 import { Rect } from 'phovea_core';

@@ -3,7 +3,7 @@
  */
 
 
-import './style.scss';
+import '../scss/main.scss';
 import * as d3 from 'd3';
 import {AVisInstance, IVisInstance, VisUtils, IVisInstanceOptions} from 'phovea_core';
 import {BaseUtils} from 'phovea_core';

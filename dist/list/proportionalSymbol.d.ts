@@ -2,7 +2,7 @@
  * Created by Samuel Gratzl on 25.01.2016.
  */
 /// <reference types="d3" />
-import '../style.scss';
+import '../scss/main.scss';
 import { INumericalVector } from 'phovea_core';
 import { AList, IAListOptions } from './internal/AList';
 import { INumberValueTypeDesc } from 'phovea_core';

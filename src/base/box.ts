@@ -2,7 +2,7 @@
  * Created by Samuel Gratzl on 25.01.2016.
  */
 
-import './style.scss';
+import '../scss/main.scss';
 import * as d3 from 'd3';
 import {Range} from 'phovea_core';
 import {AVisInstance, IVisInstance, VisUtils, IVisInstanceOptions} from 'phovea_core';

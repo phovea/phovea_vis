@@ -3,7 +3,7 @@
  */
 
 
-import '../style.scss';
+import '../scss/main.scss';
 import * as d3 from 'd3';
 import {AppContext, BaseUtils} from 'phovea_core';
 import {Range} from 'phovea_core';

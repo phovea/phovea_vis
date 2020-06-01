@@ -6,12 +6,12 @@
 
 //register all extensions in the registry following the given pattern
 module.exports = function(registry) {
-  //registry.push('extension-type', 'extension-id', function() { return import('./src/extension_impl'); }, {});
+  //registry.push('extension-type', 'extension-id', function() { return import('./dist/extension_impl'); }, {});
   registry.push('vis', 'axis', function () {
-    return import('./src/axis');
+    return import('./dist/axis');
   }, {
     name: 'Axis',
-    icon: function() { return import('./src/assets/axis_icon.svg'); },
+    icon: function() { return import('./dist/assets/axis_icon.svg'); },
     scaling: 'height-only',
     filter: [
       'vector',
@@ -39,10 +39,10 @@ module.exports = function(registry) {
     }
   });
   registry.push('vis', 'barplot', function () {
-    return import('./src/list/barplot');
+    return import('./dist/list/barplot');
   }, {
     name: 'Bar Plot',
-    icon: function() { return import('./src/assets/barplot_icon.png'); },
+    icon: function() { return import('./dist/assets/barplot_icon.png'); },
     sizeDependsOnDataDimension: [
       false,
       true
@@ -54,7 +54,7 @@ module.exports = function(registry) {
 
   });
   registry.push('vis', 'table', function () {
-    return import('./src/table');
+    return import('./dist/table');
   }, {
     name: 'Table',
     filter: '(matrix|table|vector)',
@@ -62,7 +62,7 @@ module.exports = function(registry) {
 
   });
   registry.push('vis', 'list', function () {
-    return import('./src/list/list');
+    return import('./dist/list/list');
   }, {
     name: 'List',
     filter: 'vector',
@@ -72,7 +72,7 @@ module.exports = function(registry) {
     ]
   });
   registry.push('vis', 'proportionalSymbol', function () {
-    return import('./src/list/proportionalSymbol');
+    return import('./dist/list/proportionalSymbol');
   }, {
     name: 'Proportional Symbol',
     filter: [
@@ -86,19 +86,19 @@ module.exports = function(registry) {
   });
 
   registry.push('vis', 'phovea-vis-heatmap', function () {
-    return import('./src/heatmap');
+    return import('./dist/heatmap');
   }, {
     name: 'HeatMap',
-    icon: function() { return import('./src/assets/heatmap_icon.svg'); },
+    icon: function() { return import('./dist/assets/heatmap_icon.svg'); },
     sizeDependsOnDataDimension: true,
     filter: 'matrix'
 
   });
   registry.push('vis', 'phovea-vis-heatmap1d', function () {
-    return import('./src/heatmap');
+    return import('./dist/heatmap');
   }, {
     name: 'HeatMap 1D',
-    icon: function() { return import('./src/assets/heatmap_icon.svg'); },
+    icon: function() { return import('./dist/assets/heatmap_icon.svg'); },
     sizeDependsOnDataDimension: [
       false,
       true
@@ -108,10 +108,10 @@ module.exports = function(registry) {
 
   });
   registry.push('vis', 'phovea-vis-kaplanmeier', function () {
-    return import('./src/kaplanmeier');
+    return import('./dist/kaplanmeier');
   }, {
     name: 'Kaplanmeier Plot',
-    icon: function() { return import('./src/assets/kaplanmeier_icon.svg'); },
+    icon: function() { return import('./dist/assets/kaplanmeier_icon.svg'); },
     sizeDependsOnDataDimension: [
       false,
       false
@@ -121,10 +121,10 @@ module.exports = function(registry) {
 
   });
   registry.push('vis', 'phovea-vis-histogram', function () {
-    return import('./src/distribution');
+    return import('./dist/distribution');
   }, {
     name: 'Histogram',
-    icon: function() { return import('./src/assets/distribution_histogram_icon.png'); },
+    icon: function() { return import('./dist/assets/distribution_histogram_icon.png'); },
     filter: [
       '(vector|matrix|stratification)',
       '(categorical|real|int)'
@@ -132,11 +132,11 @@ module.exports = function(registry) {
 
   });
   registry.push('vis', 'phovea-vis-mosaic', function () {
-    return import('./src/distribution');
+    return import('./dist/distribution');
   }, {
     name: 'Mosaic',
     factory: 'createMosaic',
-    icon: function() { return import('./src/assets/distribution_mosaic_icon.png'); },
+    icon: function() { return import('./dist/assets/distribution_mosaic_icon.png'); },
     sizeDependsOnDataDimension: [
       false,
       true
@@ -149,11 +149,11 @@ module.exports = function(registry) {
 
   });
   registry.push('vis', 'phovea-vis-pie', function () {
-    return import('./src/distribution');
+    return import('./dist/distribution');
   }, {
     name: 'Pie',
     factory: 'createPie',
-    icon: function() { return import('./src/assets/distribution_pie_icon.png'); },
+    icon: function() { return import('./dist/assets/distribution_pie_icon.png'); },
     scaling: 'aspect',
     filter: [
       '(vector|stratification)',
@@ -162,10 +162,10 @@ module.exports = function(registry) {
 
   });
   registry.push('vis', 'phovea-vis-box', function () {
-    return import('./src/box');
+    return import('./dist/box');
   }, {
     name: 'BoxPlot',
-    icon: function() { return import('./src/assets/box_icon.png'); },
+    icon: function() { return import('./dist/assets/box_icon.png'); },
     scaling: 'aspect',
     filter: [
       'vector',
@@ -174,11 +174,11 @@ module.exports = function(registry) {
 
   });
   registry.push('vis', 'force-directed-graph', function () {
-    return import('./src/force_directed_graph');
+    return import('./dist/force_directed_graph');
   }, {
     name: 'Force Directed Graph',
     filter: 'graph',
-    icon: function() { return import('./src/assets/force_directed_graph.svg'); },
+    icon: function() { return import('./dist/assets/force_directed_graph.svg'); },
     sizeDependsOnDataDimension: [
       false,
       false

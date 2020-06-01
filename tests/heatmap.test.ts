@@ -1,6 +1,6 @@
 /// <reference types="jest" />
-import {DefaultUtils} from '../src/heatmap/DefaultUtils';
-import {ScaleUtils} from '../src/heatmap/IScale';
+import {DefaultUtils} from '../dist/heatmap/DefaultUtils';
+import {ScaleUtils} from '../dist/heatmap/IScale';
 import {INumberValueTypeDesc} from 'phovea_core';
 
 describe('toScale', () => {

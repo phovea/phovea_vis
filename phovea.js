@@ -8,7 +8,7 @@
 module.exports = function(registry) {
   //registry.push('extension-type', 'extension-id', function() { return import('./dist/extension_impl'); }, {});
   registry.push('vis', 'axis', function () {
-    return import('./dist/base/axis');
+    return import('./dist/base/axis').then((a) => a.Axis);
   }, {
     factory: 'createAxis',
     name: 'Axis',
@@ -40,7 +40,7 @@ module.exports = function(registry) {
     }
   });
   registry.push('vis', 'barplot', function () {
-    return import('./dist/list/barplot');
+    return import('./dist/list/barplot').then((b) => b.BarPlot);
   }, {
     factory: 'createBarPlot',
     name: 'Bar Plot',
@@ -56,7 +56,7 @@ module.exports = function(registry) {
 
   });
   registry.push('vis', 'table', function () {
-    return import('./dist/base/table');
+    return import('./dist/base/table').then((t) => t.Table);
   }, {
     factory: 'createTable',
     name: 'Table',
@@ -65,7 +65,7 @@ module.exports = function(registry) {
 
   });
   registry.push('vis', 'list', function () {
-    return import('./dist/list/list');
+    return import('./dist/list/list').then((l) => l.List);
   }, {
     factory: 'createList',
     name: 'List',
@@ -76,7 +76,7 @@ module.exports = function(registry) {
     ]
   });
   registry.push('vis', 'proportionalSymbol', function () {
-    return import('./dist/list/proportionalSymbol');
+    return import('./dist/list/proportionalSymbol').then((p) => p.ProportionalSymbol);
   }, {
     factory: 'createProportionalSymbol',
     name: 'Proportional Symbol',
@@ -91,7 +91,7 @@ module.exports = function(registry) {
   });
 
   registry.push('vis', 'phovea-vis-heatmap', function () {
-    return import('./dist/heatmap/HeatMap');
+    return import('./dist/heatmap/HeatMap').then((h) => h.HeatMap);
   }, {
     factory: 'createRenderer',
     name: 'HeatMap',
@@ -101,7 +101,7 @@ module.exports = function(registry) {
 
   });
   registry.push('vis', 'phovea-vis-heatmap1d', function () {
-    return import('./dist/heatmap/HeatMap1D');
+    return import('./dist/heatmap/HeatMap1D').then((h) => h.HeatMap1D);
   }, {
     factory: 'create1D',
     name: 'HeatMap 1D',
@@ -115,7 +115,7 @@ module.exports = function(registry) {
 
   });
   registry.push('vis', 'phovea-vis-kaplanmeier', function () {
-    return import('./dist/base/kaplanmeier');
+    return import('./dist/base/kaplanmeier').then((k) => k.KaplanMeierPlot);
   }, {
     factory: 'createKaplanMeierPlot',
     name: 'Kaplanmeier Plot',
@@ -129,7 +129,7 @@ module.exports = function(registry) {
 
   });
   registry.push('vis', 'phovea-vis-histogram', function () {
-    return import('./dist/distribution/Histogram');
+    return import('./dist/distribution/Histogram').then((h) => h.Histogram);
   }, {
     factory: 'createHistrogram',
     name: 'Histogram',
@@ -141,7 +141,7 @@ module.exports = function(registry) {
 
   });
   registry.push('vis', 'phovea-vis-mosaic', function () {
-    return import('./dist/distribution/Mosaic');
+    return import('./dist/distribution/Mosaic').then((m) => m.Mosaic);
   }, {
     name: 'Mosaic',
     factory: 'createMosaic',
@@ -158,7 +158,7 @@ module.exports = function(registry) {
 
   });
   registry.push('vis', 'phovea-vis-pie', function () {
-    return import('./dist/distribution/Pie');
+    return import('./dist/distribution/Pie').then((p) => p.Pie);
   }, {
     name: 'Pie',
     factory: 'createPie',
@@ -171,7 +171,7 @@ module.exports = function(registry) {
 
   });
   registry.push('vis', 'phovea-vis-box', function () {
-    return import('./dist/base/box');
+    return import('./dist/base/box').then((b) => b.BoxPlot);
   }, {
     factory: 'createBoxPlot',
     name: 'BoxPlot',
@@ -184,7 +184,7 @@ module.exports = function(registry) {
 
   });
   registry.push('vis', 'force-directed-graph', function () {
-    return import('./dist/base/force_directed_graph');
+    return import('./dist/base/force_directed_graph').then((f) => f.ForceDirectedGraphVis);
   }, {
     factory: 'createForceDirectedGraphVis',
     name: 'Force Directed Graph',

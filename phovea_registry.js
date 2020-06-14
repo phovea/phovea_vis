@@ -5,6 +5,7 @@
  **************************************************************************** */
 
 import {PluginRegistry} from 'phovea_core';
+import reg from './dist/phovea';
 
 /**
  * build a registry by registering all phovea modules
@@ -13,4 +14,4 @@ import {PluginRegistry} from 'phovea_core';
 import 'phovea_core/phovea_registry.js';
 import 'phovea_d3/phovea_registry.js';
 //self
-PluginRegistry.getInstance().register('phovea_vis',require('./phovea.js'));
+PluginRegistry.getInstance().register('phovea_vis',reg);

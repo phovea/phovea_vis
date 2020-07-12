@@ -10,5 +10,4 @@ export * from './AHeatMapCanvasRenderer';
 export * from './HeatMapCanvasRenderer';
 export * from './HeatMapDOMRenderer';
 export * from './HeatMapImageRenderer';
-export * from './ICommonHeatMapOptions';
 //# sourceMappingURL=index.js.map

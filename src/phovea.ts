@@ -93,9 +93,9 @@ module.exports = function(registry: IRegistry) {
   });
 
   registry.push('vis', 'phovea-vis-heatmap', function () {
-    return import('./heatmap/HeatMap').then((h) => h.HeatMap);
+    return import('./heatmap/HeatMap');
   }, {
-    factory: 'createRenderer',
+    factory: 'new HeatMap',
     name: 'HeatMap',
     icon() { return import('./assets/heatmap_icon.svg'); },
     sizeDependsOnDataDimension: true,

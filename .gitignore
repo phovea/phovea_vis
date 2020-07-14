@@ -1,6 +1,6 @@
 /.tscache
 /.idea
-/build/
+/lib/
 node_modules/
 /src/**/*.js
 /tests/**/*.js
@@ -8,5 +8,4 @@ node_modules/
 /tests/**/*.map
 *.css
 *.log
-/.cache-loader
 package-lock.json

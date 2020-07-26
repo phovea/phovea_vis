@@ -1,5 +1,5 @@
 /// <reference types="jest" />
-import {Axis} from '../dist/base/axis';
+import {Axis} from '../src/base/axis';
 
 describe('create', () => {
   it('is method', () => {

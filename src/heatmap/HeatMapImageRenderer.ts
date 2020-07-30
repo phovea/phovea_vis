@@ -4,24 +4,18 @@
 
 
 import * as d3 from 'd3';
-import {all, Range} from 'phovea_core/src/range';
-import {IHeatMapUrlOptions} from 'phovea_core/src/matrix';
-import {IScale, ICommonHeatMapOptions} from './internal';
+import {Range} from 'phovea_core';
+import {IHeatMapUrlOptions} from 'phovea_core';
+import {ICommonHeatMapOptions} from './ICommonHeatMapOptions';
+import {IScale} from './IScale';
 import {IHeatMapRenderer, ESelectOption} from './IHeatMapRenderer';
-import AHeatMapCanvasRenderer from './AHeatMapCanvasRenderer';
+import {AHeatMapCanvasRenderer} from './AHeatMapCanvasRenderer';
 import {IHeatMapAbleMatrix} from './HeatMap';
-import {sendAPI, encodeParams, MAX_URL_LENGTH} from 'phovea_core/src/ajax';
-import parseRange from 'phovea_core/src/range/parser';
-import {prepareHeatmapUrlParameter} from 'phovea_core/src/matrix/loader';
+import {AppContext, Ajax} from 'phovea_core';
+import {ParseRangeUtils} from 'phovea_core';
+import {MatrixLoaderHelper} from 'phovea_core';
 
-
-function ensureHex(color: string) {
-  const rgb = d3.rgb(color);
-  const toHex = (d: number) => ('00' + d.toString(16)).slice(-2);
-  return `#${toHex(rgb.r)}${toHex(rgb.g)}${toHex(rgb.b)}`;
-}
-
-export default class HeatMapImageRenderer extends AHeatMapCanvasRenderer implements IHeatMapRenderer {
+export class HeatMapImageRenderer extends AHeatMapCanvasRenderer implements IHeatMapRenderer {
   private image: HTMLImageElement;
   private ready = false;
   private color: IScale;
@@ -113,7 +107,7 @@ export default class HeatMapImageRenderer extends AHeatMapCanvasRenderer impleme
     const domain = c.domain();
     const args: IHeatMapUrlOptions = {
       range: [domain[0], domain[domain.length - 1]],
-      missing: ensureHex(this.options.missingColor)
+      missing: HeatMapImageRenderer.ensureHex(this.options.missingColor)
     };
 
     function arrEqual(a: any[], b: any[]) {
@@ -131,28 +125,34 @@ export default class HeatMapImageRenderer extends AHeatMapCanvasRenderer impleme
     } else if (arrEqual(colors, ['blue', 'white', 'red'])) {
       args.palette = 'blue_white_red';
     } else if (colors.length === 2 || colors.length === 3) {
-      args.palette = colors.map(ensureHex).join('-');
+      args.palette = colors.map(HeatMapImageRenderer.ensureHex).join('-');
     }
 
     // persist to get range and create range object again
     // TODO: make range property on matrix public
-    const range = parseRange(data.persist().range);
-    const params = prepareHeatmapUrlParameter(range, args);
+    const range = ParseRangeUtils.parseRange(data.persist().range);
+    const params = MatrixLoaderHelper.prepareHeatmapUrlParameter(range, args);
     const url = `/dataset/matrix/${data.desc.id}/data`;
 
-    const encoded = encodeParams(params);
-    if (encoded && (url.length + encoded.length >= MAX_URL_LENGTH)) {
+    const encoded = Ajax.encodeParams(params);
+    if (encoded && (url.length + encoded.length >= Ajax.MAX_URL_LENGTH)) {
       // use post instead
-      sendAPI(url, params, 'POST', 'blob').then((image) => {
+      AppContext.getInstance().sendAPI(url, params, 'POST', 'blob').then((image) => {
         const imageURL = window.URL.createObjectURL(image);
         this.image.src = imageURL;
       });
     } else {
-      this.image.src = data.heatmapUrl(all(), args);
+      this.image.src = data.heatmapUrl(Range.all(), args);
     }
 
     super.buildSelection(data, $root, scale);
 
     return $root;
+  }
+
+  static ensureHex(color: string) {
+    const rgb = d3.rgb(color);
+    const toHex = (d: number) => ('00' + d.toString(16)).slice(-2);
+    return `#${toHex(rgb.r)}${toHex(rgb.g)}${toHex(rgb.b)}`;
   }
 }

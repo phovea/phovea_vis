@@ -3,32 +3,18 @@
  */
 
 
-import '../style.scss';
+import '../scss/main.scss';
 import * as d3 from 'd3';
-import {onDOMNodeRemoved, mixin} from 'phovea_core/src';
-import {Range} from 'phovea_core/src/range';
-import {AVisInstance, IVisInstance, assignVis, ITransform} from 'phovea_core/src/vis';
-import {IHistAbleDataType, ICategoricalValueTypeDesc, INumberValueTypeDesc} from 'phovea_core/src/datatype';
-import {IStratification} from 'phovea_core/src/stratification';
-import {ICatHistogram} from 'phovea_core/src/math';
-import {toSelectOperation} from 'phovea_core/src/idtype';
-import {vec2, polygon} from 'phovea_core/src/geom';
-import bindTooltip from 'phovea_d3/src/tooltip';
-import {IDistributionOptions, ITotalHeight, resolveHistMax} from './internal';
-
-
-function toPolygon(start: number, end: number, radius: number) {
-  const r = [
-    vec2(radius, radius),
-    vec2(radius + Math.cos(start) * radius, radius + Math.sin(start) * radius),
-    vec2(radius + Math.cos(end) * radius, radius + Math.sin(end) * radius)
-  ];
-  //approximate by triangle
-  if (end - start > Math.PI) { //more than 180 degree use one more point
-    r.splice(2, 0, vec2(radius + Math.cos((end - start) * 0.5) * radius, radius + Math.sin((end - start) * 0.5) * radius));
-  }
-  return polygon(r);
-}
+import {AppContext, BaseUtils} from 'phovea_core';
+import {Range} from 'phovea_core';
+import {AVisInstance, IVisInstance, VisUtils, ITransform} from 'phovea_core';
+import {IHistAbleDataType, ICategoricalValueTypeDesc, INumberValueTypeDesc} from 'phovea_core';
+import {IStratification} from 'phovea_core';
+import {ICatHistogram} from 'phovea_core';
+import {SelectionUtils} from 'phovea_core';
+import {Vector2D, Polygon} from 'phovea_core';
+import {ToolTip} from 'phovea_d3';
+import {IDistributionOptions, ITotalHeight, HistUtils} from './HistData';
 
 interface IRadialHistData {
   name: string;
@@ -67,7 +53,7 @@ export interface IPieOptions extends IDistributionOptions {
   innerRadius?: number;
 }
 
-export default class Pie extends AVisInstance implements IVisInstance {
+export class Pie extends AVisInstance implements IVisInstance {
   private readonly options: IPieOptions = {
     radius: 50,
     innerRadius: 0,
@@ -87,11 +73,11 @@ export default class Pie extends AVisInstance implements IVisInstance {
 
   constructor(public readonly data: IHistAbleDataType<ICategoricalValueTypeDesc|INumberValueTypeDesc>|IStratification, parent: Element, options: IPieOptions = {}) {
     super();
-    mixin(this.options, options);
+    BaseUtils.mixin(this.options, options);
 
     this.$node = this.build(d3.select(parent));
     this.$node.datum(this);
-    assignVis(this.node, this);
+    VisUtils.assignVis(this.node, this);
   }
 
   get rawSize(): [number, number] {
@@ -139,13 +125,13 @@ export default class Pie extends AVisInstance implements IVisInstance {
       $m.attr('d', arc);
     };
     data.on('select', l);
-    onDOMNodeRemoved(<Element>$data.node(), function () {
+    AppContext.getInstance().onDOMNodeRemoved(<Element>$data.node(), function () {
       data.off('select', l);
     });
 
     data.hist().then((hist) => {
       this.hist = <ICatHistogram>hist;
-      return resolveHistMax(hist, this.options.total);
+      return HistUtils.resolveHistMax(hist, this.options.total);
     }).then((total) => {
       const hist = this.hist;
       scale.domain([0, total]);
@@ -168,8 +154,8 @@ export default class Pie extends AVisInstance implements IVisInstance {
       const $m = $data.selectAll('path').data(histData);
       $m.enter()
         .append('path')
-        .call(bindTooltip<IRadialHistData>((d) => d.name + ' ' + (d.size) + ' entries (' + Math.round(d.ratio * 100) + '%)'))
-        .on('click', (d) => data.select(0, d.range, toSelectOperation(<MouseEvent>d3.event)));
+        .call(ToolTip.bind<IRadialHistData>((d) => d.name + ' ' + (d.size) + ' entries (' + Math.round(d.ratio * 100) + '%)'))
+        .on('click', (d) => data.select(0, d.range, SelectionUtils.toSelectOperation(<MouseEvent>d3.event)));
       $m.attr('d', arc)
         .attr('fill', (d) => d.color)
         .style('opacity', 0);
@@ -194,7 +180,7 @@ export default class Pie extends AVisInstance implements IVisInstance {
       const ex = d3.extent(data, (value) => this.hist.binOf(value));
       const startAngle = this.scale(this.histData[ex[0]].start);
       const endAngle = this.scale(this.histData[ex[1]].end);
-      return Promise.resolve(toPolygon(startAngle, endAngle, o.radius));
+      return Promise.resolve(Pie.toPolygon(startAngle, endAngle, o.radius));
     });
   }
 
@@ -219,6 +205,22 @@ export default class Pie extends AVisInstance implements IVisInstance {
     return act;
   }
 
+  static createPie(data: IHistAbleDataType<ICategoricalValueTypeDesc|INumberValueTypeDesc>|IStratification, parent: Element, options?: IPieOptions) {
+    return new Pie(data, parent, options);
+  }
+
+  static toPolygon(start: number, end: number, radius: number) {
+    const r = [
+      Vector2D.vec2(radius, radius),
+      Vector2D.vec2(radius + Math.cos(start) * radius, radius + Math.sin(start) * radius),
+      Vector2D.vec2(radius + Math.cos(end) * radius, radius + Math.sin(end) * radius)
+    ];
+    //approximate by triangle
+    if (end - start > Math.PI) { //more than 180 degree use one more point
+      r.splice(2, 0, Vector2D.vec2(radius + Math.cos((end - start) * 0.5) * radius, radius + Math.sin((end - start) * 0.5) * radius));
+    }
+    return Polygon.polygon(r);
+  }
 
   //updatedOption (name, value) {
   //  if (name === 'innerRadius' || name === 'radius' || name === 'total') {
@@ -232,8 +234,4 @@ export default class Pie extends AVisInstance implements IVisInstance {
   //
   //  this.$node.selectAll('path').transition().attr('d', this.arc);
   //}
-}
-
-export function create(data: IHistAbleDataType<ICategoricalValueTypeDesc|INumberValueTypeDesc>|IStratification, parent: Element, options?: IPieOptions) {
-  return new Pie(data, parent, options);
 }

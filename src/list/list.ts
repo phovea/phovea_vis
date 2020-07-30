@@ -2,12 +2,12 @@
  * Created by Samuel Gratzl on 25.01.2016.
  */
 
-import '../style.scss';
+import '../scss/main.scss';
 import {format} from 'd3';
-import {mixin} from 'phovea_core/src';
-import {IAnyVector} from 'phovea_core/src/vector';
-import AList, {IAListOptions} from './internal/AList';
-import {IValueTypeDesc} from 'phovea_core/src/datatype';
+import {BaseUtils} from 'phovea_core';
+import {IAnyVector} from 'phovea_core';
+import {AList, IAListOptions} from './internal/AList';
+import {IValueTypeDesc} from 'phovea_core';
 
 export interface IListOptions extends IAListOptions {
   format?: string;
@@ -15,7 +15,7 @@ export interface IListOptions extends IAListOptions {
 
 export class List extends AList<any, IValueTypeDesc, IListOptions> {
   constructor(data: IAnyVector, parent: HTMLElement, options: IListOptions = {}) {
-    super(data, parent, mixin({format: null, rowHeight: 18}, options));
+    super(data, parent, BaseUtils.mixin({format: null, rowHeight: 18}, options));
     this.build();
   }
 
@@ -25,10 +25,10 @@ export class List extends AList<any, IValueTypeDesc, IListOptions> {
     $update.style('font-size', (factor >= 1 ? null : Math.round(factor * 100) + '%'));
     $update.text(formatter);
   }
+
+  static createList(data: IAnyVector, parent: HTMLElement, options: IListOptions) {
+    return new List(data, parent, options);
+  }
+
 }
 
-export default List;
-
-export function create(data: IAnyVector, parent: HTMLElement, options: IListOptions) {
-  return new List(data, parent, options);
-}

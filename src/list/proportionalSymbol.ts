@@ -2,23 +2,23 @@
  * Created by Samuel Gratzl on 25.01.2016.
  */
 
-import '../style.scss';
+import '../scss/main.scss';
 import {scale} from 'd3';
-import {mixin} from 'phovea_core/src';
-import {INumericalVector} from 'phovea_core/src/vector';
-import AList, {IAListOptions} from './internal/AList';
-import {INumberValueTypeDesc} from 'phovea_core/src/datatype';
+import {BaseUtils} from 'phovea_core';
+import {INumericalVector} from 'phovea_core';
+import {AList, IAListOptions} from './internal/AList';
+import {INumberValueTypeDesc} from 'phovea_core';
 
 export interface IProportionalSymbolOptions extends IAListOptions {
   min?: number;
   max?: number;
 }
 
-export default class ProportionalSymbol extends AList<number, INumberValueTypeDesc, IProportionalSymbolOptions> {
+export class ProportionalSymbol extends AList<number, INumberValueTypeDesc, IProportionalSymbolOptions> {
   private readonly scale = scale.linear<number,number>();
 
   constructor(data: INumericalVector, parent: HTMLElement, options: IProportionalSymbolOptions = {}) {
-    super(data, parent, mixin({cssClass: 'phovea-proportional-symbol', width: 20, min: NaN, max: NaN}, options));
+    super(data, parent, BaseUtils.mixin({cssClass: 'phovea-proportional-symbol', width: 20, min: NaN, max: NaN}, options));
     this.build();
   }
 
@@ -45,8 +45,8 @@ export default class ProportionalSymbol extends AList<number, INumberValueTypeDe
     this.scale.domain(this.domain).range([0, this.maxDiameter]);
     return super.build();
   }
-}
 
-export function create(data: INumericalVector, parent: HTMLElement, options: IProportionalSymbolOptions) {
-  return new ProportionalSymbol(data, parent, options);
+  static createProportionalSymbol(data: INumericalVector, parent: HTMLElement, options: IProportionalSymbolOptions) {
+    return new ProportionalSymbol(data, parent, options);
+  }
 }

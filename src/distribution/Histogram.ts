@@ -2,17 +2,17 @@
  * Created by Samuel Gratzl on 26.01.2016.
  */
 
-import '../style.scss';
+import '../scss/main.scss';
 import * as d3 from 'd3';
-import {onDOMNodeRemoved, mixin} from 'phovea_core/src';
-import {Range} from 'phovea_core/src/range';
-import {AVisInstance, IVisInstance, assignVis, ITransform} from 'phovea_core/src/vis';
-import {IHistAbleDataType, ICategoricalValueTypeDesc, INumberValueTypeDesc} from 'phovea_core/src/datatype';
-import {IStratification} from 'phovea_core/src/stratification';
-import {IHistogram} from 'phovea_core/src/math';
-import {toSelectOperation} from 'phovea_core/src/idtype';
-import bindTooltip from 'phovea_d3/src/tooltip';
-import {createHistData, IDistributionOptions, IHistData, ITotalHeight, resolveHistMax} from './internal';
+import {AppContext, BaseUtils} from 'phovea_core';
+import {Range} from 'phovea_core';
+import {AVisInstance, IVisInstance, VisUtils, ITransform} from 'phovea_core';
+import {IHistAbleDataType, ICategoricalValueTypeDesc, INumberValueTypeDesc} from 'phovea_core';
+import {IStratification} from 'phovea_core';
+import {IHistogram} from 'phovea_core';
+import {SelectionUtils} from 'phovea_core';
+import {ToolTip} from 'phovea_d3';
+import {HistUtils, IDistributionOptions, IHistData, ITotalHeight} from './HistData';
 
 export interface IHistogramOptions extends IDistributionOptions {
   /**
@@ -38,7 +38,7 @@ export interface IHistogramOptions extends IDistributionOptions {
   color?: number;
 }
 
-export default class Histogram extends AVisInstance implements IVisInstance {
+export class Histogram extends AVisInstance implements IVisInstance {
   private options: IHistogramOptions = {
     nbins: 5,
     total: true,
@@ -57,13 +57,13 @@ export default class Histogram extends AVisInstance implements IVisInstance {
 
   constructor(public readonly data: IHistAbleDataType<ICategoricalValueTypeDesc|INumberValueTypeDesc>|IStratification, parent: Element, options: IHistogramOptions = {}) {
     super();
-    mixin(this.options, {
+    BaseUtils.mixin(this.options, {
       nbins: Math.floor(Math.sqrt(data.length)),
     }, options);
 
     this.$node = this.build(d3.select(parent));
     this.$node.datum(this);
-    assignVis(this.node, this);
+    VisUtils.assignVis(this.node, this);
   }
 
   get rawSize(): [number, number] {
@@ -116,25 +116,25 @@ export default class Histogram extends AVisInstance implements IVisInstance {
       $m.exit().remove();
     };
     data.on('select', l);
-    onDOMNodeRemoved(<Element>$data.node(), function () {
+    AppContext.getInstance().onDOMNodeRemoved(<Element>$data.node(), function () {
       data.off('select', l);
     });
 
-    const onClick = (d) => data.select(0, d.range, toSelectOperation(<MouseEvent>d3.event));
+    const onClick = (d) => data.select(0, d.range, SelectionUtils.toSelectOperation(<MouseEvent>d3.event));
 
     this.data.hist(Math.floor(o.nbins)).then((hist) => {
       this.hist = hist;
       xscale.domain(d3.range(hist.bins));
-      return resolveHistMax(hist, this.options.total);
+      return HistUtils.resolveHistMax(hist, this.options.total);
     }).then((histmax) => {
       const hist = this.hist;
       yscale.domain([0, histmax]);
-      const histData = this.histData = createHistData(hist, this.data);
+      const histData = this.histData = HistUtils.createHistData(hist, this.data);
 
       const $m = $data.selectAll('rect').data(histData);
       $m.enter().append('rect')
         .attr('width', xscale.rangeBand())
-        .call(bindTooltip<IHistData>((d) => `${d.name} ${d.v} entries (${Math.round(d.ratio * 100)}%)`))
+        .call(ToolTip.bind<IHistData>((d) => `${d.name} ${d.v} entries (${Math.round(d.ratio * 100)}%)`))
         .on('click', onClick);
       $m.attr({
         x: (d, i) => xscale(i),
@@ -190,9 +190,8 @@ export default class Histogram extends AVisInstance implements IVisInstance {
     this.options.rotate = rotate;
     return act;
   }
-}
 
-
-export function create(data: IHistAbleDataType<ICategoricalValueTypeDesc|INumberValueTypeDesc>, parent: Element, options?: IHistogramOptions) {
-  return new Histogram(data, parent, options);
+  static createHistrogram(data: IHistAbleDataType<ICategoricalValueTypeDesc|INumberValueTypeDesc>, parent: Element, options?: IHistogramOptions) {
+    return new Histogram(data, parent, options);
+  }
 }

@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   version="1.1"
+   id="svg2"
+   height="64.999992"
+   width="70">
+  <defs
+     id="defs4" />
+  <metadata
+     id="metadata7">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     transform="translate(-200,-447.36218)"
+     id="layer1">
+    <path
+       transform="matrix(0.49114252,0,0,0.48413414,102.96179,232.94617)"
+       d="m 329.92096,510.01569 a 61.082066,56.802433 0 0 1 -61.08206,56.80243 61.082066,56.802433 0 0 1 -61.08207,-56.80243 61.082066,56.802433 0 0 1 61.08207,-56.80244 61.082066,56.802433 0 0 1 61.08206,56.80244 z"
+       id="path2985"
+       style="color:#000000;fill:#b380ff;fill-opacity:1;fill-rule:nonzero;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate" />
+    <text
+       id="text2989"
+       y="491.8739"
+       x="220.41016"
+       style="font-size:40px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Arial"
+       xml:space="preserve"><tspan
+         y="491.8739"
+         x="220.41016"
+         id="tspan2991">S</tspan></text>
+  </g>
+</svg>

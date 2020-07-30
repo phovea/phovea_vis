@@ -2,23 +2,23 @@
  * Created by Samuel Gratzl on 25.01.2016.
  */
 
-import '../style.scss';
+import '../scss/main.scss';
 import {scale} from 'd3';
-import {mixin} from 'phovea_core/src';
-import {INumericalVector} from 'phovea_core/src/vector';
-import AList, {IAListOptions} from './internal/AList';
-import {INumberValueTypeDesc} from 'phovea_core/src/datatype';
+import {BaseUtils} from 'phovea_core';
+import {INumericalVector} from 'phovea_core';
+import {AList, IAListOptions} from './internal/AList';
+import {INumberValueTypeDesc} from 'phovea_core';
 
 export interface IBarPlotOptions extends IAListOptions {
   min?: number;
   max?: number;
 }
 
-export default class BarPlot extends AList<number, INumberValueTypeDesc, IBarPlotOptions> {
+export class BarPlot extends AList<number, INumberValueTypeDesc, IBarPlotOptions> {
   private readonly scale = scale.linear<number,number>();
 
   constructor(data: INumericalVector, parent: HTMLElement, options: IBarPlotOptions = {}) {
-    super(data, parent, mixin({cssClass: 'phovea-barplot', width: 100, min: NaN, max: NaN}, options));
+    super(data, parent, BaseUtils.mixin({cssClass: 'phovea-barplot', width: 100, min: NaN, max: NaN}, options));
     this.build();
   }
 
@@ -43,8 +43,10 @@ export default class BarPlot extends AList<number, INumberValueTypeDesc, IBarPlo
     this.scale.domain(this.domain).range([0, this.maxBarWidth]);
     return super.build();
   }
+
+
+  static createBarPlot(data: INumericalVector, parent: HTMLElement, options: IBarPlotOptions) {
+    return new BarPlot(data, parent, options);
+  }
 }
 
-export function create(data: INumericalVector, parent: HTMLElement, options: IBarPlotOptions) {
-  return new BarPlot(data, parent, options);
-}

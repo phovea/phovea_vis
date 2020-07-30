@@ -3,36 +3,24 @@
  */
 
 
-import '../style.scss';
+import '../scss/main.scss';
 import * as d3 from 'd3';
-import Range from 'phovea_core/src/range/Range';
-import {AVisInstance, IVisInstance, assignVis} from 'phovea_core/src/vis';
-import {rect} from 'phovea_core/src/geom';
-import {mixin, onDOMNodeRemoved} from 'phovea_core/src';
-import {toSelectOperation} from 'phovea_core/src/idtype';
-import {INumericalMatrix, ICategoricalMatrix, DIM_ROW, DIM_COL} from 'phovea_core/src/matrix/IMatrix';
-import {defaultColor, defaultDomain, toScale, IScale, ICommonHeatMapOptions} from './internal';
+import {Range} from 'phovea_core';
+import {AVisInstance, IVisInstance, VisUtils} from 'phovea_core';
+import {Rect} from 'phovea_core';
+import {BaseUtils, AppContext} from 'phovea_core';
+import {SelectionUtils} from 'phovea_core';
+import {INumericalMatrix, ICategoricalMatrix, AMatrix} from 'phovea_core';
+import {DefaultUtils} from './DefaultUtils';
+import {ICommonHeatMapOptions} from './ICommonHeatMapOptions';
+import {ScaleUtils, IScale} from './IScale';
 import {IHeatMapRenderer, ESelectOption} from './IHeatMapRenderer';
-import HeatMapDOMRenderer from './HeatMapDOMRenderer';
-import HeatMapImageRenderer from './HeatMapImageRenderer';
-import HeatMapCanvasRenderer from './HeatMapCanvasRenderer';
+import {HeatMapDOMRenderer} from './HeatMapDOMRenderer';
+import {HeatMapImageRenderer} from './HeatMapImageRenderer';
+import {HeatMapCanvasRenderer} from './HeatMapCanvasRenderer';
+import {HeatMap1D, IHeatMap1DOptions, IHeatMapAbleVector} from './HeatMap1D';
 
 export declare type IHeatMapAbleMatrix = INumericalMatrix|ICategoricalMatrix;
-
-function createRenderer(d: IHeatMapAbleMatrix, selectAble: ESelectOption = ESelectOption.CELL, options:IHeatMapOptions): IHeatMapRenderer {
-  const cells = d.length;
-  if (cells <= 1000) {
-    return new HeatMapDOMRenderer(selectAble, options);
-  }
-  const url = d.heatmapUrl(); //can the url be created the return value should be valid
-  if (url && options.forceThumbnails) {
-    return new HeatMapImageRenderer(selectAble, options);
-  } else if (cells < 5000 || url === null) {
-    return new HeatMapCanvasRenderer(selectAble, options);
-  } else {
-    return new HeatMapImageRenderer(selectAble, options);
-  }
-}
 
 export interface IHeatMapOptions extends ICommonHeatMapOptions {
   /**
@@ -60,7 +48,7 @@ export interface IHeatMapOptions extends ICommonHeatMapOptions {
   labels?: ESelectOption;
 }
 
-export default class HeatMap extends AVisInstance implements IVisInstance {
+export class HeatMap extends AVisInstance implements IVisInstance {
   private $node: d3.Selection<any>;
   private colorer: IScale;
   private renderer: IHeatMapRenderer;
@@ -81,9 +69,9 @@ export default class HeatMap extends AVisInstance implements IVisInstance {
   constructor(public data: IHeatMapAbleMatrix, public parent: Element, options: IHeatMapOptions = {}) {
     super();
     const value = this.data.valuetype;
-    mixin(this.options, {
-      color: defaultColor(value),
-      domain: defaultDomain(value)
+    BaseUtils.mixin(this.options, {
+      color: DefaultUtils.defaultColor(value),
+      domain: DefaultUtils.defaultDomain(value)
     }, options);
 
     // if direct scale not given use initial scale
@@ -95,18 +83,18 @@ export default class HeatMap extends AVisInstance implements IVisInstance {
       this.options.scale = <[number, number]>this.options.scaleTo.map((d, i) => d / raw[i]);
     }
     this.options.rotate = 0;
-    this.colorer = toScale(value).domain(this.options.domain).range(this.options.color);
+    this.colorer = ScaleUtils.toScale(value).domain(this.options.domain).range(this.options.color);
 
     // handle string case
     this.options.labels = typeof this.options.labels === 'string' ? ESelectOption[<string>this.options.labels]: this.options.labels;
 
     const selection = typeof this.options.selectAble === 'boolean' ? (this.options.selectAble ? ESelectOption.CELL : ESelectOption.NONE) : ESelectOption[<string>this.options.selectAble];
 
-    this.renderer = createRenderer(data, selection, this.options);
+    this.renderer = HeatMap.createRenderer(data, selection, this.options);
 
     this.$node = this.build(d3.select(parent));
     this.$node.datum(data);
-    assignVis(this.node, this);
+    VisUtils.assignVis(this.node, this);
   }
 
   get rawSize(): [number, number] {
@@ -148,7 +136,7 @@ export default class HeatMap extends AVisInstance implements IVisInstance {
 
     const xw = l(range.dim(1), width, o.scale[0]);
     const yh = l(range.dim(0), height, o.scale[1]);
-    return Promise.resolve(rect(xw[0], yh[0], xw[1], yh[1]));
+    return Promise.resolve(Rect.rect(xw[0], yh[0], xw[1], yh[1]));
   }
 
   transform(scale?: [number, number], rotate: number = 0) {
@@ -208,7 +196,7 @@ export default class HeatMap extends AVisInstance implements IVisInstance {
   }
 
   private renderLabels($node: d3.Selection<any>, mode: ESelectOption, names: Promise<string[]>) {
-    const dim = mode === ESelectOption.ROW ? DIM_ROW : DIM_COL;
+    const dim = mode === ESelectOption.ROW ? AMatrix.DIM_ROW : AMatrix.DIM_COL;
     const $group = $node.append('div').attr('class', 'phovea-heatmap-labels ' + (mode === ESelectOption.ROW ? 'row-labels' : 'column-labels'));
 
     const l = function (event: any, type: string, selected: Range) {
@@ -227,7 +215,7 @@ export default class HeatMap extends AVisInstance implements IVisInstance {
     names.then((data) => {
       const $names = $group.selectAll('div').data(data);
       $names.enter().append('div').on('click', (d, i) => {
-        this.data.select(dim, [i], toSelectOperation(<MouseEvent>d3.event));
+        this.data.select(dim, [i], SelectionUtils.toSelectOperation(<MouseEvent>d3.event));
       });
       $names.text(String);
       $names.exit().remove();
@@ -237,7 +225,7 @@ export default class HeatMap extends AVisInstance implements IVisInstance {
       });
     });
     this.data.on('select', l);
-    onDOMNodeRemoved(<Element>$group.node(), () => {
+    AppContext.getInstance().onDOMNodeRemoved(<Element>$group.node(), () => {
       this.data.off('select', l);
     });
 
@@ -247,8 +235,33 @@ export default class HeatMap extends AVisInstance implements IVisInstance {
   update() {
     this.renderer.redraw(this.$node, this.options.scale);
   }
+
+  static createRenderer(d: IHeatMapAbleMatrix, selectAble: ESelectOption = ESelectOption.CELL, options:IHeatMapOptions): IHeatMapRenderer {
+    const cells = d.length;
+    if (cells <= 1000) {
+      return new HeatMapDOMRenderer(selectAble, options);
+    }
+    const url = d.heatmapUrl(); //can the url be created the return value should be valid
+    if (url && options.forceThumbnails) {
+      return new HeatMapImageRenderer(selectAble, options);
+    } else if (cells < 5000 || url === null) {
+      return new HeatMapCanvasRenderer(selectAble, options);
+    } else {
+      return new HeatMapImageRenderer(selectAble, options);
+    }
+  }
+
+  static create2D(data: IHeatMapAbleMatrix, parent: HTMLElement, options?: IHeatMapOptions) {
+    return new HeatMap(data, parent, options);
+  }
+
+  static createHeatMapDimensions(data: IHeatMapAbleMatrix|IHeatMapAbleVector, parent: HTMLElement, options?: IHeatMapOptions|IHeatMap1DOptions): AVisInstance {
+    if (data.desc.type === 'matrix') {
+      return HeatMap.create2D(<IHeatMapAbleMatrix>data, parent, <IHeatMapOptions>options);
+    } else if (data.desc.type === 'vector') {
+      return HeatMap1D.create1D(<IHeatMapAbleVector>data, parent, <IHeatMap1DOptions>options);
+    }
+    throw new Error('unknown data type: ' + data.desc.type);
+  }
 }
 
-export function create(data: IHeatMapAbleMatrix, parent: HTMLElement, options?: IHeatMapOptions) {
-  return new HeatMap(data, parent, options);
-}

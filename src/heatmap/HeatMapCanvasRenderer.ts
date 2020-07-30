@@ -4,12 +4,14 @@
 
 
 import * as d3 from 'd3';
-import {IScale, isMissing, ICommonHeatMapOptions} from './internal';
+import {DefaultUtils} from './DefaultUtils';
+import {ICommonHeatMapOptions} from './ICommonHeatMapOptions';
+import {IScale} from './IScale';
 import {IHeatMapRenderer, ESelectOption} from './IHeatMapRenderer';
-import AHeatMapCanvasRenderer from './AHeatMapCanvasRenderer';
+import {AHeatMapCanvasRenderer} from './AHeatMapCanvasRenderer';
 import {IHeatMapAbleMatrix} from './HeatMap';
 
-export default class HeatMapCanvasRenderer extends AHeatMapCanvasRenderer implements IHeatMapRenderer {
+export class HeatMapCanvasRenderer extends AHeatMapCanvasRenderer implements IHeatMapRenderer {
   private imageData: ImageData;
   private ready = false;
 
@@ -49,7 +51,7 @@ export default class HeatMapCanvasRenderer extends AHeatMapCanvasRenderer implem
     arr.forEach((row, j) => {
       const t = j * ncol;
       row.forEach((cell, i) => {
-        const color = d3.rgb(isMissing(cell) ? this.options.missingColor : c(cell));
+        const color = d3.rgb(DefaultUtils.isMissing(cell) ? this.options.missingColor : c(cell));
         rgba[(t + i) * 4] = color.r;
         rgba[(t + i) * 4 + 1] = color.g;
         rgba[(t + i) * 4 + 2] = color.b;

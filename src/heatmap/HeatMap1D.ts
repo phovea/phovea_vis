@@ -2,15 +2,17 @@
  * Created by Samuel Gratzl on 26.12.2016.
  */
 
-import '../style.scss';
+import '../scss/main.scss';
 import * as d3 from 'd3';
-import {Range} from 'phovea_core/src/range';
-import {AVisInstance, IVisInstance, assignVis} from 'phovea_core/src/vis';
-import {rect} from 'phovea_core/src/geom';
-import {mixin} from 'phovea_core/src';
-import {selectionUtil} from 'phovea_d3/src/d3util';
-import {INumericalVector, ICategoricalVector} from 'phovea_core/src/vector';
-import {defaultColor, defaultDomain, toScale, IScale, ICommonHeatMapOptions, isMissing} from './internal';
+import {Range} from 'phovea_core';
+import {AVisInstance, IVisInstance, VisUtils} from 'phovea_core';
+import {Rect} from 'phovea_core';
+import {BaseUtils} from 'phovea_core';
+import {D3Utils} from 'phovea_d3';
+import {INumericalVector, ICategoricalVector} from 'phovea_core';
+import {DefaultUtils} from './DefaultUtils';
+import {ICommonHeatMapOptions} from './ICommonHeatMapOptions';
+import {ScaleUtils, IScale} from './IScale';
 
 export interface IHeatMap1DOptions extends ICommonHeatMapOptions {
   /**
@@ -27,7 +29,7 @@ export interface IHeatMap1DOptions extends ICommonHeatMapOptions {
 
 export declare type IHeatMapAbleVector = INumericalVector|ICategoricalVector;
 
-export default class HeatMap1D extends AVisInstance implements IVisInstance {
+export class HeatMap1D extends AVisInstance implements IVisInstance {
   private readonly $node: d3.Selection<any>;
   private readonly colorer: IScale;
 
@@ -43,18 +45,18 @@ export default class HeatMap1D extends AVisInstance implements IVisInstance {
   constructor(public readonly data: IHeatMapAbleVector, public parent: Element, options: IHeatMap1DOptions = {}) {
     super();
     const value = this.data.valuetype;
-    mixin(this.options, {
-      color: defaultColor(value),
-      domain: defaultDomain(value)
+    BaseUtils.mixin(this.options, {
+      color: DefaultUtils.defaultColor(value),
+      domain: DefaultUtils.defaultDomain(value)
     }, options);
     this.options.scale = [1, this.options.initialScale];
     if (this.options.heightTo) {
       this.options.scale[1] = this.options.heightTo / this.data.dim[0];
     }
-    this.colorer = toScale(value).domain(this.options.domain).range(this.options.color);
+    this.colorer = ScaleUtils.toScale(value).domain(this.options.domain).range(this.options.color);
     this.$node = this.build(d3.select(parent));
     this.$node.datum(data);
-    assignVis(this.node, this);
+    VisUtils.assignVis(this.node, this);
   }
 
   get rawSize(): [number, number] {
@@ -95,7 +97,7 @@ export default class HeatMap1D extends AVisInstance implements IVisInstance {
     }
 
     const yh = l(range.dim(0), height, this.options.scale[1]);
-    return Promise.resolve(rect(0, yh[0], 20, yh[1]));
+    return Promise.resolve(Rect.rect(0, yh[0], 20, yh[1]));
   }
 
   transform(scale?: [number, number], rotate: number = 0) {
@@ -123,7 +125,7 @@ export default class HeatMap1D extends AVisInstance implements IVisInstance {
   private recolor() {
     const c = this.colorer;
     c.domain(this.options.domain).range(this.options.color);
-    this.$node.selectAll('rect').attr('fill', (d) => isMissing(d) ? this.options.missingColor : c(d));
+    this.$node.selectAll('rect').attr('fill', (d) => DefaultUtils.isMissing(d) ? this.options.missingColor : c(d));
   }
 
   private build($parent: d3.Selection<any>) {
@@ -141,13 +143,13 @@ export default class HeatMap1D extends AVisInstance implements IVisInstance {
     const t = <Promise<string|number[]>>this.data.data();
     t.then((arr: any[]) => {
       const $rows = $g.selectAll('rect').data(arr);
-      const onClick = selectionUtil(this.data, $g, 'rect');
+      const onClick = D3Utils.selectionUtil(this.data, $g, 'rect');
       $rows.enter().append('rect').on('click', onClick).attr({
         width: this.options.width,
         height: 1
       }).append('title').text(String);
       $rows.attr({
-        fill: (d) => isMissing(d) ? this.options.missingColor : c(d),
+        fill: (d) => DefaultUtils.isMissing(d) ? this.options.missingColor : c(d),
         y: (d, i) => i
       });
       $rows.exit().remove();
@@ -155,9 +157,8 @@ export default class HeatMap1D extends AVisInstance implements IVisInstance {
     });
     return $svg;
   }
-}
 
-
-export function create(data: IHeatMapAbleVector, parent: HTMLElement, options?: IHeatMap1DOptions): AVisInstance {
-  return new HeatMap1D(data, parent, options);
+  static create1D(data: IHeatMapAbleVector, parent: HTMLElement, options?: IHeatMap1DOptions): AVisInstance {
+    return new HeatMap1D(data, parent, options);
+  }
 }

@@ -2,17 +2,17 @@
  * Created by Samuel Gratzl on 26.01.2016.
  */
 
-import '../style.scss';
+import '../scss/main.scss';
 import * as d3 from 'd3';
-import {onDOMNodeRemoved, mixin} from 'phovea_core/src';
-import {Range} from 'phovea_core/src/range';
-import {AVisInstance, IVisInstance, assignVis, ITransform} from 'phovea_core/src/vis';
-import {IHistAbleDataType, ICategoricalValueTypeDesc, INumberValueTypeDesc} from 'phovea_core/src/datatype';
-import {IStratification} from 'phovea_core/src/stratification';
-import {IHistogram} from 'phovea_core/src/math';
-import {toSelectOperation} from 'phovea_core/src/idtype';
-import bindTooltip from 'phovea_d3/src/tooltip';
-import {createHistData, IDistributionOptions, IHistData} from './internal';
+import {AppContext, BaseUtils} from 'phovea_core';
+import {Range} from 'phovea_core';
+import {AVisInstance, IVisInstance, VisUtils, ITransform} from 'phovea_core';
+import {IHistAbleDataType, ICategoricalValueTypeDesc, INumberValueTypeDesc} from 'phovea_core';
+import {IStratification} from 'phovea_core';
+import {IHistogram} from 'phovea_core';
+import {SelectionUtils} from 'phovea_core';
+import {ToolTip} from 'phovea_d3';
+import {HistUtils, IDistributionOptions, IHistData} from './HistData';
 
 
 export interface IMosaicOptions extends IDistributionOptions {
@@ -39,7 +39,7 @@ export interface IMosaicOptions extends IDistributionOptions {
   selectAble?: boolean;
 }
 
-export default class Mosaic extends AVisInstance implements IVisInstance {
+export class Mosaic extends AVisInstance implements IVisInstance {
   private readonly options: IMosaicOptions = {
     width: 20,
     initialScale: 10,
@@ -57,7 +57,7 @@ export default class Mosaic extends AVisInstance implements IVisInstance {
 
   constructor(public readonly data: IHistAbleDataType<ICategoricalValueTypeDesc|INumberValueTypeDesc>|IStratification, parent: Element, options: IMosaicOptions = {}) {
     super();
-    mixin(this.options, {
+    BaseUtils.mixin(this.options, {
       scale: [1, this.options.initialScale]
     }, options);
 
@@ -67,7 +67,7 @@ export default class Mosaic extends AVisInstance implements IVisInstance {
 
     this.$node = this.build(d3.select(parent));
     this.$node.datum(this);
-    assignVis(this.node, this);
+    VisUtils.assignVis(this.node, this);
   }
 
   get rawSize(): [number, number] {
@@ -115,21 +115,21 @@ export default class Mosaic extends AVisInstance implements IVisInstance {
     };
     if (o.selectAble) {
       data.on('select', l);
-      onDOMNodeRemoved(<Element>$data.node(), () => data.off('select', l));
+      AppContext.getInstance().onDOMNodeRemoved(<Element>$data.node(), () => data.off('select', l));
     }
 
     const onClick = o.selectAble ? (d) => {
-        data.select(0, d.range, toSelectOperation(<MouseEvent>d3.event));
+        data.select(0, d.range, SelectionUtils.toSelectOperation(<MouseEvent>d3.event));
       } : null;
 
     this.data.hist().then((hist) => {
       this.hist = hist;
-      const histData = this.histData = createHistData(hist, data);
+      const histData = this.histData = HistUtils.createHistData(hist, data);
 
       const $m = $data.selectAll('rect').data(histData);
       $m.enter().append('rect')
         .attr('width', '100%')
-        .call(bindTooltip<IHistData>((d) => `${d.name} ${d.v} entries (${Math.round(d.ratio * 100)}%)`))
+        .call(ToolTip.bind<IHistData>((d) => `${d.name} ${d.v} entries (${Math.round(d.ratio * 100)}%)`))
         .on('click', onClick);
       $m.attr({
         y: (d) => d.acc,
@@ -190,8 +190,8 @@ export default class Mosaic extends AVisInstance implements IVisInstance {
     this.options.rotate = rotate;
     return act;
   }
-}
 
-export function create(data: IHistAbleDataType<ICategoricalValueTypeDesc|INumberValueTypeDesc>|IStratification, parent: Element, options?: IMosaicOptions) {
-  return new Mosaic(data, parent, options);
+  static createMosaic(data: IHistAbleDataType<ICategoricalValueTypeDesc|INumberValueTypeDesc>|IStratification, parent: Element, options?: IMosaicOptions) {
+    return new Mosaic(data, parent, options);
+  }
 }

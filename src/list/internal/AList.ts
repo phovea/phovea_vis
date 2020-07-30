@@ -2,15 +2,15 @@
  * Created by Samuel Gratzl on 25.01.2016.
  */
 
-import '../../style.scss';
+import '../../scss/main.scss';
 import {select, extent, selection} from 'd3';
-import {mixin} from 'phovea_core/src';
-import {AVisInstance, IVisInstance, assignVis, IVisInstanceOptions} from 'phovea_core/src/vis';
-import {selectionUtil} from 'phovea_d3/src/d3util';
-import {IVector} from 'phovea_core/src/vector';
-import {rect} from 'phovea_core/src/geom';
-import Range from 'phovea_core/src/range/Range';
-import {IValueTypeDesc} from 'phovea_core/src/datatype';
+import {BaseUtils} from 'phovea_core';
+import {AVisInstance, IVisInstance, VisUtils, IVisInstanceOptions} from 'phovea_core';
+import {D3Utils} from 'phovea_d3';
+import {IVector} from 'phovea_core';
+import {Rect} from 'phovea_core';
+import {Range} from 'phovea_core';
+import {IValueTypeDesc} from 'phovea_core';
 
 export interface IAListOptions extends IVisInstanceOptions {
   width?: number;
@@ -33,10 +33,10 @@ export abstract class AList<T, D extends IValueTypeDesc, O extends IAListOptions
 
   constructor(public readonly data: IVector<T,D>, private readonly parent: HTMLElement, options: O) {
     super();
-    this.options = mixin(<any>{}, DEFAULT_OPTIONS, options);
+    this.options = BaseUtils.mixin(<any>{}, DEFAULT_OPTIONS, options);
     this.$node = select(parent).append('div').attr('class', 'phovea-list ' + this.options.cssClass);
     this.$node.datum(this);
-    assignVis(this.node, this);
+    VisUtils.assignVis(this.node, this);
   }
 
   get rawSize(): [number, number] {
@@ -59,7 +59,7 @@ export abstract class AList<T, D extends IValueTypeDesc, O extends IAListOptions
       a = <HTMLElement>this.node.childNodes.item(ex[0]);
       b = <HTMLElement>this.node.childNodes.item(ex[1]);
     }
-    return Promise.resolve(rect(0, a.offsetTop, w, b.offsetTop + b.clientHeight - a.offsetTop));
+    return Promise.resolve(Rect.rect(0, a.offsetTop, w, b.offsetTop + b.clientHeight - a.offsetTop));
   }
 
   transform(scale?: [number, number], rotate: number = 0) {
@@ -92,7 +92,7 @@ export abstract class AList<T, D extends IValueTypeDesc, O extends IAListOptions
     this.$node.style('width', `${scale[0] * this.options.width}px`);
     this.$node.style('height', `${scale[1] * this.data.length * this.options.rowHeight}px`);
 
-    const onClick = selectionUtil(this.data, this.$node, 'div');
+    const onClick = D3Utils.selectionUtil(this.data, this.$node, 'div');
     this.data.data().then((arr: T[]) => {
       const $rows = this.$node.selectAll('div').data(arr);
       const $rowsEnter = $rows.enter().append('div').on('click', onClick);
@@ -101,6 +101,4 @@ export abstract class AList<T, D extends IValueTypeDesc, O extends IAListOptions
       this.markReady();
     });
   }
-
 }
-export default AList;

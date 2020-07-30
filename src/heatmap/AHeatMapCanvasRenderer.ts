@@ -4,12 +4,12 @@
 
 
 import * as d3 from 'd3';
-import {Range, cell} from 'phovea_core/src/range';
-import {onDOMNodeRemoved} from 'phovea_core/src';
-import {IMatrix} from 'phovea_core/src/matrix';
-import {toSelectOperation, defaultSelectionType} from 'phovea_core/src/idtype';
+import {Range} from 'phovea_core';
+import {AppContext} from 'phovea_core';
+import {IMatrix} from 'phovea_core';
+import {SelectionUtils} from 'phovea_core';
 import {ESelectOption} from './IHeatMapRenderer';
-import {ICommonHeatMapOptions} from './internal';
+import {ICommonHeatMapOptions} from './ICommonHeatMapOptions';
 
 export abstract class AHeatMapCanvasRenderer {
 
@@ -25,7 +25,7 @@ export abstract class AHeatMapCanvasRenderer {
     if (this.selectAble !== ESelectOption.NONE) {
       $node.datum().productSelections().then((selected) => {
         this.redrawSelection(<HTMLCanvasElement>$node.select('canvas.phovea-heatmap-selection').node(), dim,
-          defaultSelectionType, selected);
+        SelectionUtils.defaultSelectionType, selected);
       });
     }
   }
@@ -96,7 +96,7 @@ export abstract class AHeatMapCanvasRenderer {
 
     $selection.on('click', () => {
       const ij = toCoord(d3.event);
-      data.selectProduct([cell(...ij)], toSelectOperation(<MouseEvent>d3.event));
+      data.selectProduct([Range.cell(...ij)], SelectionUtils.toSelectOperation(<MouseEvent>d3.event));
     });
 
     const l = (event, type, selected) => {
@@ -104,7 +104,7 @@ export abstract class AHeatMapCanvasRenderer {
     };
 
     data.on('selectProduct', l);
-    onDOMNodeRemoved(<Element>$selection.node(), () => {
+    AppContext.getInstance().onDOMNodeRemoved(<Element>$selection.node(), () => {
       data.off('selectProduct', l);
     });
     data.productSelections().then((selected) => {
@@ -112,5 +112,3 @@ export abstract class AHeatMapCanvasRenderer {
     });
   }
 }
-
-export default AHeatMapCanvasRenderer;

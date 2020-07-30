@@ -1,7 +1,7 @@
-/// <reference types="jasmine" />
-import {create} from '../src/table';
-import {parseMatrix} from 'phovea_d3/src/parser';
-import {parse} from 'phovea_core/src/range';
+/// <reference types="jest" />
+import {Table} from '../src/base/table';
+import {Matrix} from 'phovea_core';
+import {ParseRangeUtils} from 'phovea_core';
 
 describe('table', () => {
   let squareTable;
@@ -9,7 +9,7 @@ describe('table', () => {
   let rowTable;
   beforeEach(function(done) {
     // Yes, this is redundant, but it's ok for now.
-    const data = parseMatrix(
+    const data = Matrix.asMatrix(
         [ // raw data as 2D array
           [1, 2],
           [3, 4]
@@ -18,9 +18,9 @@ describe('table', () => {
         ['A', 'B'] // col_ids
     );
     const element = document.createElement('div');
-    squareTable = create(data, element);
-    colTable = create(data.view(parse([[0,1],[1]])), element);
-    rowTable = create(data.view(parse([[1],[0,1]])), element);
+    squareTable = Table.createTable(data, element);
+    colTable = Table.createTable(data.view(ParseRangeUtils.parseRangeLike([[0,1],[1]])), element);
+    rowTable = Table.createTable(data.view(ParseRangeUtils.parseRangeLike([[1],[0,1]])), element);
     setTimeout(function() {
       done();
     }, 1000); // TODO: Can we do better than this? create() doesn't let us provide a callback?

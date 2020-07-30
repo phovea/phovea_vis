@@ -4,14 +4,16 @@
 
 
 import * as d3 from 'd3';
-import {Range, cell} from 'phovea_core/src/range';
-import {onDOMNodeRemoved} from 'phovea_core/src';
-import {toSelectOperation, defaultSelectionType} from 'phovea_core/src/idtype';
-import {IScale, isMissing, ICommonHeatMapOptions} from './internal';
+import {Range} from 'phovea_core';
+import {AppContext} from 'phovea_core';
+import {SelectionUtils} from 'phovea_core';
+import {DefaultUtils} from './DefaultUtils';
+import {ICommonHeatMapOptions} from './ICommonHeatMapOptions';
+import {IScale} from './IScale';
 import {IHeatMapRenderer, ESelectOption} from './IHeatMapRenderer';
 import {IHeatMapAbleMatrix} from './HeatMap';
 
-export default class HeatMapDOMRenderer implements IHeatMapRenderer {
+export class HeatMapDOMRenderer implements IHeatMapRenderer {
   private color: IScale;
 
   constructor(private readonly selectAble: ESelectOption = ESelectOption.CELL, private readonly options: ICommonHeatMapOptions) {
@@ -33,8 +35,8 @@ export default class HeatMapDOMRenderer implements IHeatMapRenderer {
 
   redraw($node: d3.Selection<any>, scale: number[]) {
     $node.select('svg').selectAll('rect')
-      .attr('fill', (d) => isMissing(d) ? this.options.missingColor : this.color(d))
-      .classed('missing', isMissing);
+      .attr('fill', (d) => DefaultUtils.isMissing(d) ? this.options.missingColor : this.color(d))
+      .classed('missing', DefaultUtils.isMissing);
   }
 
   build(data: IHeatMapAbleMatrix, $parent: d3.Selection<any>, scale: [number, number], c: IScale, onReady: () => void) {
@@ -58,12 +60,12 @@ export default class HeatMapDOMRenderer implements IHeatMapRenderer {
           height: 1,
           x: (d, j) => j,
           y: i,
-          fill: (d) => isMissing(d) ? that.options.missingColor : c(d)
+          fill: (d) => DefaultUtils.isMissing(d) ? that.options.missingColor : c(d)
         });
-        $colsEnter.classed('missing', isMissing);
+        $colsEnter.classed('missing', DefaultUtils.isMissing);
         if (that.selectAble !== ESelectOption.NONE) {
           $colsEnter.on('click', (d, j) => {
-            data.selectProduct([cell(i, j)], toSelectOperation(<MouseEvent>d3.event));
+            data.selectProduct([Range.cell(i, j)], SelectionUtils.toSelectOperation(<MouseEvent>d3.event));
           });
         }
         $colsEnter.append('title').text(String);
@@ -88,11 +90,11 @@ export default class HeatMapDOMRenderer implements IHeatMapRenderer {
     };
     if (this.selectAble !== ESelectOption.NONE) {
       data.on('selectProduct', l);
-      onDOMNodeRemoved(<Element>$g.node(), function () {
+      AppContext.getInstance().onDOMNodeRemoved(<Element>$g.node(), function () {
         data.off('selectProduct', l);
       });
       data.productSelections().then(function (selected) {
-        l(null, defaultSelectionType, selected);
+        l(null, SelectionUtils.defaultSelectionType, selected);
       });
     }
 

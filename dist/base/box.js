@@ -1,7 +1,6 @@
 /**
  * Created by Samuel Gratzl on 25.01.2016.
  */
-import '../scss/main.scss';
 import * as d3 from 'd3';
 import { AVisInstance, VisUtils } from 'phovea_core';
 import { Rect } from 'phovea_core';

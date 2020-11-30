@@ -2,8 +2,6 @@
  * Created by Samuel Gratzl on 26.12.2016.
  */
 
-
-import '../scss/main.scss';
 import * as d3 from 'd3';
 import {Range} from 'phovea_core';
 import {AVisInstance, IVisInstance, VisUtils} from 'phovea_core';
@@ -264,4 +262,3 @@ export class HeatMap extends AVisInstance implements IVisInstance {
     throw new Error('unknown data type: ' + data.desc.type);
   }
 }
-

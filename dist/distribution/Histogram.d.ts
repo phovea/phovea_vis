@@ -1,7 +1,6 @@
 /**
  * Created by Samuel Gratzl on 26.01.2016.
  */
-import '../scss/main.scss';
 import { Range } from 'phovea_core';
 import { AVisInstance, IVisInstance, ITransform } from 'phovea_core';
 import { IHistAbleDataType, ICategoricalValueTypeDesc, INumberValueTypeDesc } from 'phovea_core';

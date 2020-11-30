@@ -1,0 +1,8 @@
+.phovea-histogram {
+  .phovea-select-selected rect {
+    fill: $select-color;
+  }
+  .phovea-select-hovered rect {
+    fill: $hover-color;
+  }
+}

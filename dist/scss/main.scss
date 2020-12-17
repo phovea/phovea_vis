@@ -1,6 +1,7 @@
+@import './abstracts/mixins';
 @import './abstracts/variables';
 
-@import '~phovea_d3/dist/scss/main';
+@import './base/base';
 
 @import './components/axis';
 @import './components/barplot';

@@ -2,7 +2,6 @@
  * Created by Samuel Gratzl on 25.01.2016.
  */
 
-import '../scss/main.scss';
 import {scale} from 'd3';
 import {BaseUtils} from 'phovea_core';
 import {INumericalVector} from 'phovea_core';
@@ -49,4 +48,3 @@ export class BarPlot extends AList<number, INumberValueTypeDesc, IBarPlotOptions
     return new BarPlot(data, parent, options);
   }
 }
-

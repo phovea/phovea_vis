@@ -2,8 +2,6 @@
  * Created by Samuel Gratzl on 26.01.2016.
  */
 
-
-import '../scss/main.scss';
 import * as d3 from 'd3';
 import {AppContext, BaseUtils} from 'phovea_core';
 import {Range} from 'phovea_core';

@@ -1,7 +1,6 @@
 /**
  * Created by Samuel Gratzl on 25.01.2016.
  */
-import '../scss/main.scss';
 import { format } from 'd3';
 import { BaseUtils } from 'phovea_core';
 import { AList } from './internal/AList';

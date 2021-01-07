@@ -1,7 +1,6 @@
 /**
  * Created by Samuel Gratzl on 25.01.2016.
  */
-import '../scss/main.scss';
 import { AVisInstance, IVisInstance, ITransform, IVisInstanceOptions } from 'phovea_core';
 import { INumericalVector } from 'phovea_core';
 import { Range } from 'phovea_core';

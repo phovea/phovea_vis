@@ -1,7 +1,6 @@
 /**
  * Created by Samuel Gratzl on 25.01.2016.
  */
-import '../../scss/main.scss';
 import { select, extent, selection } from 'd3';
 import { BaseUtils } from 'phovea_core';
 import { AVisInstance, VisUtils } from 'phovea_core';

@@ -1,0 +1,13 @@
+.phovea-table {
+  font-size: smaller;
+  border-collapse: collapse;
+
+  tr {
+    &.phovea-select-selected {
+      border: 1px solid $select-color;
+    }
+    &.phovea-select-hovered {
+      border: 1px solid $hover-color;
+    }
+  }
+}

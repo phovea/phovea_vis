@@ -1,0 +1,62 @@
+div.phovea-heatmap {
+  position: relative;
+  line-height: 0;
+
+  canvas {
+
+    &.phovea-heatmap-selection {
+      position: absolute;
+      top: 0;
+      left: 0;
+      z-index: 2;
+    }
+  }
+
+  .phovea-heatmap-labels {
+    line-height: 100%;
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    overflow: hidden;
+
+    div.phovea-select-selected {
+      background-color: $select-color;
+    }
+
+    &.row-labels {
+      top: 0;
+      text-align: right;
+    }
+
+    &.column-labels {
+      top: 0;
+      transform: rotate(-90deg);
+      transform-origin: top left;
+    }
+  }
+}
+
+.phovea-heatmap {
+  &.lg {
+    // highlight selection for svg heatmap
+    rect {
+      &.phovea-select-selected {
+        stroke: $select-color;
+      }
+      &.phovea-select-hovered {
+        stroke: $hover-color;
+      }
+    }
+  }
+  &.sm {
+    rect {
+      &.phovea-select-selected {
+        fill: $select-color;
+      }
+      &.phovea-select-hovered {
+        fill: $hover-color;
+      }
+    }
+  }
+}

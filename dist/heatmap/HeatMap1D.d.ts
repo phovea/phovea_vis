@@ -1,10 +1,10 @@
 /**
  * Created by Samuel Gratzl on 26.12.2016.
  */
-import { Range } from 'phovea_core';
-import { AVisInstance, IVisInstance } from 'phovea_core';
-import { Rect } from 'phovea_core';
-import { INumericalVector, ICategoricalVector } from 'phovea_core';
+import { Range } from 'tdp_core';
+import { AVisInstance, IVisInstance } from 'tdp_core';
+import { Rect } from 'tdp_core';
+import { INumericalVector, ICategoricalVector } from 'tdp_core';
 import { ICommonHeatMapOptions } from './ICommonHeatMapOptions';
 export interface IHeatMap1DOptions extends ICommonHeatMapOptions {
     /**

@@ -1,11 +1,11 @@
 /**
  * Created by Samuel Gratzl on 26.01.2016.
  */
-import { Range } from 'phovea_core';
-import { AVisInstance, IVisInstance, ITransform } from 'phovea_core';
-import { IHistAbleDataType, ICategoricalValueTypeDesc, INumberValueTypeDesc } from 'phovea_core';
-import { IStratification } from 'phovea_core';
-import { Polygon } from 'phovea_core';
+import { Range } from 'tdp_core';
+import { AVisInstance, IVisInstance, ITransform } from 'tdp_core';
+import { IHistAbleDataType, ICategoricalValueTypeDesc, INumberValueTypeDesc } from 'tdp_core';
+import { IStratification } from 'tdp_core';
+import { Polygon } from 'tdp_core';
 import { IDistributionOptions, ITotalHeight } from './HistData';
 export interface IPieOptions extends IDistributionOptions {
     /**

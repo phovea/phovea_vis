@@ -2,12 +2,12 @@
  * Created by Samuel Gratzl on 26.12.2016.
  */
 import * as d3 from 'd3';
-import { Range } from 'phovea_core';
+import { Range } from 'tdp_core';
 import { ESelectOption } from './IHeatMapRenderer';
 import { AHeatMapCanvasRenderer } from './AHeatMapCanvasRenderer';
-import { AppContext, Ajax } from 'phovea_core';
-import { ParseRangeUtils } from 'phovea_core';
-import { MatrixLoaderHelper } from 'phovea_core';
+import { AppContext, Ajax } from 'tdp_core';
+import { ParseRangeUtils } from 'tdp_core';
+import { MatrixLoaderHelper } from 'tdp_core';
 export class HeatMapImageRenderer extends AHeatMapCanvasRenderer {
     constructor(selectAble = ESelectOption.CELL, options) {
         super(selectAble, options);

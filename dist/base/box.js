@@ -2,9 +2,9 @@
  * Created by Samuel Gratzl on 25.01.2016.
  */
 import * as d3 from 'd3';
-import { AVisInstance, VisUtils } from 'phovea_core';
-import { Rect } from 'phovea_core';
-import { BaseUtils } from 'phovea_core';
+import { AVisInstance, VisUtils } from 'tdp_core';
+import { Rect } from 'tdp_core';
+import { BaseUtils } from 'tdp_core';
 import { ToolTip } from 'phovea_d3';
 function createText(stats) {
     let r = '<table><tbody>';

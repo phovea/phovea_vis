@@ -2,9 +2,9 @@
  * Created by Samuel Gratzl on 26.01.2016.
  */
 import * as d3 from 'd3';
-import { AppContext, BaseUtils } from 'phovea_core';
-import { AVisInstance, VisUtils } from 'phovea_core';
-import { SelectionUtils } from 'phovea_core';
+import { AppContext, BaseUtils } from 'tdp_core';
+import { AVisInstance, VisUtils } from 'tdp_core';
+import { SelectionUtils } from 'tdp_core';
 import { ToolTip } from 'phovea_d3';
 import { HistUtils } from './HistData';
 export class Mosaic extends AVisInstance {

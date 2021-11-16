@@ -1,9 +1,9 @@
 /**
  * Created by Samuel Gratzl on 25.01.2016.
  */
-import { AVisInstance, IVisInstance, ITransform, IVisInstanceOptions } from 'phovea_core';
-import { INumericalVector } from 'phovea_core';
-import { Range } from 'phovea_core';
+import { AVisInstance, IVisInstance, ITransform, IVisInstanceOptions } from 'tdp_core';
+import { INumericalVector } from 'tdp_core';
+import { Range } from 'tdp_core';
 export interface IAxisOptions extends IVisInstanceOptions {
     /**
      * axis shift

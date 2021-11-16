@@ -1,7 +1,7 @@
 /**
  * Created by Samuel Gratzl on 26.12.2016.
  */
-import { INumberValueTypeDesc, ICategoricalValueTypeDesc } from 'phovea_core';
+import { INumberValueTypeDesc, ICategoricalValueTypeDesc } from 'tdp_core';
 export declare class DefaultUtils {
     static defaultColor(value: INumberValueTypeDesc | ICategoricalValueTypeDesc): string[];
     static defaultDomain(value: INumberValueTypeDesc | ICategoricalValueTypeDesc): (string | number)[];

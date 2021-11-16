@@ -1,7 +1,7 @@
 /// <reference types="jest" />
 import {DefaultUtils} from '../src/heatmap/DefaultUtils';
 import {ScaleUtils} from '../src/heatmap/IScale';
-import {INumberValueTypeDesc} from 'phovea_core';
+import {INumberValueTypeDesc} from 'tdp_core';
 
 describe('toScale', () => {
   it('handles negative and positive', () => {

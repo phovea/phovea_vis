@@ -3,13 +3,13 @@
  */
 
 import {select, extent, selection} from 'd3';
-import {BaseUtils} from 'phovea_core';
-import {AVisInstance, IVisInstance, VisUtils, IVisInstanceOptions} from 'phovea_core';
+import {BaseUtils} from 'tdp_core';
+import {AVisInstance, IVisInstance, VisUtils, IVisInstanceOptions} from 'tdp_core';
 import {D3Utils} from 'phovea_d3';
-import {IVector} from 'phovea_core';
-import {Rect} from 'phovea_core';
-import {Range} from 'phovea_core';
-import {IValueTypeDesc} from 'phovea_core';
+import {IVector} from 'tdp_core';
+import {Rect} from 'tdp_core';
+import {Range} from 'tdp_core';
+import {IValueTypeDesc} from 'tdp_core';
 
 export interface IAListOptions extends IVisInstanceOptions {
   width?: number;

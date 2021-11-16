@@ -1,5 +1,5 @@
 import * as d3 from 'd3';
-import {ValueTypeUtils} from 'phovea_core';
+import {ValueTypeUtils} from 'tdp_core';
 
 export interface IScale {
   (x: any): any;

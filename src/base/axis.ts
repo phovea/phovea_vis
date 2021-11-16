@@ -3,11 +3,11 @@
  */
 
 import * as d3 from 'd3';
-import {BaseUtils} from 'phovea_core';
-import {AVisInstance, IVisInstance, VisUtils, ITransform, IVisInstanceOptions} from 'phovea_core';
+import {BaseUtils} from 'tdp_core';
+import {AVisInstance, IVisInstance, VisUtils, ITransform, IVisInstanceOptions} from 'tdp_core';
 import {D3Utils} from 'phovea_d3';
-import {INumericalVector} from 'phovea_core';
-import {Range} from 'phovea_core';
+import {INumericalVector} from 'tdp_core';
+import {Range} from 'tdp_core';
 
 export interface IAxisOptions extends IVisInstanceOptions {
   /**

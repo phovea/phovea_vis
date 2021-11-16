@@ -2,8 +2,8 @@
  * Created by Samuel Gratzl on 01.10.2015.
  */
 import * as d3 from 'd3';
-import { AVisInstance, VisUtils } from 'phovea_core';
-import { BaseUtils } from 'phovea_core';
+import { AVisInstance, VisUtils } from 'tdp_core';
+import { BaseUtils } from 'tdp_core';
 export class KaplanMeierPlot extends AVisInstance {
     constructor(data, parent, options = {}) {
         super();

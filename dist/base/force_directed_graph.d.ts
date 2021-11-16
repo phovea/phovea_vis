@@ -1,8 +1,8 @@
 /**
  * Created by Samuel Gratzl on 05.08.2014.
  */
-import { AVisInstance, IVisInstance, IVisInstanceOptions } from 'phovea_core';
-import { GraphProxy } from 'phovea_core';
+import { AVisInstance, IVisInstance, IVisInstanceOptions } from 'tdp_core';
+import { GraphProxy } from 'tdp_core';
 export interface IForceDirectedGraphOptions extends IVisInstanceOptions {
     /**
      * assign colors

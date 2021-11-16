@@ -2,9 +2,9 @@
  * Created by Samuel Gratzl on 25.01.2016.
  */
 /// <reference types="d3" />
-import { IAnyVector } from 'phovea_core';
+import { IAnyVector } from 'tdp_core';
 import { AList, IAListOptions } from './internal/AList';
-import { IValueTypeDesc } from 'phovea_core';
+import { IValueTypeDesc } from 'tdp_core';
 export interface IListOptions extends IAListOptions {
     format?: string;
 }

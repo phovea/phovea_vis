@@ -2,11 +2,11 @@
  * Created by Samuel Gratzl on 25.01.2016.
  */
 /// <reference types="d3" />
-import { AVisInstance, IVisInstance, IVisInstanceOptions } from 'phovea_core';
-import { IVector } from 'phovea_core';
-import { Rect } from 'phovea_core';
-import { Range } from 'phovea_core';
-import { IValueTypeDesc } from 'phovea_core';
+import { AVisInstance, IVisInstance, IVisInstanceOptions } from 'tdp_core';
+import { IVector } from 'tdp_core';
+import { Rect } from 'tdp_core';
+import { Range } from 'tdp_core';
+import { IValueTypeDesc } from 'tdp_core';
 export interface IAListOptions extends IVisInstanceOptions {
     width?: number;
     rowHeight?: number;

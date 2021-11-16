@@ -2,7 +2,7 @@
  * Created by Samuel Gratzl on 26.12.2016.
  */
 import * as d3 from 'd3';
-import { ValueTypeUtils } from 'phovea_core';
+import { ValueTypeUtils } from 'tdp_core';
 export class HistUtils {
     static createCategoricalHistData(hist) {
         const categories = hist.categories;

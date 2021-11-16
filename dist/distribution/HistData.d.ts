@@ -1,11 +1,11 @@
 /**
  * Created by Samuel Gratzl on 26.12.2016.
  */
-import { Range } from 'phovea_core';
-import { IVisInstanceOptions } from 'phovea_core';
-import { IHistAbleDataType, INumberValueTypeDesc, ICategoricalValueTypeDesc } from 'phovea_core';
-import { IStratification } from 'phovea_core';
-import { ICatHistogram, IHistogram } from 'phovea_core';
+import { Range } from 'tdp_core';
+import { IVisInstanceOptions } from 'tdp_core';
+import { IHistAbleDataType, INumberValueTypeDesc, ICategoricalValueTypeDesc } from 'tdp_core';
+import { IStratification } from 'tdp_core';
+import { ICatHistogram, IHistogram } from 'tdp_core';
 export interface IHistData {
     readonly v: number;
     readonly acc: number;

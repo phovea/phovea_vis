@@ -2,9 +2,9 @@
  * Created by Samuel Gratzl on 26.12.2016.
  */
 import * as d3 from 'd3';
-import { Range } from 'phovea_core';
-import { AppContext } from 'phovea_core';
-import { SelectionUtils } from 'phovea_core';
+import { Range } from 'tdp_core';
+import { AppContext } from 'tdp_core';
+import { SelectionUtils } from 'tdp_core';
 import { ESelectOption } from './IHeatMapRenderer';
 export class AHeatMapCanvasRenderer {
     constructor(selectAble = ESelectOption.CELL, options) {

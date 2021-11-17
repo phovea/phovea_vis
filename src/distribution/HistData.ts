@@ -3,14 +3,14 @@
  */
 
 import * as d3 from 'd3';
-import {Range} from 'phovea_core';
-import {IVisInstanceOptions} from 'phovea_core';
+import {Range} from 'tdp_core';
+import {IVisInstanceOptions} from 'tdp_core';
 import {
   ValueTypeUtils,
   IHistAbleDataType, INumberValueTypeDesc, ICategoricalValueTypeDesc
-} from 'phovea_core';
-import {IStratification} from 'phovea_core';
-import {ICatHistogram, IHistogram} from 'phovea_core';
+} from 'tdp_core';
+import {IStratification} from 'tdp_core';
+import {ICatHistogram, IHistogram} from 'tdp_core';
 
 
 export interface IHistData {

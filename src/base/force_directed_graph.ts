@@ -3,10 +3,10 @@
  */
 
 import * as d3 from 'd3';
-import {AVisInstance, IVisInstance, VisUtils, IVisInstanceOptions} from 'phovea_core';
-import {BaseUtils} from 'phovea_core';
-import {GraphProxy} from 'phovea_core';
-import { GraphNode } from 'phovea_core';
+import {AVisInstance, IVisInstance, VisUtils, IVisInstanceOptions} from 'tdp_core';
+import {BaseUtils} from 'tdp_core';
+import {GraphProxy} from 'tdp_core';
+import { GraphNode } from 'tdp_core';
 
 export interface IForceDirectedGraphOptions extends IVisInstanceOptions {
   /**

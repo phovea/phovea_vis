@@ -1,10 +1,10 @@
 /**
  * Created by Samuel Gratzl on 26.12.2016.
  */
-import { Range } from 'phovea_core';
-import { AVisInstance, IVisInstance } from 'phovea_core';
-import { Rect } from 'phovea_core';
-import { INumericalMatrix, ICategoricalMatrix } from 'phovea_core';
+import { Range } from 'tdp_core';
+import { AVisInstance, IVisInstance } from 'tdp_core';
+import { Rect } from 'tdp_core';
+import { INumericalMatrix, ICategoricalMatrix } from 'tdp_core';
 import { ICommonHeatMapOptions } from './ICommonHeatMapOptions';
 import { IHeatMapRenderer, ESelectOption } from './IHeatMapRenderer';
 import { IHeatMap1DOptions, IHeatMapAbleVector } from './HeatMap1D';

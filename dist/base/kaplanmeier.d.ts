@@ -1,9 +1,9 @@
 /**
  * Created by Samuel Gratzl on 01.10.2015.
  */
-import { Range } from 'phovea_core';
-import { AVisInstance, IVisInstance, IVisInstanceOptions } from 'phovea_core';
-import { INumericalVector } from 'phovea_core';
+import { Range } from 'tdp_core';
+import { AVisInstance, IVisInstance, IVisInstanceOptions } from 'tdp_core';
+import { INumericalVector } from 'tdp_core';
 export interface IKaplanMaierOptions extends IVisInstanceOptions {
     /**
      * @default 300

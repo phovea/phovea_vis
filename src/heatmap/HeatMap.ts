@@ -3,12 +3,12 @@
  */
 
 import * as d3 from 'd3';
-import {Range} from 'phovea_core';
-import {AVisInstance, IVisInstance, VisUtils} from 'phovea_core';
-import {Rect} from 'phovea_core';
-import {BaseUtils, AppContext} from 'phovea_core';
-import {SelectionUtils} from 'phovea_core';
-import {INumericalMatrix, ICategoricalMatrix, AMatrix} from 'phovea_core';
+import {Range} from 'tdp_core';
+import {AVisInstance, IVisInstance, VisUtils} from 'tdp_core';
+import {Rect} from 'tdp_core';
+import {BaseUtils, AppContext} from 'tdp_core';
+import {SelectionUtils} from 'tdp_core';
+import {INumericalMatrix, ICategoricalMatrix, AMatrix} from 'tdp_core';
 import {DefaultUtils} from './DefaultUtils';
 import {ICommonHeatMapOptions} from './ICommonHeatMapOptions';
 import {ScaleUtils, IScale} from './IScale';

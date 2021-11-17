@@ -2,8 +2,8 @@
  * Created by Samuel Gratzl on 26.12.2016.
  */
 import * as d3 from 'd3';
-import { Range } from 'phovea_core';
-import { IMatrix } from 'phovea_core';
+import { Range } from 'tdp_core';
+import { IMatrix } from 'tdp_core';
 import { ESelectOption } from './IHeatMapRenderer';
 import { ICommonHeatMapOptions } from './ICommonHeatMapOptions';
 export declare abstract class AHeatMapCanvasRenderer {

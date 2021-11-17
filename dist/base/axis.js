@@ -2,8 +2,8 @@
  * Created by Samuel Gratzl on 25.01.2016.
  */
 import * as d3 from 'd3';
-import { BaseUtils } from 'phovea_core';
-import { AVisInstance, VisUtils } from 'phovea_core';
+import { BaseUtils } from 'tdp_core';
+import { AVisInstance, VisUtils } from 'tdp_core';
 import { D3Utils } from 'phovea_d3';
 export class Axis extends AVisInstance {
     constructor(data, parent, options = {}) {

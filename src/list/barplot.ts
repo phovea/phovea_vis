@@ -3,10 +3,10 @@
  */
 
 import {scale} from 'd3';
-import {BaseUtils} from 'phovea_core';
-import {INumericalVector} from 'phovea_core';
+import {BaseUtils} from 'tdp_core';
+import {INumericalVector} from 'tdp_core';
 import {AList, IAListOptions} from './internal/AList';
-import {INumberValueTypeDesc} from 'phovea_core';
+import {INumberValueTypeDesc} from 'tdp_core';
 
 export interface IBarPlotOptions extends IAListOptions {
   min?: number;

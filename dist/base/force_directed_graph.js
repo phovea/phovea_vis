@@ -2,8 +2,8 @@
  * Created by Samuel Gratzl on 05.08.2014.
  */
 import * as d3 from 'd3';
-import { AVisInstance, VisUtils } from 'phovea_core';
-import { BaseUtils } from 'phovea_core';
+import { AVisInstance, VisUtils } from 'tdp_core';
+import { BaseUtils } from 'tdp_core';
 export class ForceDirectedGraphVis extends AVisInstance {
     constructor(data, parent, options = {}) {
         super();

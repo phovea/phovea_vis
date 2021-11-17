@@ -2,10 +2,10 @@
  * Created by Samuel Gratzl on 25.01.2016.
  */
 import { select, extent, selection } from 'd3';
-import { BaseUtils } from 'phovea_core';
-import { AVisInstance, VisUtils } from 'phovea_core';
+import { BaseUtils } from 'tdp_core';
+import { AVisInstance, VisUtils } from 'tdp_core';
 import { D3Utils } from 'phovea_d3';
-import { Rect } from 'phovea_core';
+import { Rect } from 'tdp_core';
 const DEFAULT_OPTIONS = {
     scale: [1, 1],
     rotate: 0,

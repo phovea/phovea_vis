@@ -5,7 +5,7 @@
 import {
   ValueTypeUtils, INumberValueTypeDesc,
   ICategoricalValueTypeDesc, ICategory
-} from 'phovea_core';
+} from 'tdp_core';
 
 export class DefaultUtils {
 

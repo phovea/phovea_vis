@@ -3,13 +3,13 @@
  */
 
 import * as d3 from 'd3';
-import {AppContext, BaseUtils} from 'phovea_core';
-import {Range} from 'phovea_core';
-import {AVisInstance, IVisInstance, VisUtils, ITransform} from 'phovea_core';
-import {IHistAbleDataType, ICategoricalValueTypeDesc, INumberValueTypeDesc} from 'phovea_core';
-import {IStratification} from 'phovea_core';
-import {IHistogram} from 'phovea_core';
-import {SelectionUtils} from 'phovea_core';
+import {AppContext, BaseUtils} from 'tdp_core';
+import {Range} from 'tdp_core';
+import {AVisInstance, IVisInstance, VisUtils, ITransform} from 'tdp_core';
+import {IHistAbleDataType, ICategoricalValueTypeDesc, INumberValueTypeDesc} from 'tdp_core';
+import {IStratification} from 'tdp_core';
+import {IHistogram} from 'tdp_core';
+import {SelectionUtils} from 'tdp_core';
 import {ToolTip} from 'phovea_d3';
 import {HistUtils, IDistributionOptions, IHistData} from './HistData';
 

@@ -2,7 +2,7 @@
  * Created by Samuel Gratzl on 25.01.2016.
  */
 import { format } from 'd3';
-import { BaseUtils } from 'phovea_core';
+import { BaseUtils } from 'tdp_core';
 import { AList } from './internal/AList';
 export class List extends AList {
     constructor(data, parent, options = {}) {

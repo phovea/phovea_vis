@@ -3,11 +3,11 @@
  */
 
 import * as d3 from 'd3';
-import {Range} from 'phovea_core';
-import {AVisInstance, IVisInstance, VisUtils, IVisInstanceOptions} from 'phovea_core';
-import {Rect} from 'phovea_core';
-import {BaseUtils} from 'phovea_core';
-import {INumericalVector} from 'phovea_core';
+import {Range} from 'tdp_core';
+import {AVisInstance, IVisInstance, VisUtils, IVisInstanceOptions} from 'tdp_core';
+import {Rect} from 'tdp_core';
+import {BaseUtils} from 'tdp_core';
+import {INumericalVector} from 'tdp_core';
 import {ToolTip} from 'phovea_d3';
 
 

@@ -3,10 +3,10 @@
  */
 
 import {format} from 'd3';
-import {BaseUtils} from 'phovea_core';
-import {IAnyVector} from 'phovea_core';
+import {BaseUtils} from 'tdp_core';
+import {IAnyVector} from 'tdp_core';
 import {AList, IAListOptions} from './internal/AList';
-import {IValueTypeDesc} from 'phovea_core';
+import {IValueTypeDesc} from 'tdp_core';
 
 export interface IListOptions extends IAListOptions {
   format?: string;

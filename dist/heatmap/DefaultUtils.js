@@ -1,7 +1,7 @@
 /**
  * Created by Samuel Gratzl on 26.12.2016.
  */
-import { ValueTypeUtils } from 'phovea_core';
+import { ValueTypeUtils } from 'tdp_core';
 export class DefaultUtils {
     static defaultColor(value) {
         if (value.type === ValueTypeUtils.VALUE_TYPE_CATEGORICAL) {

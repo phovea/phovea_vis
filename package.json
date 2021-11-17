@@ -51,8 +51,8 @@
   },
   "dependencies": {
     "d3": "~3.5.17",
-    "tdp_core": "github:datavisyn/tdp_core#visyn",
-    "phovea_d3": "github:phovea/phovea_d3#visyn"
+    "tdp_core": "github:datavisyn/tdp_core#develop",
+    "phovea_d3": "github:phovea/phovea_d3#develop"
   },
   "devDependencies": {
     "@types/d3": "~3.5.36",

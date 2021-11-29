@@ -1,7 +1,7 @@
 {
   "name": "phovea_vis",
-  "description": "Utilitiy reposititory containing common visualizations (table, heatmap, scatterplot, axis, pie, distribution, ..)",
-  "version": "6.1.1-SNAPSHOT",
+  "description": "DEPRECATED: Utilitiy reposititory containing common visualizations (table, heatmap, scatterplot, axis, pie, distribution, ..)",
+  "version": "7.0.0",
   "author": {
     "name": "The Caleydo Team",
     "email": "contact@caleydo.org",
@@ -51,8 +51,8 @@
   },
   "dependencies": {
     "d3": "~3.5.17",
-    "tdp_core": "github:datavisyn/tdp_core#develop",
-    "phovea_d3": "github:phovea/phovea_d3#develop"
+    "tdp_core": "^12.1.2",
+    "phovea_d3": "^7.0.0"
   },
   "devDependencies": {
     "@types/d3": "~3.5.36",
